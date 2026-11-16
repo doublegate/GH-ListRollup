@@ -413,4 +413,45 @@ describe('review findings on #16', () => {
     expect(spy).not.toHaveBeenCalled();
     spy.mockRestore();
   });
+
+  it('folder layout: a commit bar rendered after a no-header exit is picked up too (Codex)', async () => {
+    // On folder pages the commit bar is a separate box, outside the listing's parent.
+    const doc = loadHtmlFixture('folder');
+    const row = findHeaderLine(doc)?.insertionPoint;
+    const parent = row?.parentElement;
+    expect(parent?.contains(listing(doc))).toBe(false);
+    row?.remove();
+    const outcomes: string[] = [];
+    startLifecycle(ctx, doc, (o) => outcomes.push(o));
+    await nextFrame();
+    await nextFrame();
+    expect(outcomes).toContain('no-header');
+    if (row && parent) parent.prepend(row);
+    await Promise.resolve();
+    await nextFrame();
+    await nextFrame();
+    expect(toggles(doc).length).toBe(1);
+  });
+
+  it('when the re-render budget runs out, the page is restored and left alone (Codex)', async () => {
+    const doc = loadHtmlFixture('root');
+    const controller = new CollapseController(ctx, doc, () => {
+      controller.apply(new URL(fixtureUrl('root')));
+    });
+    controller.apply(new URL(fixtureUrl('root')));
+    expect(collapsed(doc)).toBe(true);
+    const tbody = listing(doc).getElementsByTagName('tbody')[0];
+    for (let i = 0; i < RERENDER_BUDGET + 5; i++) {
+      tbody?.appendChild(doc.createElement('tr'));
+      await Promise.resolve();
+      await nextFrame();
+    }
+    // Observation stopped: files shown and no control left that could vanish unobserved.
+    expect(collapsed(doc)).toBe(false);
+    expect(toggles(doc).length).toBe(0);
+    // A later apply on the same listing (a navigation signal) leaves the page alone.
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('budget');
+    expect(collapsed(doc)).toBe(false);
+    expect(toggles(doc).length).toBe(0);
+  });
 });

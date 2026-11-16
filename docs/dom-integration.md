@@ -213,8 +213,12 @@ scripts run only on full loads.
    container and the header line's box, watching `childList` with `subtree`, schedules `apply()`
    when GitHub replaces rows, the listing or the commit bar (and so the toggle). This happens when
    deferred commit info fills in after first paint. Budget: the callback does no layout reads and
-   stops after at most 50 runs per listing. The controller's own writes are attribute changes or
-   no-ops, so it does not trigger itself.
+   stops after at most 50 runs per listing. The controller drops the records of its own toggle
+   insertion (`takeRecords()`), so it does not trigger itself. When the budget runs out, nothing would
+   notice the toggle vanishing any more. So the page is **restored** (toggle removed, files shown) and
+   that listing is left as GitHub renders it until the next navigation to a different listing. After
+   a no-header exit the observer watches the code-view app instead, which contains both the listing
+   and the commit bar on either layout, so a late commit bar is picked up.
 
    **No late collapse.** If the first `apply()` on a listing shows it uncollapsed (for example, the
    header line was not yet rendered and `data-gnr-pending` was cleared), a later `apply()` on the

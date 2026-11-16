@@ -27,6 +27,7 @@ export type ApplyOutcome =
   | 'no-listing' // a listing page whose listing is not in the DOM (yet)
   | 'no-header' // the confidence gate failed on the header line
   | 'stale' // the DOM still shows the previous page after a soft navigation
+  | 'budget' // the re-render budget ran out on this listing: the page is left as GitHub renders it
   | 'error'; // an unexpected exception; the page is left alone
 
 /** State of the listing currently shown, keyed by its whole `location.pathname`. */
@@ -42,6 +43,8 @@ interface ListingState {
   signature: string | null;
   /** Re-render observer runs so far. */
   rerenders: number;
+  /** The budget ran out: the page was restored and this listing is left alone (Codex, #16). */
+  exhausted: boolean;
 }
 
 export function setPending(doc: Document): void {
@@ -160,10 +163,12 @@ export class CollapseController {
         installed: false,
         signature,
         rerenders: 0,
+        exhausted: false,
       };
     }
     const state = this.state;
     state.signature = signature;
+    if (state.exhausted) return 'budget';
 
     if (!listing) {
       clearPending(doc);
@@ -178,8 +183,11 @@ export class CollapseController {
       listing.classList.remove(COLLAPSED_CLASS);
       state.shownWithoutToggle = true;
       state.installed = false;
-      // Watch for the header line arriving later: nothing else would re-apply (agy, #16).
-      this.observe(listing.parentElement ?? listing);
+      // Watch for the header line arriving later: nothing else would re-apply (agy, #16). The
+      // code-view app contains both the listing and the commit bar on either layout; the listing's
+      // parent does not on folder pages, where the bar is a separate section (Codex, #16).
+      const app = query('codeView', doc)?.element;
+      this.observe(app?.contains(listing) ? app : doc.body);
       return 'no-header';
     }
 
@@ -243,7 +251,11 @@ export class CollapseController {
       if (!state) return;
       state.rerenders++;
       if (state.rerenders > RERENDER_BUDGET) {
+        // Stop observing, and since nothing will notice the toggle vanishing any more, leave the
+        // page as GitHub renders it rather than risk hidden files with no control (Codex, #16).
         this.disconnect();
+        state.exhausted = true;
+        this.restore();
         return;
       }
       this.schedule();
