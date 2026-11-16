@@ -12,7 +12,7 @@
   <img alt="Manifest V3" src="https://img.shields.io/badge/manifest-V3-informational">
   <img alt="Chrome 121+" src="https://img.shields.io/badge/Chrome-121%2B-4285F4">
   <img alt="Firefox 142+" src="https://img.shields.io/badge/Firefox-142%2B-FF7139">
-  <img alt="Status: pre-alpha" src="https://img.shields.io/badge/status-pre--alpha-orange">
+  <img alt="Status: alpha" src="https://img.shields.io/badge/status-alpha-yellow">
 </p>
 
 <p>
@@ -43,22 +43,24 @@ GH-ListRollup changes two things:
   can look three levels deep without leaving the page.
 
 > [!NOTE]
-> **Project status: pre-alpha.** The research, specifications and build skeleton are done. The
-> extension builds and loads in Chrome and Firefox, but it does not change GitHub pages yet. Feature
-> work begins in Phase 1; see the [roadmap](#roadmap).
+> **Project status: alpha.** The whole-listing collapse (Level 1) works in Chrome and Firefox. It was
+> verified live on github.com, across soft navigations, re-renders and themes, with no flash of the
+> full listing. The inline nested folder tree (Level 2) is next, in Phase 2. There is no store
+> release yet; install from source. See the [roadmap](#roadmap).
 
 ## Features
 
-|       | Feature                                  | Details                                                                                                                                                                                                |
-| ----- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **1** | **Whole-listing collapse**               | The listing starts collapsed to its header line, the latest-commit bar. This applies to the repository root, `/tree/<branch>`, and every folder page. A chevron on that line expands and collapses it. |
-| **2** | **Inline nested tree**                   | Every folder row gets its own chevron. Folders start collapsed and expand in place, recursively, loading their contents on demand. Clicking a folder's name still opens it normally.                   |
-|       | **Follows GitHub's navigation**          | GitHub switches pages without full reloads. GH-ListRollup detects those navigations and re-applies itself exactly once.                                                                                |
-|       | **Native look**                          | Colors come from GitHub's own Primer design tokens, so light, dark, dimmed and high-contrast themes all work.                                                                                          |
-|       | **Keyboard and screen readers**          | Real buttons with `aria-expanded`; Enter and Space toggle; Right and Left arrows expand and collapse.                                                                                                  |
-|       | **Private repositories without a token** | Folder contents are loaded the way GitHub's own page loads them, using your existing GitHub session. There is no token to create and no API quota to use up.                                           |
-|       | **Fails safe**                           | If GitHub's markup changes in a way the extension cannot recognise, it leaves the page alone. It never hides a listing it cannot restore.                                                              |
-|       | **Small and private**                    | One content script of a few kilobytes. It runs only on `github.com` and collects nothing.                                                                                                              |
+|       | Feature                                              | Details                                                                                                                                                                                                                                             |
+| ----- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | **Whole-listing collapse**                           | The listing starts collapsed to its header line, the latest-commit bar. This applies to the repository root, `/tree/<branch>`, and every folder page. A chevron on that line expands and collapses it.                                              |
+| **2** | **Inline nested tree** _(Phase 2)_                   | Every folder row gets its own chevron. Folders start collapsed and expand in place, recursively, loading their contents on demand. Clicking a folder's name still opens it normally.                                                                |
+|       | **Follows GitHub's navigation**                      | GitHub switches pages without full reloads. GH-ListRollup detects those navigations and re-applies itself exactly once.                                                                                                                             |
+|       | **Native look**                                      | Colors come from GitHub's own Primer design tokens, so light, dark, dimmed and high-contrast themes all work.                                                                                                                                       |
+|       | **Keyboard and screen readers**                      | Real buttons with `aria-expanded`; Enter and Space toggle; Right and Left arrows expand and collapse.                                                                                                                                               |
+|       | **Private repositories without a token** _(Phase 2)_ | Folder contents are loaded the way GitHub's own page loads them, using your existing GitHub session. There is no token to create and no API quota to use up.                                                                                        |
+|       | **No flicker**                                       | The listing is hidden from the first paint, and again from the start of an in-page navigation, until its toggle is in place. A per-frame probe confirms that the full listing never flashes.                                                        |
+|       | **Fails safe**                                       | If GitHub's markup changes in a way the extension cannot recognise, it leaves the page alone. It never hides a listing it cannot restore: if the header line goes missing, the extension updates or the page misbehaves, the files are shown again. |
+|       | **Small and private**                                | One content script of a few kilobytes. It runs only on `github.com` and collects nothing.                                                                                                                                                           |
 
 ## How it looks
 
@@ -177,8 +179,8 @@ See [PRIVACY.md](PRIVACY.md) and [`docs/security-privacy.md`](docs/security-priv
 | Phase                      | Goal                                                                                                      | Status   |
 | -------------------------- | --------------------------------------------------------------------------------------------------------- | -------- |
 | 0. Foundation              | Skeleton builds for both browsers; CI; test fixtures                                                      | Complete |
-| 1. Listing collapse        | Level 1 on every listing page; survives soft navigation                                                   | Planned  |
-| 2. Inline tree             | Lazy nested folder expansion; cache; keyboard and ARIA                                                    | Planned  |
+| 1. Listing collapse        | Level 1 on every listing page; survives soft navigation                                                   | Complete |
+| 2. Inline tree             | Lazy nested folder expansion; cache; keyboard and ARIA                                                    | Next     |
 | 3. Settings and resilience | Options page; selector fallbacks; optional REST fallback                                                  | Planned  |
 | 4. Testing and hardening   | Playwright end-to-end tests; Firefox smoke suite; weekly live probe; performance budgets; security review | Planned  |
 | 5. Release                 | Chrome Web Store and Firefox Add-ons; v1.0.0                                                              | Planned  |
@@ -192,14 +194,16 @@ Sprint and ticket detail: [`to-dos/ROADMAP.md`](to-dos/ROADMAP.md). Current stat
 pnpm dev              # Chrome, with the extension loaded and live reload
 pnpm dev:firefox      # Firefox
 pnpm test             # unit tests (Vitest)
-pnpm check            # every gate: format, lint, typecheck, test, both builds, web-ext lint
+pnpm check            # every gate: format, lint, typecheck, tests with coverage, both builds, web-ext lint
 ```
 
 | Path                              | Contents                                                                       |
 | --------------------------------- | ------------------------------------------------------------------------------ |
-| `src/entrypoints/`                | The content script and background script                                       |
-| `src/github/`                     | Page detection, navigation handling and selectors (pure, fixture-tested)       |
-| `tests/`                          | Vitest unit tests                                                              |
+| `src/entrypoints/`                | The content script, its stylesheet, and the background script                  |
+| `src/features/`                   | The collapse controller and its lifecycle (pre-hide, watchdogs, observers)     |
+| `src/github/`                     | Selectors, page model, header line, probe, navigation (fixture-tested)         |
+| `src/ui/`                         | The toggle button                                                              |
+| `tests/`                          | Vitest unit tests, sanitized GitHub fixtures, and manual live-check scripts    |
 | [`docs/`](docs/)                  | Implementation specs and decision records ([ADRs](docs/adr/))                  |
 | [`ref-docs/`](ref-docs/README.md) | Research: GitHub internals, Chrome and Firefox MV3, stores, tooling, prior art |
 | [`to-dos/`](to-dos/ROADMAP.md)    | Phase, sprint and ticket plan                                                  |
@@ -251,6 +255,8 @@ and compatibility with Refined GitHub is checked before each release.
 - [Refined GitHub](https://github.com/refined-github/refined-github) (MIT) shipped the original
   "toggle files" idea. Its approach to surviving GitHub's DOM informed this design.
 - [WXT](https://wxt.dev), for cross-browser builds.
+- [Primer Octicons](https://github.com/primer/octicons) (MIT), for the chevron icon; its notice is
+  in [`NOTICE`](NOTICE).
 - Prior art studied during research: [Tako](https://github.com/brumm/tako),
   [Gitako](https://github.com/EnixCoda/Gitako) and Octotree.
 

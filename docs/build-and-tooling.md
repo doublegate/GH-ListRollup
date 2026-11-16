@@ -116,10 +116,14 @@ workspace template. Operations guide: `.github/AGY-REVIEWER.md`; project rules:
     locally and leave its workflows unapproved.
 - **Keep the template files in sync with the template.** The workflow and the operations doc are
   excluded from Prettier, because the self-test parses the workflow. The doc is byte-identical.
-  The workflow differs in exactly one way: the template's first-install bootstrap steps are
-  omitted. They could never fire once the reviewer was on `main`, and they trip CodeQL
-  `actions/untrusted-checkout`; RustyNES does the same. Update both only by re-syncing from the
-  template, then re-apply that omission.
+  The workflow differs in two ways:
+  - The template's first-install bootstrap steps are omitted. They could never fire once the
+    reviewer was on `main`, and they trip CodeQL `actions/untrusted-checkout`; RustyNES does the same.
+  - `AGY_PRINT_TIMEOUT: "10m"` pins a 10-minute base per attempt. Inline diffs of 68-91 KB timed out
+    at 358-381 s on both attempts under host load (#16). The self-test confirms that the worst case
+    (3075 s) still fits `timeout-minutes: 80`.
+
+  Update both only by re-syncing from the template, then re-apply these two changes.
 
 To run the secret scan locally, give gitleaks an **absolute path**:
 `gitleaks git "$PWD" --redact`. Some installs ship `gitleaks` as a wrapper script that changes into

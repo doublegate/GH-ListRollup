@@ -15,9 +15,20 @@ export const SOFT_NAV_EVENTS = [
   'turbo:load',
 ] as const;
 
-export function watchNavigation(ctx: ContentScriptContext, onChange: () => void): void {
+/** The Navigation API, where the browser exposes it to the content script. */
+interface NavigationLike extends EventTarget {
+  readonly currentEntry?: unknown;
+}
+
+export function watchNavigation(
+  ctx: ContentScriptContext,
+  onChange: () => void,
+  /** Called with each signal's event type, before coalescing (diagnostics: T-GNR-106). */
+  onSignal: (type: string) => void = () => undefined,
+): void {
   let scheduled = false;
-  const schedule = (): void => {
+  const schedule = (event: Event): void => {
+    onSignal(event.type);
     if (scheduled) return;
     scheduled = true;
     ctx.requestAnimationFrame(() => {
@@ -32,4 +43,10 @@ export function watchNavigation(ctx: ContentScriptContext, onChange: () => void)
   ctx.addEventListener(window, 'popstate', schedule);
   // WXT's own URL watcher: fires at the start of a navigation, so it is a supplement only.
   ctx.addEventListener(window, 'wxt:locationchange', schedule);
+  // The Navigation API's completion event (docs/dom-integration.md section 4, step 4). Whether it
+  // reaches Firefox content scripts is the T-GNR-106 question; popstate above is the fallback.
+  const navigation = (window as unknown as { navigation?: NavigationLike }).navigation;
+  if (navigation && typeof navigation.addEventListener === 'function') {
+    navigation.addEventListener('navigatesuccess', schedule, { signal: ctx.signal });
+  }
 }

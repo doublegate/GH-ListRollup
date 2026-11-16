@@ -30,6 +30,11 @@ try {
   });
 
   const settle = (ms = 2500) => page.waitForTimeout(ms);
+  // Since Phase 1 the listing starts collapsed: show it before clicking a folder link in it.
+  const expand = async () => {
+    const t = page.locator('[data-gnr="toggle"][aria-expanded="false"]');
+    if ((await t.count()) > 0) await t.first().click();
+  };
   const mark = () => page.evaluate(() => (window.__gnrMarker = Math.random()));
   const marker = () => page.evaluate(() => window.__gnrMarker ?? null);
   const results = [];
@@ -52,6 +57,7 @@ try {
     await page.goto('https://github.com/wxt-dev/wxt', { waitUntil: 'domcontentloaded' });
   });
   await run('2 click folder "packages"', async () => {
+    await expand();
     await page.locator('a[href="/wxt-dev/wxt/tree/main/packages"]:visible').first().click();
     await page.waitForURL('**/tree/main/packages');
   });
@@ -75,6 +81,7 @@ try {
   await sw.evaluate(() => chrome.runtime.reload()).catch(() => {});
   await page.waitForTimeout(2000);
   await run('6 after extension reload: click folder "packages"', async () => {
+    await expand();
     await page.locator('a[href="/wxt-dev/wxt/tree/main/packages"]:visible').first().click();
     await page.waitForURL('**/tree/main/packages');
   });
@@ -82,6 +89,7 @@ try {
     await page.reload({ waitUntil: 'domcontentloaded' });
   });
   await run('8 then click folder "packages/wxt"', async () => {
+    await expand();
     await page.locator('a[href="/wxt-dev/wxt/tree/main/packages/wxt"]:visible').first().click();
     await page.waitForURL('**/tree/main/packages/wxt');
   });

@@ -32,6 +32,18 @@ All notable user-visible changes to this project are documented here. The format
     markdown, or icon artwork.
   - `pnpm test` checks every fixture against its sidecar SHA-256 and the current sanitizer, and
     the signed-in capture path requires every identifier of the account being replaced.
+- **The listing collapse (Phase 1):** on every repository listing page, the file and folder listing
+  starts collapsed to its header line, the latest-commit bar. A chevron button at the start of that
+  line shows and hides it (keyboard accessible, `aria-expanded`). The state resets to collapsed on
+  every navigation to a different listing and survives GitHub's re-renders. If the header line
+  cannot be found, the page is left exactly as GitHub renders it.
+  - No flash of the full listing, on a cold load or on an in-page navigation (back, forward and
+    folder clicks). The listing is pre-hidden until its toggle is in place, bounded by a 4-second
+    watchdog.
+  - Never hidden without a toggle: if the commit bar disappears, the extension updates or reloads,
+    or the re-render budget runs out, the files are shown again.
+  - Verified live on github.com in Chrome and Firefox, including 20 consecutive navigations and the
+    light, dark and high-contrast themes.
 - GitHub page reading (Phase 1 Sprint 1), no visible change yet:
   - a single selectors module with ranked fallbacks (`src/github/selectors.ts`);
   - a page model that resolves the ref, including refs with `/`, tags and commit SHAs, without

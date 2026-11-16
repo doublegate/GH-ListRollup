@@ -1,0 +1,62 @@
+/*
+ * GH-ListRollup content stylesheet (T-GNR-107, docs/dom-integration.md section 5).
+ *
+ * Injected through the manifest `content_scripts.css`, so page CSP is not involved. Every selector
+ * starts with `html[data-gnr-pending]`, a `.gnr-` class or `[data-gnr` (a test enforces this). Colors
+ * come only from Primer CSS variables, with literal fallbacks (docs/ui-behavior.md section 4).
+ */
+
+/* The bounded anti-flash pre-hide: until the first apply, or the 4-second watchdog. */
+html[data-gnr-pending] [data-testid='directory-content'],
+html[data-gnr-pending] table[aria-labelledby='folders-and-files'] {
+  display: none !important;
+}
+
+/*
+ * Level 1 collapsed. The marker is on <html>, set only after the toggle exists: React owns the
+ * listing container and replaces it during hydration, so a class there was dropped for a frame.
+ */
+html[data-gnr-collapsed] [data-testid='directory-content'],
+html[data-gnr-collapsed] table[aria-labelledby='folders-and-files'] {
+  display: none !important;
+}
+
+.gnr-toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: 0 4px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fgColor-muted, #59636e);
+  cursor: pointer;
+}
+
+.gnr-toggle:hover {
+  background: var(--control-transparent-bgColor-hover, rgba(208, 215, 222, 0.32));
+  color: var(--fgColor-default, #1f2328);
+}
+
+.gnr-toggle:focus-visible {
+  outline: 2px solid var(--focus-outlineColor, #0969da);
+  outline-offset: -2px;
+}
+
+.gnr-chevron {
+  transition: transform 150ms ease;
+}
+
+.gnr-toggle[aria-expanded='true'] .gnr-chevron {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gnr-chevron {
+    transition: none;
+  }
+}

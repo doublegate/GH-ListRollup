@@ -47,6 +47,8 @@ Implemented in `src/github/selectors.ts` (T-GNR-101), which the table must match
 | Name link                          | `.react-directory-filename-cell a`                                                                                                                        | `.react-directory-truncate a`                                                                                                                                                                                               |
 | Header line (latest-commit bar)    | `[data-testid="latest-commit-details"]`; the inner row is the child of its nearest `.border` ancestor (Primer's utility class) that contains it           | `h2[data-testid="screen-reader-heading"]`, then `h2.sr-only`, with the text "Latest commit"; its parent is the same inner row                                                                                               |
 | "View all files" row               | `tr[data-testid="view-all-files-row"]`                                                                                                                    | --                                                                                                                                                                                                                          |
+| Link (navigation pre-hide)         | `a[href]`, used with `closest()` from a click target                                                                                                      | --                                                                                                                                                                                                                          |
+| The extension's own toggle         | `[data-gnr="toggle"]`                                                                                                                                     | --                                                                                                                                                                                                                          |
 
 ### 2.1 The header line
 
@@ -168,7 +170,7 @@ scripts run only on full loads.
    disconnected after the first match), the script runs `apply()`. It also runs once at
    `DOMContentLoaded`. The listing is server-rendered, so a page with no listing by then takes the
    non-listing exit. `apply()` waits for the settings read, inserts the toggle, applies the resolved
-   state (the collapsed class for `collapsed`, nothing for `expanded`), then removes
+   state (the `html[data-gnr-collapsed]` marker for `collapsed`, nothing for `expanded`), then removes
    `data-gnr-pending`.
 
    Every exit path of `apply()` that does not install the toggle removes `data-gnr-pending`
@@ -187,13 +189,52 @@ scripts run only on full loads.
    - `soft-nav:react-done`
    - `turbo:render`
    - `turbo:load`
-   - the Navigation API `navigatesuccess` event, or `popstate` where that API is absent
+   - the Navigation API `navigatesuccess` event, or `popstate` where that API is absent. **Firefox
+     finding (maintainer, 2026-11-16, T-GNR-106):** `navigatesuccess` does **not** reach the content
+     script in Firefox. A folder click there delivered `turbo:load`, `wxt:locationchange` (WXT
+     namespaces it as `<extension id>:content:wxt:locationchange`) and `soft-nav:end`. So the
+     Navigation API is a Chromium-only supplement, and the GitHub and WXT events carry Firefox.
    - WXT's `wxt:locationchange`
 
    Calls are debounced to one per animation frame. The script reads only event names, never event
    payloads, because payloads from the page's world are not reliably readable from the isolated world.
-   Soft navigation never sets `data-gnr-pending`. If it is still set when a soft navigation reaches a
-   non-listing page, that `apply()` takes the non-listing exit and removes it.
+   **In-page navigation pre-hide.** Without it, a new listing rendered visible and collapsed one or two
+   frames later (seen in Firefox by the maintainer, and measured with `tests/e2e/manual/flash-probe.mjs`).
+   So `data-gnr-pending` is also set, synchronously, when an in-page navigation toward a
+   **different listing** starts:
+   - on a plain left click on a same-site link to a listing-shaped URL, from a capture-phase listener
+     that runs before GitHub's router (modified clicks, `target` other than `_self`, `download` links
+     and the listing already shown are ignored);
+   - on `popstate` (back and forward), where `location` already holds the destination.
+
+   It ends like the cold-load pre-hide: the apply that installs the toggle clears it, and so do the
+   no-header and non-listing exits. The no-listing exit **keeps** it mid-navigation: the old listing
+   is gone and the new one not yet rendered, so nothing visible is hidden. It observes the code-view
+   app for the arrival, because clearing pending there flashed the new listing for a frame. A
+   per-navigation watchdog (4 seconds; only the latest navigation's acts) always ends it. Only an
+   apply on the navigation's **destination** ends it early; an apply on the outgoing page, a
+   re-render before the URL changes, does not. The cold-load watchdog never ends a navigation's
+   pre-hide: a folder click about 4 s after load lost its pre-hide to that timer, which flashed the
+   new listing for a frame. If no
+   toggle is installed for the listing actually shown, the watchdog also removes the collapsed
+   marker. An aborted navigation leaves the old URL, and its toggle keeps working.
+
+   **The collapsed marker is on `<html>` (`data-gnr-collapsed`), not on the listing container.**
+   Measured live: React replaced the container about 400 ms after the first apply, during hydration,
+   with `class=""`, which dropped a class there and flashed the listing for one frame. A marker on
+   `<html>` hides any container until the next apply puts the toggle back. Every path that ends with
+   no toggle removes the marker: the no-header and non-listing exits, budget exhaustion, the
+   navigation watchdog, teardown, an exception inside `apply()` (the toggle counts as installed only
+   once it is in the DOM), and a no-listing exit that is not part of a click or `popstate`
+   navigation, such as a keyboard-shortcut navigation or React unmounting the listing.
+
+   **The first signals arrive before the new listing renders** (observed live,
+   `ref-docs/research-update-2026-11-16-phase1-fixtures.md` §6). So after a navigation, `apply()`
+   first checks that the listing in the DOM belongs to the new URL. When the ref resolves, it passes
+   the cross-check and the DOM is current. When it does not, and the first entry row's href equals
+   the previous page's, the DOM is stale: `apply()` does nothing and waits for the next signal. Rows
+   identical across two URLs (`/<o>/<r>` and `/<o>/<r>/tree/main`) resolve a ref and are never
+   mistaken for stale. Implemented in `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different
    listing means `location.pathname` changed since the last apply, compared as a whole string. Level
@@ -201,10 +242,16 @@ scripts run only on full loads.
    Level 2 starts with every folder collapsed. An `apply()` on the **same listing**, after a React
    re-render, keeps both levels' state (`docs/architecture.md` §3.2).
 
-5. **React re-render.** A scoped MutationObserver on the listing container, watching `childList` with
-   `subtree`, re-runs the cheap part of `apply()` when GitHub replaces rows. This happens when deferred
-   commit info fills in after first paint. Budget: the callback does no layout reads and stops after
-   at most 50 runs per page.
+5. **React re-render.** A scoped MutationObserver on the nearest common ancestor of the listing
+   container and the header line's box, watching `childList` with `subtree`, schedules `apply()`
+   when GitHub replaces rows, the listing or the commit bar (and so the toggle). This happens when
+   deferred commit info fills in after first paint. Budget: the callback does no layout reads and
+   stops after at most 50 runs per listing. The controller drops the records of its own toggle
+   insertion (`takeRecords()`), so it does not trigger itself. When the budget runs out, nothing would
+   notice the toggle vanishing any more. So the page is **restored** (toggle removed, files shown) and
+   that listing is left as GitHub renders it until the next navigation to a different listing. After
+   a no-header exit the observer watches the code-view app instead, which contains both the listing
+   and the commit bar on either layout, so a late commit bar is picked up.
 
    **No late collapse.** If the first `apply()` on a listing shows it uncollapsed (for example, the
    header line was not yet rendered and `data-gnr-pending` was cleared), a later `apply()` on the
@@ -213,7 +260,16 @@ scripts run only on full loads.
    the next navigation to a different listing.
 
 6. **Teardown.** WXT's `ctx.onInvalidated` disconnects observers and removes listeners when the
-   extension updates or reloads.
+   extension updates or reloads. It also **restores the page**: the extension's toggles are removed,
+   the collapsed marker and `data-gnr-pending` are cleared. A dead content script would otherwise
+   leave the files hidden behind a button that no longer responds (verified live: after an extension
+   reload the listing is visible and usable).
+
+The controller also forgets the listing whenever an `apply()` lands on a non-listing page. Returning
+to the same listing later (Issues, then Back) is a navigation, not a re-render, so it starts
+collapsed again. If the header line disappears after a successful collapse, the next `apply()` takes
+the no-header exit. That exit removes the collapsed marker, so files are never hidden without a toggle.
+It also marks the listing as shown, so a header that returns does not cause a late collapse.
 
 ### Hydration
 
@@ -236,7 +292,8 @@ state in memory, keyed by path, and re-inserts expanded subtrees on the next app
   so page CSP is not involved. No inline `style` attributes; behaviour is driven by classes. GitHub's
   CSP allows inline styles, but Firefox still applies page CSP to some content-script DOM (Mozilla bug
   1267027). See `ref-docs/github-code-view-dom.md` §6.
-- All selectors are prefixed with `[data-gnr]`, the `gnr-` class prefix, or `html[data-gnr-pending]`.
+- All selectors are prefixed with `[data-gnr]`, the `gnr-` class prefix, `html[data-gnr-pending]` or
+  `html[data-gnr-collapsed]`.
 - Colors come only from Primer CSS variables (`docs/ui-behavior.md` §4).
 
 ## 6. Breakage detection

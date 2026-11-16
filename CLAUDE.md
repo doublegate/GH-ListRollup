@@ -105,9 +105,10 @@ GH-ListRollup/
 - Add, don't mutate: insert `data-gnr`-marked nodes and toggle classes. Never remove or rewrite
   GitHub's nodes. `apply()` must be idempotent.
 - Never hide the listing unless the toggle is already in the DOM. The one bounded exception is the
-  anti-flash pre-hide under `html[data-gnr-pending]`, set at `document_start`. Every `apply()` exit
-  that does not install the toggle removes it at once, and the 4-second watchdog removes it in every
-  other case (`docs/dom-integration.md` §4).
+  anti-flash pre-hide under `html[data-gnr-pending]`, set at `document_start` and at the start of an
+  in-page navigation to a different listing. Every `apply()` exit that does not install the toggle
+  removes it (mid-navigation, once there is a listing to show), and a 4-second watchdog removes it in
+  every other case (`docs/dom-integration.md` §4).
 - Never derive the ref by splitting the URL; refs can contain `/`.
 - Only `github.com` (and `api.github.com` for the optional fallback) are contacted. No telemetry.
   The token stays in the background script.

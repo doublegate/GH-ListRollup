@@ -9,13 +9,13 @@ cannot be identified the extension does nothing (`docs/ui-behavior.md` §2).
 
 ## Exit criteria
 
-- [ ] Fixture tests: toggle present exactly once on root and folder fixtures, rows hidden, and
+- [x] Fixture tests: toggle present exactly once on root and folder fixtures, rows hidden, and
       `aria-expanded` correct.
-- [ ] Stripped-hook fixture: either the fallbacks work, or the page is left untouched with rows
+- [x] Stripped-hook fixture: either the fallbacks work, or the page is left untouched with rows
       visible. Never hidden without a toggle.
-- [ ] Manual live check in both browsers: 20 consecutive soft navigations leave exactly one toggle
+- [x] Manual live check in both browsers: 20 consecutive soft navigations leave exactly one toggle
       per listing page.
-- [ ] No flash of the full listing on a cold load (visual check), and the 4-second watchdog is
+- [x] No flash of the full listing on a cold load (visual check), and the 4-second watchdog is
       verified by a test.
 
 ## Scope
