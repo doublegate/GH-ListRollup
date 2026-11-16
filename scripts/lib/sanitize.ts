@@ -61,7 +61,16 @@ const RENDERED_MARKDOWN_KEY = /^richText$/;
  * `header` elements outside the code-view app are removed; the folder page's breadcrumb lives in
  * one inside it.
  */
-const MINIMIZE_SELECTORS = ['footer', 'article.markdown-body'];
+const MINIMIZE_SELECTORS = [
+  'footer',
+  'article.markdown-body',
+  // The README container: a plain-text README (no .md, e.g. git's contrib/README) renders as
+  // `<div class="plain"><pre>` inside it, not as an article (agy review, PR #3).
+  '#readme',
+  // querySelectorAll does not reach into a template's content fragment, so nothing inside one
+  // was ever sanitized; every template GitHub serves here is site chrome (agy review, PR #3).
+  'template',
+];
 
 /**
  * JSON keys whose numeric values change between requests without any content change: server
@@ -207,7 +216,12 @@ export function replaceIdentity(text: string, identity: Identity | undefined): s
     PLACEHOLDER_LOGIN,
   );
   if (identity.id !== undefined) {
-    out = out.replace(new RegExp(`(?<![0-9])${identity.id}(?![0-9])`, 'g'), PLACEHOLDER_ID);
+    // Alphanumeric boundaries, not digit-only: the id must not match inside a hex SHA or other
+    // hashed identifier (agy review, PR #3).
+    out = out.replace(
+      new RegExp(`(?<![0-9A-Za-z])${identity.id}(?![0-9A-Za-z])`, 'g'),
+      PLACEHOLDER_ID,
+    );
   }
   if (identity.nodeId) out = out.split(identity.nodeId).join(PLACEHOLDER_NODE_ID);
   if (identity.email) out = out.replace(new RegExp(esc(identity.email), 'gi'), PLACEHOLDER_EMAIL);

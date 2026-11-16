@@ -204,6 +204,30 @@ describe('minimization (third-party and GitHub-authored content)', () => {
     expect(out).toContain('directory-content');
   });
 
+  it('removes plain-text READMEs (the #readme container), not just markdown articles', async () => {
+    const out = await sanitizeGitHubHtml(
+      page(
+        '',
+        '<div id="readme"><div class="plain"><pre>Third-party plain README</pre></div></div><div data-testid="directory-content"></div>',
+      ),
+      opts,
+    );
+    expect(out).not.toContain('Third-party plain README');
+    expect(out).toContain('directory-content');
+  });
+
+  it('removes <template> elements, whose contents querySelectorAll cannot reach', async () => {
+    const out = await sanitizeGitHubHtml(
+      page(
+        '',
+        '<template id="t"><script>alert(1)</script><svg><path d="M1 1Z"></path></svg><img src="https://avatars.githubusercontent.com/u/1"></template><div data-testid="directory-content"></div>',
+      ),
+      opts,
+    );
+    expect(out).not.toMatch(/<template|alert\(1\)|M1 1Z|avatars\.githubusercontent/);
+    expect(out).toContain('directory-content');
+  });
+
   it('keeps icon elements and classes but drops path drawings', async () => {
     const out = await sanitizeGitHubHtml(pageHtml, opts);
     expect(out).toContain('octicon-file-directory-fill');
@@ -307,6 +331,14 @@ describe('replaceIdentity', () => {
       '{"login":"someuser","name":"SomeUser","id":6858,"node":"MDQ6VXNlcjY4NTg=","other":68581,"x":"someusers"}';
     expect(replaceIdentity(text, identity)).toBe(
       `{"login":"${PLACEHOLDER_LOGIN}","name":"${PLACEHOLDER_LOGIN}","id":${PLACEHOLDER_ID},"node":"${PLACEHOLDER_NODE_ID}","other":68581,"x":"someusers"}`,
+    );
+  });
+
+  it('does not corrupt a hex hash that happens to contain the numeric id', () => {
+    // agy review, PR #3: a digits-only boundary let the id match inside a commit SHA.
+    const sha = 'abc6858def0123456789abcdef0123456789abcd';
+    expect(replaceIdentity(`"oid":"${sha}","id":6858`, identity)).toBe(
+      `"oid":"${sha}","id":${PLACEHOLDER_ID}`,
     );
   });
 

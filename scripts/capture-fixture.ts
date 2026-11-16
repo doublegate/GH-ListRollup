@@ -94,12 +94,43 @@ async function fetchFixture(spec: FixtureSpec): Promise<{ status: number; body: 
   return { status: res.status, body };
 }
 
-/** Extracts ref name and commit oid for the provenance note, if present. */
+/** Depth-first search for the first `refInfo` object with a string name and commit oid. */
+function findRefInfo(value: unknown): { name: string; currentOid: string } | null {
+  if (Array.isArray(value)) {
+    for (const v of value) {
+      const hit = findRefInfo(v);
+      if (hit) return hit;
+    }
+  } else if (value !== null && typeof value === 'object') {
+    const ref = (value as { refInfo?: { name?: unknown; currentOid?: unknown } }).refInfo;
+    if (ref && typeof ref.name === 'string' && typeof ref.currentOid === 'string') {
+      return { name: ref.name, currentOid: ref.currentOid };
+    }
+    for (const v of Object.values(value)) {
+      const hit = findRefInfo(v);
+      if (hit) return hit;
+    }
+  }
+  return null;
+}
+
+/**
+ * Extracts ref name and commit oid for the provenance note, if present. Parses the JSON (the tree
+ * response, or the HTML page's embedded code-view payload) rather than regex-matching it, so key
+ * order inside `refInfo` does not matter (agy review, PR #3).
+ */
 function refInfoOf(kind: Kind, content: string): string {
-  const m = /"refInfo":\s*\{[^}]*?"name":\s*"([^"]*)"[^}]*?"currentOid":\s*"([0-9a-f]{40})"/.exec(
-    content,
-  );
-  if (m) return `ref \`${m[1]}\` at commit \`${m[2]}\``;
+  let json: string | undefined = content;
+  if (kind === 'html') {
+    json = /data-target="react-app\.embeddedData">(.*?)<\/script>/s.exec(content)?.[1];
+  }
+  let ref: { name: string; currentOid: string } | null = null;
+  try {
+    ref = json === undefined ? null : findRefInfo(JSON.parse(json));
+  } catch {
+    ref = null;
+  }
+  if (ref) return `ref \`${ref.name}\` at commit \`${ref.currentOid}\``;
   return kind === 'json' ? 'no refInfo in response' : 'ref not found in embedded data';
 }
 

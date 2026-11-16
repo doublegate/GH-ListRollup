@@ -4,7 +4,7 @@
 - **Captured:** 2026-11-16 (logged out, by `scripts/capture-fixture.ts`)
 - **HTTP status:** 200
 - **Content:** ref `master` at commit `7fb6055e678f800320d8ab8cd8f201d9493d1ba0`
-- **SHA-256 of `folder.html`:** `b52b30fef81eed3ec85948904ea50ee8964348af9249831a8397d270ece24086`
+- **SHA-256 of `folder.html`:** `17aeba7560dd32e918147e86fef37caf3f8648d3986f92ad0283c8207e4a6ca2`
 
 Folder page layout: sticky breadcrumb header, separate latest-commit box, parent-directory (up-tree) row.
 
