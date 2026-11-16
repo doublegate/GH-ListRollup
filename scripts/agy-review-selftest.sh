@@ -418,6 +418,12 @@ check "text that merely mentions a record mid-review is kept" "a|Script done on 
   "$(printf 'a\nScript done on Tuesday\nb\n' | agy_strip_script_records | paste -sd'|')"
 check "the script fallback pipes its capture through the filter" "1" \
   "$(grep -c 'col -b < "\$raw" | agy_strip_script_records > "\$out_file"' "$SCRIPT_DIR/agy-review.sh")"
+# REGRESSION (agy review, GH-ListRollup PR #6): util-linux localizes the record prose, so a
+# non-English runner must still be handled through the untranslated key=value fields.
+ts_start_de='Skript gestartet am 2026-11-16 02:05:52-05:00 [COMMAND="x" <not executed on terminal>]'
+ts_done_de='Skript beendet am 2026-11-16 02:05:52-05:00 [COMMAND_EXIT_CODE="0"]'
+check "localized script records are stripped too" "## Review|body" \
+  "$(printf '%s\n## Review\nbody\n\n%s\n' "$ts_start_de" "$ts_done_de" | agy_strip_script_records | paste -sd'|')"
 
 # --- every mktemp'd variable is removed by the EXIT trap -------------------------
 # REGRESSION (agy review, GH-ListRollup PR #4): _perm_err, compare_err and trimmed were created
@@ -428,6 +434,17 @@ for v in $(grep -oE '[A-Za-z_][A-Za-z0-9_]*="\$\(mktemp' "$SCRIPT_DIR/agy-review
   printf '%s' "$cleanup_src" | grep -qF "\${$v:-}" || missing="$missing $v"
 done
 check "every mktemp'd variable is in the cleanup trap" "" "${missing# }"
+# REGRESSION (agy review, GH-ListRollup PR #6): listing a variable in cleanup() is not enough if
+# the trap is installed after the file is created -- agy_has_write_access ran (and created
+# _perm_err) before `trap cleanup EXIT`, and the pre-declarations then reset it. The trap and
+# every pre-declaration must precede the first mktemp anywhere in the script.
+trap_line="$(grep -n '^trap cleanup EXIT$' "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+first_mktemp="$(grep -nE '="\$\(mktemp' "$SCRIPT_DIR/agy-review.sh" | grep -vE '^[0-9]+:[[:space:]]*#' | head -1 | cut -d: -f1 || true)"
+decl_line="$(grep -n "^_perm_err='' " "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+check "the EXIT trap and pre-declarations precede the first mktemp" "yes" \
+  "$([ -n "$trap_line" ] && [ -n "$first_mktemp" ] && [ -n "$decl_line" ] \
+      && [ "$trap_line" -lt "$first_mktemp" ] && [ "$decl_line" -lt "$first_mktemp" ] \
+      && echo yes || echo "no (trap:${trap_line:-none} decl:${decl_line:-none} first mktemp:${first_mktemp:-none})")"
 
 # A failed jq step in the archive lookup must be logged, not swallowed.
 check "archive jq failures are logged" "no" \

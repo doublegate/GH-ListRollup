@@ -319,6 +319,78 @@ readonly SELECT_OURS_JQ
 
 REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY not set}"
 
+# The EXIT trap is installed HERE, before the first mktemp anywhere in the script (the first
+# is in agy_has_write_access, called from the event dispatch below). Installed later, an abort
+# during the permission lookup leaked its temp file, and the pre-declarations then reset
+# _perm_err so cleanup() could never see it (agy review, GH-ListRollup PR #6).
+# Remove every temp file on exit. Pre-declared so the trap is safe under `set -u` even if the
+# script exits before a given file is created.
+diff_file= diff_err= meta_file= prompt_file= out_file= raw= body_file= agy_diff_file= agy_work_dir= jq_err= prior_body_file= archived_file= api_err=
+# Also created mid-flight (permission lookup, compare-API merge base, archive trimming); a signal
+# or abort while one of those commands runs would otherwise leak the file in /tmp.
+_perm_err='' compare_err='' trimmed=''
+# Set to 1 if agy printed its interactive OAuth login flow instead of a review (lapsed session);
+# gates the no-post abort below. Pre-declared so `${auth_failed:-0}` is set-u-safe on every path.
+auth_failed=0
+# Counts backend-error captures across attempts; see `service_error_present`. Pre-declared so
+# `${service_errors:-0}` is set-u-safe even on paths that never enter the retry loop.
+service_errors=0
+# Set when the large-diff fallback below creates refs/agy/* so the trap can remove them.
+agy_refs_created=
+# Set by the AGY_DRY_RUN block so cleanup KEEPS the two artifacts dry-run exists to expose. The
+# whole point of dry run is "let me look at the assembled prompt", and the EXIT trap fires on the
+# `exit 0` at the end of that block -- so it deleted the prompt on the way out, every time.
+# Everything else is still removed; only these two are spared, and their paths are printed.
+keep_artifacts=
+cleanup() {
+  # Built as an argv ARRAY rather than as `rm -f ${v:+"$v"} ...`.
+  #
+  # The problem being solved is the EMPTY operand: `rm -f ""` is silent and exits 0 on GNU
+  # coreutils -- which is why an unconditional `rm -f "$unset_var"` never surfaced on the Linux
+  # runner -- but BSD/macOS `rm` writes "No such file or directory" to stderr for it.
+  #
+  # A note for the next reader, because this was raised in review and the intuition is wrong:
+  # `rm -f ${v:+"$v"}` does NOT word-split. Bash honors the quotes inside the `:+` alternate
+  # word, so a path with a space or a glob character survives as one operand. Verified:
+  #
+  #     v='a*b';    rm -f ${v:+"$v"}   ->   + rm -f 'a*b'      (siblings axxb, ayb untouched)
+  #     v='a file'; rm -f ${v:+"$v"}   ->   one operand        (siblings a, file untouched)
+  #
+  # The array is used anyway, for a reason the expansion form genuinely does not cover: it lets
+  # `--` terminate option parsing, so a temp path that begins with `-` is treated as a path
+  # rather than as flags. An array element is also one word by construction, which does not
+  # depend on knowing that `:+` quoting rule.
+  local keep_set="${keep_artifacts:-}"
+  local -a doomed=()
+  local f
+  # `${v:-}` on every name, even though all of them are pre-declared at the top of the script and
+  # cannot be unset here. Belt-and-braces on purpose: this is an EXIT trap, so if a future edit
+  # ever moves the trap above the pre-declarations, the failure would be an `unbound variable`
+  # abort DURING cleanup -- temp files left behind, and a confusing error masking the real exit
+  # cause. The pre-declaration stays and is still the actual guarantee; this is the cheap second
+  # line for a function that only ever runs while something else is going wrong.
+  for f in "${diff_file:-}" "${diff_err:-}" "${meta_file:-}" "${out_file:-}" "${raw:-}" "${body_file:-}" \
+           "${jq_err:-}" "${prior_body_file:-}" "${archived_file:-}" "${api_err:-}" \
+           "${_perm_err:-}" "${compare_err:-}" "${trimmed:-}"; do
+    [ -n "$f" ] && doomed+=("$f")
+  done
+  if [ -z "$keep_set" ]; then
+    for f in "${prompt_file:-}" "${agy_diff_file:-}"; do
+      [ -n "$f" ] && doomed+=("$f")
+    done
+  fi
+  [ ${#doomed[@]} -gt 0 ] && rm -f -- "${doomed[@]}"
+  # Remove the gitignored diff-handoff scratch dir once its file is gone. `rmdir` only unlinks an
+  # empty dir, so a concurrent run's file (a different $$) is never clobbered; a non-empty dir is
+  # gitignored and harmless if left behind.
+  [ -n "${agy_work_dir:-}" ] && [ -z "$keep_set" ] && rmdir "${agy_work_dir}" 2>/dev/null || true
+  if [ -n "${agy_refs_created:-}" ] && [ -n "${PR:-}" ]; then
+    git update-ref -d "refs/agy/pr-${PR}" 2>/dev/null || true
+    git update-ref -d "refs/agy/base-${PR}" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT
+
 # Does $1 actually hold write access to this repository?
 #
 # `author_association` is NOT a permission check, which is the trap this replaces. It is a
@@ -410,74 +482,6 @@ case "$PR" in
   ''|*[!0-9]*) log "invalid PR number '${PR}'; expected digits only"; exit 1 ;;
 esac
 log "reviewing ${REPO}#${PR}"
-
-# Remove every temp file on exit. Pre-declared so the trap is safe under `set -u` even if the
-# script exits before a given file is created.
-diff_file= diff_err= meta_file= prompt_file= out_file= raw= body_file= agy_diff_file= agy_work_dir= jq_err= prior_body_file= archived_file= api_err=
-# Also created mid-flight (permission lookup, compare-API merge base, archive trimming); a signal
-# or abort while one of those commands runs would otherwise leak the file in /tmp.
-_perm_err='' compare_err='' trimmed=''
-# Set to 1 if agy printed its interactive OAuth login flow instead of a review (lapsed session);
-# gates the no-post abort below. Pre-declared so `${auth_failed:-0}` is set-u-safe on every path.
-auth_failed=0
-# Counts backend-error captures across attempts; see `service_error_present`. Pre-declared so
-# `${service_errors:-0}` is set-u-safe even on paths that never enter the retry loop.
-service_errors=0
-# Set when the large-diff fallback below creates refs/agy/* so the trap can remove them.
-agy_refs_created=
-# Set by the AGY_DRY_RUN block so cleanup KEEPS the two artifacts dry-run exists to expose. The
-# whole point of dry run is "let me look at the assembled prompt", and the EXIT trap fires on the
-# `exit 0` at the end of that block -- so it deleted the prompt on the way out, every time.
-# Everything else is still removed; only these two are spared, and their paths are printed.
-keep_artifacts=
-cleanup() {
-  # Built as an argv ARRAY rather than as `rm -f ${v:+"$v"} ...`.
-  #
-  # The problem being solved is the EMPTY operand: `rm -f ""` is silent and exits 0 on GNU
-  # coreutils -- which is why an unconditional `rm -f "$unset_var"` never surfaced on the Linux
-  # runner -- but BSD/macOS `rm` writes "No such file or directory" to stderr for it.
-  #
-  # A note for the next reader, because this was raised in review and the intuition is wrong:
-  # `rm -f ${v:+"$v"}` does NOT word-split. Bash honors the quotes inside the `:+` alternate
-  # word, so a path with a space or a glob character survives as one operand. Verified:
-  #
-  #     v='a*b';    rm -f ${v:+"$v"}   ->   + rm -f 'a*b'      (siblings axxb, ayb untouched)
-  #     v='a file'; rm -f ${v:+"$v"}   ->   one operand        (siblings a, file untouched)
-  #
-  # The array is used anyway, for a reason the expansion form genuinely does not cover: it lets
-  # `--` terminate option parsing, so a temp path that begins with `-` is treated as a path
-  # rather than as flags. An array element is also one word by construction, which does not
-  # depend on knowing that `:+` quoting rule.
-  local keep_set="${keep_artifacts:-}"
-  local -a doomed=()
-  local f
-  # `${v:-}` on every name, even though all of them are pre-declared at the top of the script and
-  # cannot be unset here. Belt-and-braces on purpose: this is an EXIT trap, so if a future edit
-  # ever moves the trap above the pre-declarations, the failure would be an `unbound variable`
-  # abort DURING cleanup -- temp files left behind, and a confusing error masking the real exit
-  # cause. The pre-declaration stays and is still the actual guarantee; this is the cheap second
-  # line for a function that only ever runs while something else is going wrong.
-  for f in "${diff_file:-}" "${diff_err:-}" "${meta_file:-}" "${out_file:-}" "${raw:-}" "${body_file:-}" \
-           "${jq_err:-}" "${prior_body_file:-}" "${archived_file:-}" "${api_err:-}" \
-           "${_perm_err:-}" "${compare_err:-}" "${trimmed:-}"; do
-    [ -n "$f" ] && doomed+=("$f")
-  done
-  if [ -z "$keep_set" ]; then
-    for f in "${prompt_file:-}" "${agy_diff_file:-}"; do
-      [ -n "$f" ] && doomed+=("$f")
-    done
-  fi
-  [ ${#doomed[@]} -gt 0 ] && rm -f -- "${doomed[@]}"
-  # Remove the gitignored diff-handoff scratch dir once its file is gone. `rmdir` only unlinks an
-  # empty dir, so a concurrent run's file (a different $$) is never clobbered; a non-empty dir is
-  # gitignored and harmless if left behind.
-  [ -n "${agy_work_dir:-}" ] && [ -z "$keep_set" ] && rmdir "${agy_work_dir}" 2>/dev/null || true
-  if [ -n "${agy_refs_created:-}" ] && [ -n "${PR:-}" ]; then
-    git update-ref -d "refs/agy/pr-${PR}" 2>/dev/null || true
-    git update-ref -d "refs/agy/base-${PR}" 2>/dev/null || true
-  fi
-}
-trap cleanup EXIT
 
 # --- fetch metadata first, because the fork gate + the large-diff fallback depend on it ---
 # FAIL-CLOSED. A `{}` fallback was harmless when the only field read was the title,
@@ -760,14 +764,20 @@ agy_scrub_utf8() {
 # metadata or a failure as a review. Only those two framing records are removed: the first line
 # if it is a start record, and the last non-blank line if it is a done record. A review that
 # merely mentions such text elsewhere is left intact.
+#
+# Locale-independent (agy review, GH-ListRollup PR #6): util-linux translates the "Script started
+# on" / "Script done on" prose through gettext, but NOT the key=value fields it appends, so a
+# record is recognized by `[COMMAND="` (start; we always run `script -c`) or a trailing
+# `[COMMAND_EXIT_CODE="N"]` (done) as well as by the English prefix. Forcing LC_ALL=C on script
+# was rejected: it would also change agy's own locale, and with it its UTF-8 handling.
 agy_strip_script_records() {
   awk '
-    NR == 1 && /^Script started on / { next }
+    NR == 1 && (/^Script started on / || /\[COMMAND="/) { next }
     { lines[++n] = $0 }
     END {
       last = n
       while (last > 0 && lines[last] ~ /^[[:space:]]*$/) last--
-      if (last > 0 && lines[last] ~ /^Script done on /) {
+      if (last > 0 && (lines[last] ~ /^Script done on / || lines[last] ~ /\[COMMAND_EXIT_CODE="[0-9]+"\][[:space:]]*$/)) {
         last--
         while (last > 0 && lines[last] ~ /^[[:space:]]*$/) last--
       } else {
