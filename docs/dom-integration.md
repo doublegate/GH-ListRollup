@@ -30,20 +30,23 @@ GitHub deploy degrades the extension to doing nothing, never to a broken page.
    log once (under `debug.logging`) and leave the page alone. Leaving it alone includes removing
    `data-gnr-pending` at once (§4), so the listing is never left hidden.
 
-## 2. Selector table (initial, from 2026-11-15 observations)
+## 2. Selector table (observed 2026-11-15, verified against the fixtures 2026-11-16)
 
-| Purpose                            | Primary                                                                                          | Fallbacks                                                                                                                                        |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Code-view page gate                | `react-app[app-name="code-view"]`                                                                | URL shape (`/<o>/<r>` or `/<o>/<r>/tree/...`) and `meta[name="route-controller"][content="files"]`                                               |
-| Listing container                  | `[data-testid="directory-content"]`                                                              | `table[aria-labelledby="folders-and-files"]`                                                                                                     |
-| Listing rows                       | `[data-testid="directory-content"] tbody > tr.react-directory-row`                               | `tr[id^="folder-row-"]` except the parent row                                                                                                    |
-| Parent-directory row (skip)        | `a[data-testid="up-tree"]`                                                                       | `tr:not(.react-directory-row)` in `tbody`                                                                                                        |
-| Folder vs file                     | the row link's `aria-label` ends with `, (Directory)`                                            | only when the link has no `aria-label` suffix at all: `svg.octicon-file-directory-fill` **and** a link under this repo's `/<o>/<r>/tree/` (§2.2) |
-| Breadcrumb path (folder layout)    | `[data-testid="breadcrumbs"]`, its `breadcrumbs-repo-link` and `breadcrumbs-filename` entries    | --; on a miss the ref stays unresolved (§3)                                                                                                      |
-| Name cells (there are two per row) | `td.react-directory-row-name-cell-small-screen`, `td.react-directory-row-name-cell-large-screen` | `.react-directory-filename-column`                                                                                                               |
-| Name link                          | `.react-directory-filename-cell a`                                                               | `.react-directory-truncate a`                                                                                                                    |
-| Header line (latest-commit bar)    | `[data-testid="latest-commit-details"]`, then its nearest bordered box ancestor                  | sr-only `h2` with text "Latest commit"                                                                                                           |
-| "View all files" row               | `tr[data-testid="view-all-files-row"]`                                                           | --                                                                                                                                               |
+Implemented in `src/github/selectors.ts` (T-GNR-101), which the table must match exactly. "Rows",
+"parent row", "name link" and "name cells" are queried inside the listing container or a row.
+
+| Purpose                            | Primary                                                                                                                                         | Fallbacks                                                                                                                                                  |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Code-view page gate                | `react-app[app-name="code-view"]`                                                                                                               | `meta[name="route-controller"][content="files"]`, counted only with a listing-shaped URL (`/<o>/<r>` or `/<o>/<r>/tree/...`)                               |
+| Listing container                  | `[data-testid="directory-content"]`                                                                                                             | `table[aria-labelledby="folders-and-files"]`                                                                                                               |
+| Listing rows                       | `tbody > tr.react-directory-row`                                                                                                                | `tr[id^="folder-row-"]`, minus the parent row (excluded in code)                                                                                           |
+| Parent-directory row (skip)        | `a[data-testid="up-tree"]`                                                                                                                      | `tbody > tr:first-child:not(.react-directory-row):not([data-testid])` (a bare `tr:not(.react-directory-row)` also matches the root's "View all files" row) |
+| Folder vs file                     | the row link's `aria-label` ends with `, (Directory)`                                                                                           | only when the link has no `aria-label` suffix at all: `svg.octicon-file-directory-fill` **and** a link under this repo's `/<o>/<r>/tree/` (§2.2)           |
+| Breadcrumb path (folder layout)    | `[data-testid="breadcrumbs"]`: `ol > li > a` links (the first is `breadcrumbs-repo-link`), then `[data-testid="breadcrumbs-filename"] h1`       | --; on a miss `path` and `ref` stay `null` (§3)                                                                                                            |
+| Name cells (there are two per row) | `td.react-directory-row-name-cell-small-screen`, `td.react-directory-row-name-cell-large-screen`                                                | `.react-directory-filename-column`                                                                                                                         |
+| Name link                          | `.react-directory-filename-cell a`                                                                                                              | `.react-directory-truncate a`                                                                                                                              |
+| Header line (latest-commit bar)    | `[data-testid="latest-commit-details"]`; the inner row is the child of its nearest `.border` ancestor (Primer's utility class) that contains it | `h2[data-testid="screen-reader-heading"]`, then `h2.sr-only`, with the text "Latest commit"; its parent is the same inner row                              |
+| "View all files" row               | `tr[data-testid="view-all-files-row"]`                                                                                                          | --                                                                                                                                                         |
 
 ### 2.1 The header line
 
@@ -105,7 +108,7 @@ interface ListingPage {
   owner: string;
   repo: string;
   ref: string | null; // from a row href by subtraction, NOT url.split('/'); null if unresolved
-  path: string; // '' for the root
+  path: string | null; // '' for the root; null when the folder breadcrumb cannot be read
   layout: 'root' | 'folder';
 }
 ```
@@ -238,9 +241,11 @@ state in memory, keyed by path, and re-inserts expanded subtrees on the next app
 
 ## 6. Breakage detection
 
-- `src/github/selectors.ts` exports `probe()`, which reports which rank of each selector matched. With
-  `debug.logging` on, the content script logs `[gnr] probe: listing=primary rows=fallback1 ...` once
-  per page.
+- `src/github/probe.ts` exports `probe()`, which reports which rank of each selector matched (it uses
+  the same header-line lookup as the controller, `src/github/header.ts`). With
+  `debug.logging` on, the content script logs `[gnr] probe: codeView=primary listing=primary ...` once
+  per page. Until that setting exists (T-GNR-301), the line is logged at `console.debug` level, which
+  DevTools hides by default.
 - The fixture test suite (`docs/testing-strategy.md` §3) runs `probe()` against saved pages. A weekly
   scheduled CI job runs it against live public pages and opens an issue when a primary selector stops
   matching.

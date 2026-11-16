@@ -13,18 +13,20 @@ is implemented yet. **Phase 0 is complete:**
   every tree-JSON case (Sprint 2).
 - Signed-in markup turned out identical for every selector the extension uses.
 
-Next is Phase 1 Sprint 1: the selectors module and page model.
+Phase 1 Sprint 1 is complete: the selectors module, the selector probe, the DOM-backed page model
+and the header-line locator, verified against 13 HTML fixtures. Next is Phase 1 Sprint 2, the
+collapse controller.
 
 ## Phases
 
-| Phase                     | Status                                   |
-| ------------------------- | ---------------------------------------- |
-| 0 Foundation              | Complete (2026-11-16)                    |
-| 1 Listing collapse        | Next: Sprint 1, selectors and page model |
-| 2 Inline tree             | Planned                                  |
-| 3 Settings and resilience | Planned (stub-level tickets)             |
-| 4 Testing and hardening   | Planned (stub-level tickets)             |
-| 5 Release                 | Planned (stub-level tickets)             |
+| Phase                     | Status                            |
+| ------------------------- | --------------------------------- |
+| 0 Foundation              | Complete (2026-11-16)             |
+| 1 Listing collapse        | Sprint 1 complete; next: Sprint 2 |
+| 2 Inline tree             | Planned                           |
+| 3 Settings and resilience | Planned (stub-level tickets)      |
+| 4 Testing and hardening   | Planned (stub-level tickets)      |
+| 5 Release                 | Planned (stub-level tickets)      |
 
 ## Features
 
@@ -57,7 +59,7 @@ Next is Phase 1 Sprint 1: the selectors module and page model.
 
 ## Next steps
 
-1. Phase 1 Sprint 1: selectors module, `probe()`, DOM-backed page model and header-line locator
-   (T-GNR-101 to T-GNR-104).
+1. Phase 1 Sprint 2: collapse controller, toggle, pre-hide and watchdog, soft-navigation lifecycle
+   (T-GNR-105 onward).
 2. Later, during T-GNR-106: instrument which event triggers detection in Firefox (`navigate` vs
    WXT's polling fallback). Detection itself already works there.

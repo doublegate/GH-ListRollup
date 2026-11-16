@@ -28,6 +28,12 @@ All notable user-visible changes to this project are documented here. The format
     pages and tree JSON, detect drift, and compare selector matches.
   - Four HTML fixtures (root and folder layouts, signed in and out) and eight tree-JSON fixtures.
   - A Vitest fixture loader (`tests/helpers/fixture.ts`).
+- GitHub page reading (Phase 1 Sprint 1), no visible change yet:
+  - a single selectors module with ranked fallbacks (`src/github/selectors.ts`);
+  - a page model that resolves the ref, including refs with `/`, tags and commit SHAs, without
+    splitting the URL;
+  - the locator for the header line the collapsed listing keeps;
+  - a selector probe, logged at debug level on listing pages.
   - Fixtures are minimized to factual structure: no site chrome, READMEs or other rendered
     markdown, or icon artwork.
   - `pnpm test` checks every fixture against its sidecar SHA-256 and the current sanitizer, and

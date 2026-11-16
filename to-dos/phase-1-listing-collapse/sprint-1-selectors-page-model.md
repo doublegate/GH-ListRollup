@@ -14,9 +14,10 @@ strings; add a lint rule or a test that greps for `querySelector` outside this m
 
 **Acceptance criteria:**
 
-- [ ] Every row of the §2 table is implemented.
-- [ ] Unit tests pass on the `root`, `folder`, and logged-in fixtures.
-- [ ] A test fails if `querySelector(` appears in `src/` outside `selectors.ts`.
+- [x] Every row of the §2 table is implemented.
+- [x] Unit tests pass on the `root`, `folder`, and logged-in fixtures.
+- [x] A test fails if `querySelector(` appears in `src/` outside `selectors.ts`. It also fails on a
+      string passed to `.closest(` or `.matches(` (verified by a probe file).
 
 **Dependencies:** T-GNR-014 | **Reference:** `docs/dom-integration.md` §1-§2 | **Complexity:** M
 
@@ -29,9 +30,10 @@ strings; add a lint rule or a test that greps for `querySelector` outside this m
 
 **Acceptance criteria:**
 
-- [ ] All `primary` on fresh fixtures.
-- [ ] `root-stripped.html` reports fallbacks.
-- [ ] Output is serializable, for reuse by the live probe in T-GNR-403.
+- [x] All `primary` on fresh fixtures.
+- [x] A root page with its primary hooks stripped reports fallbacks. The stripped page is derived
+      inside the test from `root.html` rather than saved as an edited fixture.
+- [x] Output is serializable, for reuse by the live probe in T-GNR-403.
 
 **Dependencies:** T-GNR-101 | **Reference:** `docs/dom-integration.md` §6 | **Complexity:** S
 
@@ -47,13 +49,15 @@ name, and is cross-checked against `location.pathname`. It is `null` when any st
 
 **Acceptance criteria:**
 
-- [ ] Correct ref for `main`, a tag, and the slash ref `branch/with/slashes`.
-- [ ] Correct ref for a commit SHA URL.
-- [ ] Returns `null` when the code-view gate fails.
-- [ ] Empty-repo fixture: returns a page with `ref` unresolved, without throwing.
-- [ ] A submodule row is never the reference row: a test with a submodule as the first row still
+- [x] Correct ref for `main`, a tag, and the slash ref `branch/with/slashes`.
+- [x] Correct ref for a commit SHA URL.
+- [x] Returns `null` when the code-view gate fails.
+- [x] Empty-repo fixture: returns a page with `ref` unresolved, without throwing. The empty
+      repository has no code-view app; the gate passes through its fallback
+      (`ref-docs/research-update-2026-11-16-phase1-fixtures.md` §4).
+- [x] A submodule row is never the reference row: a test with a submodule as the first row still
       resolves the ref from a later row.
-- [ ] Rows left from a different page (`location.pathname` does not match) give `ref: null`.
+- [x] Rows left from a different page (`location.pathname` does not match) give `ref: null`.
 
 **Dependencies:** T-GNR-101 | **Reference:** `docs/dom-integration.md` §3 | **Complexity:** M
 
@@ -66,8 +70,9 @@ the root page, and a separate box on folder pages. Return the insertion point fo
 
 **Acceptance criteria:**
 
-- [ ] Returns the insertion point on root and folder fixtures, logged in and out.
-- [ ] Returns `null` (and `probe` reports `none`) on a fixture with the commit bar removed.
+- [x] Returns the insertion point on root and folder fixtures, logged in and out.
+- [x] Returns `null` (and `probe` reports `none`) on a fixture with the commit bar removed (removed
+      inside the test).
 
 **Dependencies:** T-GNR-101 | **Reference:** `docs/dom-integration.md` §2.1 | **Complexity:** S
 
@@ -75,5 +80,20 @@ the root page, and a separate box on folder pages. Return the insertion point fo
 
 ## Sprint review checklist
 
-- [ ] `docs/dom-integration.md` §2 matches the implemented selectors exactly.
-- [ ] Coverage of `src/github/` is at least 80% lines.
+- [x] `docs/dom-integration.md` §2 matches the implemented selectors exactly.
+- [x] Coverage of `src/github/` is at least 80% lines (94.9% at completion, 2026-11-16).
+
+## Completion notes (2026-11-16)
+
+- Modules: `src/github/selectors.ts` (ranked selectors plus `query`, `queryAll`, `closest`,
+  `matches`), `rows.ts` (row classification), `breadcrumb.ts`, `page.ts` (`readListingPage`),
+  `header.ts` (`findHeaderLine`) and `probe.ts` (`probe`, `formatProbe`). `probe()` moved out of
+  `selectors.ts` so that it can reuse the header-line lookup without an import cycle;
+  `docs/dom-integration.md` §6 says so.
+- Five logged-out fixtures were added for the ref and path cases. What they showed is recorded in
+  `ref-docs/research-update-2026-11-16-phase1-fixtures.md`. Two spec rows changed as a result: the
+  parent-row fallback (the original one also matched the root's "View all files" row) and the
+  header line (box found through Primer's `.border`).
+- `ListingPage.path` is `string | null`: `null` when a folder page's breadcrumb cannot be read.
+- The content script logs the page model and the probe at `console.debug` level on listing pages.
+  Nothing on the page changes yet.
