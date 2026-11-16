@@ -124,7 +124,7 @@ function refInfoOf(kind: Kind, content: string): string {
   if (kind === 'html') {
     json = /data-target="react-app\.embeddedData">(.*?)<\/script>/s.exec(content)?.[1];
   }
-  let ref: { name: string; currentOid: string } | null = null;
+  let ref: { name: string; currentOid: string } | null;
   try {
     ref = json === undefined ? null : findRefInfo(JSON.parse(json));
   } catch {
