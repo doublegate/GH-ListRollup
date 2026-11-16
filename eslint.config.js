@@ -21,8 +21,6 @@ export default tseslint.config(
       'node_modules/',
       // Local raw research captures (gitignored), including GitHub's own JS bundles.
       'ref-docs/raw/',
-      // Standalone Playwright scripts run outside the project's dependencies (see their README).
-      'tests/e2e/manual/',
     ],
   },
   js.configs.recommended,
@@ -48,5 +46,17 @@ export default tseslint.config(
   {
     files: ['eslint.config.js'],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    // Standalone Playwright scripts, run outside the project's dependencies (see their README):
+    // basic and security rules apply, type-aware rules cannot (agy review, #2).
+    files: ['tests/e2e/manual/**/*.mjs'],
+    ...tseslint.configs.disableTypeChecked,
+    languageOptions: {
+      ...tseslint.configs.disableTypeChecked.languageOptions,
+      parserOptions: { projectService: false, program: null, project: false },
+      globals: { ...globals.node, ...globals.browser, chrome: 'readonly' },
+    },
+    rules: { ...tseslint.configs.disableTypeChecked.rules, 'no-console': 'off' },
   },
 );

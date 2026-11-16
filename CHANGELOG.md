@@ -30,6 +30,8 @@ All notable user-visible changes to this project are documented here. The format
   - A Vitest fixture loader (`tests/helpers/fixture.ts`).
   - Fixtures are minimized to factual structure: no site chrome, READMEs or other rendered
     markdown, or icon artwork.
+  - `pnpm test` checks every fixture against its sidecar SHA-256 and the current sanitizer, and
+    the signed-in capture path requires every identifier of the account being replaced.
 
 ### Security
 

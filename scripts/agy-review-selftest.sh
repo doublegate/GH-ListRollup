@@ -438,13 +438,19 @@ check "every mktemp'd variable is in the cleanup trap" "" "${missing# }"
 # the trap is installed after the file is created -- agy_has_write_access ran (and created
 # _perm_err) before `trap cleanup EXIT`, and the pre-declarations then reset it. The trap and
 # every pre-declaration must precede the first mktemp anywhere in the script.
-trap_line="$(grep -n '^trap cleanup EXIT$' "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+# `tail -1`, not `head -1` (agy review, GH-ListRollup PR #6): a duplicate pre-declaration block
+# left lower in the script by a merge would reset _perm_err again, and head -1 would not see it.
+trap_line="$(grep -n '^trap cleanup EXIT$' "$SCRIPT_DIR/agy-review.sh" | tail -1 | cut -d: -f1 || true)"
 first_mktemp="$(grep -nE '="\$\(mktemp' "$SCRIPT_DIR/agy-review.sh" | grep -vE '^[0-9]+:[[:space:]]*#' | head -1 | cut -d: -f1 || true)"
-decl_line="$(grep -n "^_perm_err='' " "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+decl_line="$(grep -n "^_perm_err='' " "$SCRIPT_DIR/agy-review.sh" | tail -1 | cut -d: -f1 || true)"
+diff_decl_line="$(grep -n '^diff_file= ' "$SCRIPT_DIR/agy-review.sh" | tail -1 | cut -d: -f1 || true)"
 check "the EXIT trap and pre-declarations precede the first mktemp" "yes" \
-  "$([ -n "$trap_line" ] && [ -n "$first_mktemp" ] && [ -n "$decl_line" ] \
+  "$([ -n "$trap_line" ] && [ -n "$first_mktemp" ] && [ -n "$decl_line" ] && [ -n "$diff_decl_line" ] \
       && [ "$trap_line" -lt "$first_mktemp" ] && [ "$decl_line" -lt "$first_mktemp" ] \
-      && echo yes || echo "no (trap:${trap_line:-none} decl:${decl_line:-none} first mktemp:${first_mktemp:-none})")"
+      && [ "$diff_decl_line" -lt "$first_mktemp" ] \
+      && echo yes || echo "no (trap:${trap_line:-none} decl:${decl_line:-none}/${diff_decl_line:-none} first mktemp:${first_mktemp:-none})")"
+check "the trap and each pre-declaration block appear exactly once" "1 1 1" \
+  "$(grep -c '^trap cleanup EXIT$' "$SCRIPT_DIR/agy-review.sh") $(grep -c "^_perm_err='' " "$SCRIPT_DIR/agy-review.sh") $(grep -c '^diff_file= ' "$SCRIPT_DIR/agy-review.sh")"
 
 # A failed jq step in the archive lookup must be logged, not swallowed.
 check "archive jq failures are logged" "no" \
@@ -458,8 +464,10 @@ check "archive jq failures are logged" "no" \
 for v in MAX_DIFF_BYTES MAX_PROMPT_BYTES MAX_BODY_BYTES; do
   # `|| true`: under pipefail a missing line must report as a FAIL below, not abort the selftest.
   norm_line="$(grep -n "^normalize_numeric_env $v " "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
-  # Code lines only: the explanatory comments quote the arithmetic they guard against.
-  use_line="$(grep -nE "\\\$\\(\\( *$v|agy_cut_file \"\\\$diff_file\" \"\\\$$v\"|\\(\\( *$v" "$SCRIPT_DIR/agy-review.sh" \
+  # Code lines only: the explanatory comments quote the arithmetic they guard against. Matches the
+  # variable ANYWHERE inside an arithmetic expansion, or as any argument to an agy_cut_*/agy_cap_*
+  # helper -- not only as the first operand (agy review, GH-ListRollup PR #6).
+  use_line="$(grep -nE "\\(\\([^)]*\\b$v\\b|agy_c(ut|ap)_[a-z_]+ .*\\\$\\{?$v\\b" "$SCRIPT_DIR/agy-review.sh" \
                 | grep -vE '^[0-9]+:[[:space:]]*#' | head -1 | cut -d: -f1 || true)"
   check "$v is normalized before its first arithmetic use" "yes" \
     "$([ -n "$norm_line" ] && [ -n "$use_line" ] && [ "$norm_line" -lt "$use_line" ] && echo yes || echo "no (normalize:${norm_line:-none} use:${use_line:-none})")"
@@ -470,8 +478,15 @@ check "normalize_numeric_env turns a leading-zero 080000 into 80000" "80000" "$_
 # --- an archive emptied by trimming renders no empty <details> -------------------
 # REGRESSION (agy review, GH-ListRollup PR #4): when every archived round was dropped, the
 # "Earlier review rounds" <details> wrapper was still emitted around nothing.
+# Whitespace-tolerant (agy review, GH-ListRollup PR #6): not coupled to the exact indentation.
 check "the archive <details> wrapper is guarded on a non-empty archive" "2" \
-  "$(grep -c '^    if \[ -s "\$archived_file" \]; then$' "$SCRIPT_DIR/agy-review.sh")"
+  "$(grep -cE '^[[:space:]]*if \[ -s "\$archived_file" \]; then[[:space:]]*$' "$SCRIPT_DIR/agy-review.sh")"
+# A non-numeric AGY_ERROR_MAX_BYTES silently disabled the backend-error guard (same PR).
+check "AGY_ERROR_MAX_BYTES is normalized" "1" \
+  "$(grep -c '^normalize_numeric_env AGY_ERROR_MAX_BYTES ' "$SCRIPT_DIR/agy-review.sh")"
+# ...and 0 is refused too, which would equally disable the guard (agy review, GH-ListRollup PR #7).
+check "AGY_ERROR_MAX_BYTES=0 falls back to the default" "1" \
+  "$(grep -c '^\[ "\$AGY_ERROR_MAX_BYTES" -gt 0 \] ||' "$SCRIPT_DIR/agy-review.sh")"
 
 check "a lowercase error (agy under unbuffer) is caught" "MATCH" \
   "$(se 'error: Eligibility check failed: PERMISSION_DENIED (code 403): Request had insufficient authentication scopes.. Please log out (/logout) and log back in (/login).')"

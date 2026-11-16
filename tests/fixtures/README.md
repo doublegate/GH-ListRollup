@@ -53,8 +53,8 @@ them:
    ```
 
    `gh api user --jq '{login,id,node_id}'` gives the first three.
-   `--login` and `--user-id` are required: without the numeric id, the page's `currentUser.id`
-   would be neither replaced nor checked.
+   All four are required and must be non-empty: an identifier left out would be neither
+   replaced nor checked for.
 
 3. The command fails if any identifier survives, either in plain text or inside base64-encoded
    data. Even when it passes, review the result by hand before committing:

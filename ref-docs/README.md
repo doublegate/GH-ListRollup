@@ -22,3 +22,6 @@ Raw captures from the research live in `raw/`, which is gitignored and kept only
 machine (see `raw/README.md`): GitHub pages and headers, tree JSON responses, GitHub's JS bundles and
 MDN compatibility data. Sanitized HTML fixtures for tests are created separately in Phase 0
 Sprint 2, with user data stripped (`docs/testing-strategy.md` §3).
+
+This index is maintained as `ref-docs/` grows. The immutability rule (`CLAUDE.md`) applies to the
+research files it lists: corrections to them go in dated `research-update-*.md` supplements.
