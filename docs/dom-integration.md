@@ -27,21 +27,23 @@ GitHub deploy degrades the extension to doing nothing, never to a broken page.
 4. **Idempotent apply.** `apply()` can run any number of times on any page state. Each run checks for
    its own marker and does only the missing work.
 5. **Confidence gate.** If the primary and all fallback selectors for the listing or its header fail,
-   log once (under `debug.logging`) and leave the page alone.
+   log once (under `debug.logging`) and leave the page alone. Leaving it alone includes removing
+   `data-gnr-pending` at once (§4), so the listing is never left hidden.
 
 ## 2. Selector table (initial, from 2026-11-15 observations)
 
-| Purpose                            | Primary                                                                                          | Fallbacks                                                                                          |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Code-view page gate                | `react-app[app-name="code-view"]`                                                                | URL shape (`/<o>/<r>` or `/<o>/<r>/tree/...`) and `meta[name="route-controller"][content="files"]` |
-| Listing container                  | `[data-testid="directory-content"]`                                                              | `table[aria-labelledby="folders-and-files"]`                                                       |
-| Listing rows                       | `[data-testid="directory-content"] tbody > tr.react-directory-row`                               | `tr[id^="folder-row-"]` except the parent row                                                      |
-| Parent-directory row (skip)        | `a[data-testid="up-tree"]`                                                                       | `tr:not(.react-directory-row)` in `tbody`                                                          |
-| Folder vs file                     | the row link's `aria-label` ends with `, (Directory)`                                            | `svg.octicon-file-directory-fill`; `a[href*="/tree/"]`                                             |
-| Name cells (there are two per row) | `td.react-directory-row-name-cell-small-screen`, `td.react-directory-row-name-cell-large-screen` | `.react-directory-filename-column`                                                                 |
-| Name link                          | `.react-directory-filename-cell a`                                                               | `.react-directory-truncate a`                                                                      |
-| Header line (latest-commit bar)    | `[data-testid="latest-commit-details"]`, then its nearest bordered box ancestor                  | sr-only `h2` with text "Latest commit"                                                             |
-| "View all files" row               | `tr[data-testid="view-all-files-row"]`                                                           | --                                                                                                 |
+| Purpose                            | Primary                                                                                          | Fallbacks                                                                                                                                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Code-view page gate                | `react-app[app-name="code-view"]`                                                                | URL shape (`/<o>/<r>` or `/<o>/<r>/tree/...`) and `meta[name="route-controller"][content="files"]`                                               |
+| Listing container                  | `[data-testid="directory-content"]`                                                              | `table[aria-labelledby="folders-and-files"]`                                                                                                     |
+| Listing rows                       | `[data-testid="directory-content"] tbody > tr.react-directory-row`                               | `tr[id^="folder-row-"]` except the parent row                                                                                                    |
+| Parent-directory row (skip)        | `a[data-testid="up-tree"]`                                                                       | `tr:not(.react-directory-row)` in `tbody`                                                                                                        |
+| Folder vs file                     | the row link's `aria-label` ends with `, (Directory)`                                            | only when the link has no `aria-label` suffix at all: `svg.octicon-file-directory-fill` **and** a link under this repo's `/<o>/<r>/tree/` (§2.2) |
+| Breadcrumb path (folder layout)    | `[data-testid="breadcrumbs"]`, its `breadcrumbs-repo-link` and `breadcrumbs-filename` entries    | --; on a miss the ref stays unresolved (§3)                                                                                                      |
+| Name cells (there are two per row) | `td.react-directory-row-name-cell-small-screen`, `td.react-directory-row-name-cell-large-screen` | `.react-directory-filename-column`                                                                                                               |
+| Name link                          | `.react-directory-filename-cell a`                                                               | `.react-directory-truncate a`                                                                                                                    |
+| Header line (latest-commit bar)    | `[data-testid="latest-commit-details"]`, then its nearest bordered box ancestor                  | sr-only `h2` with text "Latest commit"                                                                                                           |
+| "View all files" row               | `tr[data-testid="view-all-files-row"]`                                                           | --                                                                                                                                               |
 
 ### 2.1 The header line
 
@@ -74,8 +76,15 @@ arrow and "N items". See `docs/settings.md`.
   Expanding it expands the deepest folder, which is the row link's `href`.
 - Submodule rows (link to another repository) and symlink rows (`aria-label` ends `(Symlink to file)`)
   get no arrow. Observed link suffixes are `(Directory)`, `(File)`, `(Submodule)` and
-  `(Symlink to file)`. **Only `(Directory)` gets an arrow**, so a suffix GitHub adds later is
-  safely ignored.
+  `(Symlink to file)`. **Only `(Directory)` gets an arrow**, so a suffix GitHub adds later, such as
+  the not yet observed suffix of a directory symlink, is safely ignored. The primary check is what
+  excludes submodules and symlinks.
+- **The folder fallback is fail-safe.** It applies only to a row link with no `aria-label` suffix,
+  and it needs both the directory icon and an `href` that starts with this repository's
+  `/<o>/<r>/tree/`. The prefix is compared in code from the page's owner and repo, not written as a
+  selector. A bare `a[href*="/tree/"]` is not enough: submodule links point at another repository's
+  `/tree/`, and a directory symlink may link under this one. Any row the fallback cannot classify
+  with certainty is treated as non-expandable.
 - **The server renders at most 100 rows.** The embedded JSON carries every entry; on larger folders
   React presumably adds the rest after hydration. `apply()` must decorate rows that appear after
   the first pass (§4, step 5).
@@ -95,16 +104,35 @@ arrow and "N items". See `docs/settings.md`.
 interface ListingPage {
   owner: string;
   repo: string;
-  ref: string; // from the row hrefs or the tree JSON refInfo, NOT url.split('/')
+  ref: string | null; // from a row href by subtraction, NOT url.split('/'); null if unresolved
   path: string; // '' for the root
   layout: 'root' | 'folder';
 }
 ```
 
-Refs may contain `/` (`feature/x`). The reliable source is the first folder or file row's `href`:
-`/<o>/<r>/tree/<ref>/<path>/<name>`. The known `<name>` and the current `<path>` from the breadcrumb
-give `<ref>` by subtraction. When a listing has no rows, ref resolution waits for the first fetch, which
-returns `refInfo.name` (`ref-docs/github-data-sources.md` §2).
+Refs may contain `/` (`feature/x`), so the ref is never cut out of the URL. It is resolved like this:
+
+1. **Path.** On the root layout (no `up-tree` row) the path is `''`. On the folder layout it is the
+   breadcrumb's segments after `breadcrumbs-repo-link`, ending with `breadcrumbs-filename`, joined
+   with `/` (§2).
+2. **Reference row.** The first listing row whose link `aria-label` ends `(Directory)` or `(File)`,
+   that is not a simplified chain, and whose `href` starts with this repository's `/<o>/<r>/tree/`
+   or `/<o>/<r>/blob/`. Submodule rows, which link to another repository, and symlink rows are
+   skipped.
+3. **Subtraction.** The row's decoded `href` is `/<o>/<r>/(tree|blob)/<ref>/<path>/<name>` (with no
+   `<path>/` at the root). Removing the known prefix, `<path>` and the link's `<name>` from the two
+   ends leaves `<ref>`, which must be non-empty.
+4. **Cross-check.** The decoded `location.pathname` must equal `/<o>/<r>/tree/<ref>/<path>`, or on
+   the root `/<o>/<r>` or `/<o>/<r>/tree/<ref>`. This is a whole-string comparison, not a split, and
+   it catches rows left over from the previous page after a soft navigation.
+
+If any step fails, `ref` is `null`. Level 1 does not need the ref, so the collapse still works. Level
+2 adds no folder arrows on that page and logs the reason under `debug.logging`. An empty listing has
+no rows to expand, so its ref is never needed.
+
+The embedded `react-app.embeddedData` JSON also carries `refInfo.name` and `path`, but it reflects the
+initial document only and goes stale after a soft navigation, so it is not used
+(`ref-docs/github-data-sources.md` §1, `ref-docs/research-report.md` §3).
 
 ## 4. Lifecycle and soft navigation
 
@@ -114,14 +142,37 @@ scripts run only on full loads.
 
 1. The content script matches all of `https://github.com/*`, so it is present whatever page the user
    enters on.
-2. **`document_start`.** The script adds `data-gnr-pending` to `<html>` and starts a 4-second
-   watchdog. The manifest CSS hides listing rows only under `html[data-gnr-pending]` or a collapsed
-   container. This prevents a flash of the full listing before the toggle exists.
+2. **`document_start`.** If the URL has a listing shape (`/<o>/<r>` or `/<o>/<r>/tree/...`), the
+   script adds `data-gnr-pending` to `<html>` and starts a 4-second watchdog. It also starts reading
+   the Level 1 settings (Phase 3, `docs/settings.md`). The manifest CSS hides listing rows only under
+   `html[data-gnr-pending]` or a collapsed container. This prevents a flash of the full listing before
+   the toggle exists.
+
+   **The pre-hide is the one exception to "never hide the listing without a toggle".** It is bounded:
+   `data-gnr-pending` is removed by whichever comes first of
+   - a successful first apply, after the toggle is inserted
+   - any `apply()` exit that does not install the toggle (below)
+   - the watchdog, after 4 seconds. If it fires, the page shows GitHub's normal listing; this is the
+     failure rule in `docs/ui-behavior.md` §2.3.
+
 3. **First apply.** When the listing appears (detected by a MutationObserver on `document`, which is
-   disconnected after the first match), the script runs `apply()`. `apply()` inserts the toggle, sets
-   the container's collapsed class, then removes `data-gnr-pending`. If the watchdog fires first, it
-   removes `data-gnr-pending` and the page shows GitHub's normal listing. This is the failure rule in
-   `docs/ui-behavior.md` §2.3.
+   disconnected after the first match), the script runs `apply()`. It also runs once at
+   `DOMContentLoaded`. The listing is server-rendered, so a page with no listing by then takes the
+   non-listing exit. `apply()` waits for the settings read, inserts the toggle, applies the resolved
+   state (the collapsed class for `collapsed`, nothing for `expanded`), then removes
+   `data-gnr-pending`.
+
+   Every exit path of `apply()` that does not install the toggle removes `data-gnr-pending`
+   immediately, not at the watchdog. Those paths are:
+   - the page is not a listing page (detector returns `null`)
+   - the confidence gate fails (§1.5), for the listing or for the header line
+   - any selector the toggle needs misses
+   - an unexpected exception inside `apply()`
+
+   When the resolved Level 1 state is `expanded`, the pending attribute is cleared as soon as the
+   setting is known. The rows are still hidden for the length of the storage read on such a page.
+   That read is normally a few milliseconds, and the watchdog bounds it.
+
 4. **Soft navigation triggers.** `apply()` also runs after:
    - `soft-nav:end`
    - `soft-nav:react-done`
@@ -132,11 +183,26 @@ scripts run only on full loads.
 
    Calls are debounced to one per animation frame. The script reads only event names, never event
    payloads, because payloads from the page's world are not reliably readable from the isolated world.
+   Soft navigation never sets `data-gnr-pending`. If it is still set when a soft navigation reaches a
+   non-listing page, that `apply()` takes the non-listing exit and removes it.
+
+   An `apply()` after a navigation to a **different listing** resets both levels. A different
+   listing means `location.pathname` changed since the last apply, compared as a whole string. Level
+   1 returns to the default state, or to the remembered per-repo state if that setting is on, and
+   Level 2 starts with every folder collapsed. An `apply()` on the **same listing**, after a React
+   re-render, keeps both levels' state (`docs/architecture.md` §3.2).
 
 5. **React re-render.** A scoped MutationObserver on the listing container, watching `childList` with
    `subtree`, re-runs the cheap part of `apply()` when GitHub replaces rows. This happens when deferred
    commit info fills in after first paint. Budget: the callback does no layout reads and stops after
    at most 50 runs per page.
+
+   **No late collapse.** If the first `apply()` on a listing shows it uncollapsed (for example, the
+   header line was not yet rendered and `data-gnr-pending` was cleared), a later `apply()` on the
+   same listing may insert the toggle but leaves the listing **expanded**. Collapsing a listing the
+   user can already see would move content under their pointer. The default state applies again on
+   the next navigation to a different listing.
+
 6. **Teardown.** WXT's `ctx.onInvalidated` disconnects observers and removes listeners when the
    extension updates or reloads.
 

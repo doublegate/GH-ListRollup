@@ -64,9 +64,22 @@ Rules:
 - **Runs in the content script.** MV3 content-script fetches are made as the page origin. A
   same-origin request therefore carries the user's GitHub session, and private repositories they can
   see work with no token. Neither the token nor `api.github.com` is involved.
-- **URL construction.** Owner and repo are validated against `^[A-Za-z0-9_.-]{1,100}$`. Ref and path
-  are split on `/` and each segment is passed through `encodeURIComponent`. The URL is joined with
-  `new URL(pathname, location.origin)`.
+- **URL construction.** The URL parser normalizes `.` and `..` segments, and `encodeURIComponent`
+  does not encode `.`. Without the checks below, a path such as `a/../../settings` would reach
+  another same-origin page. So:
+  1. Owner and repo must match `^[A-Za-z0-9_.-]{1,100}$` and must not be `.` or `..`.
+  2. Ref and path are split on `/`. Every segment must be non-empty and must not be `.` or `..`. The
+     segments are already decoded (they come from the DOM or from parsed JSON), so this check is
+     made on the decoded text. Git allows neither name as a path component or ref component, so no
+     real entry is rejected. A literal name such as `%2e` is encoded to `%252e` and is safe.
+  3. Each segment is passed through `encodeURIComponent`, and the URL is joined with
+     `new URL(pathname, location.origin)`.
+  4. The result is checked: `url.origin` must be `https://github.com`, and `url.pathname` must equal
+     the pathname that was built (so the parser normalized nothing) and start with
+     `/<owner>/<repo>/tree/`.
+
+  A failure at any step throws `InvalidKeyError` and no request is sent.
+
 - **Defensive parsing.** `parseTreeJson()` finds the route object by looking for the first
   `payload.*.tree.items` array rather than hard-coding `codeViewTreeRoute`, because the key has
   differed between page types. It validates each item and maps `contentType` as follows:
@@ -119,16 +132,31 @@ X-GitHub-Api-Version: 2022-11-28
 
 - **Runs in the background script.** The content script sends
   `{type: 'gnr/list', owner, repo, ref, path}`. The background validates the message
-  (`docs/security-privacy.md` §2.5) and builds the URL itself.
+  (`docs/security-privacy.md` §2.5) and builds the URL itself, with the same segment rules as §2.
+  The ref goes into the query through `URLSearchParams`. The built URL must have origin
+  `https://api.github.com` and a pathname that equals the built one and starts with
+  `/repos/<owner>/<repo>/contents/`, or the request is refused with `InvalidKeyError`.
+- **Mapping.** The response maps onto `FolderListing` with gaps the UI must allow for:
+  - `type` maps `dir`, `file`, `submodule` and `symlink` to the same `kind`; anything else is
+    `unknown`.
+  - There is no `totalCount`. The API does not list directories over its limit (below), so a
+    listing it returns is complete; `totalCount` is set to `entries.length` and no "Show all N
+    items" row appears.
+  - There is no `hasSimplifiedPath`, so `simplified` is always `false` and a single-child chain
+    shows as its first folder.
+  - There is no commit OID, so `commitOid` is `null` and the cache key keeps `refName` (§3).
 - **Limits.**
   - Unauthenticated: 60 requests per hour per IP.
   - With a token: 5,000 per hour.
-  - Either way, at most 1,000 entries per directory.
+  - Directory size: the Contents API does not list a directory of more than 1,000 entries; GitHub
+    points to the Git Trees API for those (`ref-docs/github-data-sources.md` §3.1). The fallback
+    does not use Git Trees, so such a folder gets the "Could not load" row.
 
   The background reads the `x-ratelimit-remaining` and `x-ratelimit-reset` headers. When it receives
   403 or 429 with `remaining=0`, it stops calling until the reset time and returns `RateLimited`.
 
-- **Private repositories** work through the fallback only with a token.
+- **Private repositories** work through the fallback only with a token. Without one,
+  `api.github.com` answers `404` for a private repository, the same as for a missing one.
 - **Not used:** recursive Git Trees prefetch, which is wasteful for lazy expansion, and `tree-list`,
   which covers files only and is 1.5 MB on large repos.
 
@@ -137,13 +165,14 @@ the fallback together with the `api.github.com` permission.
 
 ## 5. Error model
 
-| Error                           | Origin   | UI row                                                                                             |
-| ------------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
-| `NetworkError` / `TimeoutError` | either   | "Could not load folder contents. Retry"                                                            |
-| `HttpError(404)`                | primary  | "Folder not found (it may have moved). Open on GitHub"                                             |
-| `HttpError(other)`              | either   | "Could not load folder contents. Retry"                                                            |
-| `SchemaError`                   | primary  | Triggers the fallback. If no fallback is configured, show "Could not load" and log a probe report. |
-| `RateLimited(resetAt)`          | fallback | "GitHub API rate limit reached until HH:MM. Open on GitHub"                                        |
+| Error                           | Origin   | UI row                                                                                                                                                        |
+| ------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NetworkError` / `TimeoutError` | either   | "Could not load folder contents. Retry"                                                                                                                       |
+| `HttpError(404)`                | either   | "Folder not found (it may have moved). Open on GitHub". From the fallback with no token saved, it adds "Private repositories need a token (see the options)". |
+| `InvalidKeyError`               | either   | No request is sent. "Could not load folder contents. Open on GitHub", logged under `debug.logging`.                                                           |
+| `HttpError(other)`              | either   | "Could not load folder contents. Retry"                                                                                                                       |
+| `SchemaError`                   | primary  | Triggers the fallback. If no fallback is configured, show "Could not load" and log a probe report.                                                            |
+| `RateLimited(resetAt)`          | fallback | "GitHub API rate limit reached until HH:MM. Open on GitHub"                                                                                                   |
 
 Errors carry a status code and a short correlation id, never a token or response body.
 
@@ -153,6 +182,7 @@ These are covered in `docs/testing-strategy.md` §2:
 
 - `parseTreeJson()` against recorded responses: root, nested, a 1,000-capped folder, a chain,
   submodule and symlink entries, an unknown route key, and malformed items.
-- URL building with hostile names and slash refs.
+- URL building with hostile names and slash refs, and rejection of `.` and `..` segments
+  (`a/../../settings`) for both the tree JSON and the REST URL.
 - Cache: de-duplication, concurrency limit, abort.
 - Fallback selection, and rate-limit back-off driven by fake headers.

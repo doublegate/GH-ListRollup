@@ -174,14 +174,14 @@ See [PRIVACY.md](PRIVACY.md) and [`docs/security-privacy.md`](docs/security-priv
 
 ## Roadmap
 
-| Phase                      | Goal                                                                                                      | Status      |
-| -------------------------- | --------------------------------------------------------------------------------------------------------- | ----------- |
-| 0. Foundation              | Skeleton builds for both browsers; CI; test fixtures                                                      | In progress |
-| 1. Listing collapse        | Level 1 on every listing page; survives soft navigation                                                   | Planned     |
-| 2. Inline tree             | Lazy nested folder expansion; cache; keyboard and ARIA                                                    | Planned     |
-| 3. Settings and resilience | Options page; selector fallbacks; optional REST fallback                                                  | Planned     |
-| 4. Testing and hardening   | Playwright end-to-end tests; Firefox smoke suite; weekly live probe; performance budgets; security review | Planned     |
-| 5. Release                 | Chrome Web Store and Firefox Add-ons; v1.0.0                                                              | Planned     |
+| Phase                      | Goal                                                                                                      | Status   |
+| -------------------------- | --------------------------------------------------------------------------------------------------------- | -------- |
+| 0. Foundation              | Skeleton builds for both browsers; CI; test fixtures                                                      | Complete |
+| 1. Listing collapse        | Level 1 on every listing page; survives soft navigation                                                   | Planned  |
+| 2. Inline tree             | Lazy nested folder expansion; cache; keyboard and ARIA                                                    | Planned  |
+| 3. Settings and resilience | Options page; selector fallbacks; optional REST fallback                                                  | Planned  |
+| 4. Testing and hardening   | Playwright end-to-end tests; Firefox smoke suite; weekly live probe; performance budgets; security review | Planned  |
+| 5. Release                 | Chrome Web Store and Firefox Add-ons; v1.0.0                                                              | Planned  |
 
 Sprint and ticket detail: [`to-dos/ROADMAP.md`](to-dos/ROADMAP.md). Current state:
 [`PROJECT-STATUS.md`](PROJECT-STATUS.md).

@@ -27,7 +27,8 @@ the HTML-sink ban fires, and an E2E test that greps the console for the test tok
 **Acceptance criteria:**
 
 - [ ] Every checklist item ticked, with evidence linked in the PR.
-- [ ] `pnpm audit --prod` clean.
+- [ ] `pnpm audit` clean, dev dependencies included as in CI, or every ignored GHSA in
+      `pnpm-workspace.yaml` re-checked (`docs/security-privacy.md` §4).
 
 **Dependencies:** T-GNR-302 (if shipped), T-GNR-401 | **Reference:** `docs/security-privacy.md` | **Complexity:** M
 

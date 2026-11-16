@@ -16,6 +16,8 @@ fallback), add validators, and wire watchers into the collapse and tree controll
 - [ ] Tests with `fakeBrowser`: defaults, an invalid value falls back to the default, and the watcher
       updates an open page.
 - [ ] Per-repo memory map with LRU at 500 entries.
+- [ ] The Level 1 settings read starts at `document_start`. When it resolves to `expanded`, the
+      pending attribute is removed as soon as the read returns (`docs/settings.md` §2).
 
 **Dependencies:** Phase 2 | **Reference:** `docs/settings.md` §1-§2 | **Complexity:** M
 

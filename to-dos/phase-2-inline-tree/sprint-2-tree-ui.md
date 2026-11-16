@@ -14,6 +14,9 @@ Skip the parent row, submodules and symlinks. Simplified chains target the deepe
 **Acceptance criteria:**
 
 - [ ] Fixture test: the arrow count equals the folder count times 2, and the `..` row has none.
+- [ ] Submodule and symlink rows get no arrow, on both the primary check and the stripped-hook
+      fallback (`docs/dom-integration.md` §2.2).
+- [ ] A page whose ref is unresolved gets no arrows and logs the reason.
 - [ ] A click on the folder name still navigates, with no `preventDefault` on the link.
 
 **Dependencies:** T-GNR-101 | **Reference:** `docs/ui-behavior.md` §3.1, `docs/dom-integration.md` §2.2 | **Complexity:** M
@@ -32,6 +35,8 @@ items on GitHub" row.
 - [ ] Three-level expansion on fixtures with recorded JSON.
 - [ ] Re-expand makes 0 fetch calls.
 - [ ] After `tbody` is replaced, expanded subtrees are restored within one frame.
+- [ ] Expand a folder on the root, soft-navigate to a folder in the same repo and ref, and no folder
+      is expanded on the new page.
 - [ ] The 1,000-cap fixture shows the "Show all" row with the correct link.
 
 **Dependencies:** T-GNR-204, T-GNR-205 | **Reference:** `docs/ui-behavior.md` §3.2 | **Complexity:** L

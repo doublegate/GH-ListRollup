@@ -42,6 +42,10 @@ the answer in `docs/dom-integration.md`.
 **Acceptance criteria:**
 
 - [ ] Fake-timer test: the pending attribute is removed by the watchdog when no listing appears.
+- [ ] Test: when the header line is missing (confidence gate fails), `apply()` removes the pending
+      attribute immediately, before the watchdog, and the rows are visible.
+- [ ] Test: `apply()` on a non-listing page, including after a soft navigation, removes the pending
+      attribute immediately; a non-listing URL never sets it.
 - [ ] Test: replacing `tbody` restores the toggle within one frame.
 - [ ] Test: `apply()` called 10 times produces one toggle.
 - [ ] Firefox Navigation API finding recorded.
@@ -68,13 +72,16 @@ chevron rotation (with `prefers-reduced-motion`), and uses only Primer variables
 
 ### T-GNR-108: Soft-navigation state reset
 
-**Description:** When the repo or ref changes between applies, reset the collapse state to the
-default. Within the same page, a re-render keeps the current state.
+**Description:** When an `apply()` follows a navigation to a different listing (`location.pathname`
+changed, which covers a new repo, ref or folder path), reset the collapse state to the default.
+Within the same listing, a re-render keeps the current state (`docs/architecture.md` §3.2).
 
 **Acceptance criteria:**
 
 - [ ] Test: expand, simulate a re-render, and the listing is still expanded.
 - [ ] Test: expand, navigate to another repo, and the new page is collapsed.
+- [ ] Test: expand on the repository root, soft-navigate to a folder in the same repo and ref, and the
+      folder page is collapsed.
 
 **Dependencies:** T-GNR-106 | **Reference:** `docs/architecture.md` §3.2 | **Complexity:** S
 
