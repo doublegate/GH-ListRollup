@@ -100,7 +100,17 @@ workspace template. Operations guide: `.github/AGY-REVIEWER.md`; project rules:
   in a PR comment re-runs it. Reviews come from `agy` on a long-lived self-hosted runner labelled
   `agy`: `github-agy-runner@gh-listrollup`, a `systemd --user` service that runs while the
   maintainer is logged in.
-- **Fork PRs** need approval for every outside contributor before any workflow runs.
+- **Fork PRs are the security boundary.** The runner lives on the maintainer's desktop. For a
+  `pull_request` event GitHub runs the workflow file **from the PR's own branch**, so an outside
+  PR can rewrite any workflow, or add a new one with `runs-on: [self-hosted, agy]`, and run
+  arbitrary code there with the maintainer's user account. The workflow's same-repository `if:`
+  only protects an unmodified file.
+  - The real gate is the repository setting that requires approval for **all** outside
+    contributors (`approval_policy = all_external_contributors`, set 2026-11-16). Personal repos
+    cannot restrict repo runners to a runner group, so there is no second line.
+  - **Never approve an outside contributor's workflow run without first reading every change it
+    makes under `.github/`, and any script those workflows call.** If in doubt, review the diff
+    locally and leave its workflows unapproved.
 - **Keep the template files in sync with the template.** The workflow and the operations doc are
   excluded from Prettier, because the self-test parses the workflow. The doc is byte-identical.
   The workflow differs in exactly one way: the template's first-install bootstrap steps are

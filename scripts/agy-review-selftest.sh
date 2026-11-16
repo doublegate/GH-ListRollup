@@ -62,7 +62,7 @@ log() { :; }
 # absence-reads-as-agreement failure the markers were adopted to prevent.
 for guard in "service-error guard" "oauth guard" "ours-comment filter" "duration parser" \
              "numeric env validation" "diff-size scaling" "truncation helpers" \
-             "diff-limit classifier"; do
+             "diff-limit classifier" "script capture filter"; do
   blk="$(extract_block "$guard")"
   [ -n "$blk" ] || { echo "FAIL: SELFTEST-EXTRACT block '$guard' is missing or empty" >&2; exit 1; }
   printf '%s\n' "$blk" | bash -n - 2>/dev/null \
@@ -385,14 +385,93 @@ for t in python3 mv rm; do ln -sf "$(command -v "$t")" "$TMPD/noiconv/$t"; done
 printf 'abc\xe2\x82' > "$TMPD/split"
 ( PATH="$TMPD/noiconv"; agy_scrub_utf8 "$TMPD/split" )
 check "the python3 fallback scrubs when iconv is absent" "abc" "$(cat "$TMPD/split")"
+# REGRESSION (agy review, GH-ListRollup PR #4): GNU `iconv -c` exits 1 when it drops a byte, and
+# the iconv branch treated that as failure, so only python3 ever scrubbed byte-cut input --
+# python3 was a silent hard requirement. With iconv present and python3 absent, iconv's output
+# must be used.
+if command -v iconv >/dev/null 2>&1; then
+  mkdir -p "$TMPD/nopython"
+  for t in iconv mv rm; do ln -sf "$(command -v "$t")" "$TMPD/nopython/$t"; done
+  printf 'abc\xe2\x82' > "$TMPD/split"
+  ( PATH="$TMPD/nopython"; agy_scrub_utf8 "$TMPD/split" )
+  check "iconv alone scrubs a split sequence (python3 absent, iconv -c exits 1)" "abc" \
+    "$(cat "$TMPD/split")"
+fi
 printf '\xe2\x82' > "$TMPD/allbad"            # no valid byte: every sanitizer yields nothing
 agy_scrub_utf8 "$TMPD/allbad"
 check "a sanitizer's empty result never replaces the file" "2" "$(wc -c < "$TMPD/allbad" | tr -d ' ')"
 check "both byte-cap paths call the shared scrub" "2" \
   "$(grep -c '^ *agy_scrub_utf8 "\$' "$SCRIPT_DIR/agy-review.sh")"
+# --- script(1) fallback capture: its framing records are not agy output -----------
+# REGRESSION (Codex review, GH-ListRollup PR #4): util-linux `script -qfec` still writes
+# "Script started on" / "Script done on" records into the typescript, so an empty or failed agy
+# run read as non-empty output, and a backend error was no longer on the first line.
+ts_start='Script started on 2026-11-16 02:05:52-05:00 [COMMAND="x" <not executed on terminal>]'
+ts_done='Script done on 2026-11-16 02:05:52-05:00 [COMMAND_EXIT_CODE="0"]'
+check "script records around an empty run leave nothing" "" \
+  "$(printf '%s\n\n%s\n' "$ts_start" "$ts_done" | agy_strip_script_records)"
+check "script records around a review leave only the review" "## Review|body" \
+  "$(printf '%s\n## Review\nbody\n\n%s\n' "$ts_start" "$ts_done" | agy_strip_script_records | paste -sd'|')"
+check "a backend error is back on the first line" "MATCH" \
+  "$(se "$(printf '%s\nerror: backend unavailable\n%s\n' "$ts_start" "$ts_done" | agy_strip_script_records)")"
+check "text that merely mentions a record mid-review is kept" "a|Script done on Tuesday|b" \
+  "$(printf 'a\nScript done on Tuesday\nb\n' | agy_strip_script_records | paste -sd'|')"
+check "the script fallback pipes its capture through the filter" "1" \
+  "$(grep -c 'col -b < "\$raw" | agy_strip_script_records > "\$out_file"' "$SCRIPT_DIR/agy-review.sh")"
+# REGRESSION (agy review, GH-ListRollup PR #6): util-linux localizes the record prose, so a
+# non-English runner must still be handled through the untranslated key=value fields.
+ts_start_de='Skript gestartet am 2026-11-16 02:05:52-05:00 [COMMAND="x" <not executed on terminal>]'
+ts_done_de='Skript beendet am 2026-11-16 02:05:52-05:00 [COMMAND_EXIT_CODE="0"]'
+check "localized script records are stripped too" "## Review|body" \
+  "$(printf '%s\n## Review\nbody\n\n%s\n' "$ts_start_de" "$ts_done_de" | agy_strip_script_records | paste -sd'|')"
+
+# --- every mktemp'd variable is removed by the EXIT trap -------------------------
+# REGRESSION (agy review, GH-ListRollup PR #4): _perm_err, compare_err and trimmed were created
+# mid-flight but missing from cleanup(), so an abort while they existed leaked them.
+cleanup_src="$(sed -n '/^cleanup() {/,/^}/p' "$SCRIPT_DIR/agy-review.sh")"
+missing=""
+for v in $(grep -oE '[A-Za-z_][A-Za-z0-9_]*="\$\(mktemp' "$SCRIPT_DIR/agy-review.sh" | cut -d= -f1 | sort -u); do
+  printf '%s' "$cleanup_src" | grep -qF "\${$v:-}" || missing="$missing $v"
+done
+check "every mktemp'd variable is in the cleanup trap" "" "${missing# }"
+# REGRESSION (agy review, GH-ListRollup PR #6): listing a variable in cleanup() is not enough if
+# the trap is installed after the file is created -- agy_has_write_access ran (and created
+# _perm_err) before `trap cleanup EXIT`, and the pre-declarations then reset it. The trap and
+# every pre-declaration must precede the first mktemp anywhere in the script.
+trap_line="$(grep -n '^trap cleanup EXIT$' "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+first_mktemp="$(grep -nE '="\$\(mktemp' "$SCRIPT_DIR/agy-review.sh" | grep -vE '^[0-9]+:[[:space:]]*#' | head -1 | cut -d: -f1 || true)"
+decl_line="$(grep -n "^_perm_err='' " "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+check "the EXIT trap and pre-declarations precede the first mktemp" "yes" \
+  "$([ -n "$trap_line" ] && [ -n "$first_mktemp" ] && [ -n "$decl_line" ] \
+      && [ "$trap_line" -lt "$first_mktemp" ] && [ "$decl_line" -lt "$first_mktemp" ] \
+      && echo yes || echo "no (trap:${trap_line:-none} decl:${decl_line:-none} first mktemp:${first_mktemp:-none})")"
+
 # A failed jq step in the archive lookup must be logged, not swallowed.
 check "archive jq failures are logged" "no" \
   "$(grep -n 'SELECT_OURS_JQ" 2>/dev/null' "$SCRIPT_DIR/agy-review.sh" >/dev/null && echo yes || echo no)"
+
+# --- byte limits are normalized before any arithmetic uses them -------------------
+# REGRESSION (agy review, GH-ListRollup PR #4): MAX_PROMPT_BYTES=080000 passed the `[ ]` check and
+# then aborted in `$(( ))` as invalid octal; MAX_BODY_BYTES=60k aborted the same way; and a
+# non-numeric MAX_DIFF_BYTES silently disabled the diff cap. Each must be normalized, and before
+# the first line that does arithmetic on it or passes it to agy_cut_file.
+for v in MAX_DIFF_BYTES MAX_PROMPT_BYTES MAX_BODY_BYTES; do
+  # `|| true`: under pipefail a missing line must report as a FAIL below, not abort the selftest.
+  norm_line="$(grep -n "^normalize_numeric_env $v " "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+  # Code lines only: the explanatory comments quote the arithmetic they guard against.
+  use_line="$(grep -nE "\\\$\\(\\( *$v|agy_cut_file \"\\\$diff_file\" \"\\\$$v\"|\\(\\( *$v" "$SCRIPT_DIR/agy-review.sh" \
+                | grep -vE '^[0-9]+:[[:space:]]*#' | head -1 | cut -d: -f1 || true)"
+  check "$v is normalized before its first arithmetic use" "yes" \
+    "$([ -n "$norm_line" ] && [ -n "$use_line" ] && [ "$norm_line" -lt "$use_line" ] && echo yes || echo "no (normalize:${norm_line:-none} use:${use_line:-none})")"
+done
+_nne_probe=080000; normalize_numeric_env _nne_probe 120000
+check "normalize_numeric_env turns a leading-zero 080000 into 80000" "80000" "$_nne_probe"
+
+# --- an archive emptied by trimming renders no empty <details> -------------------
+# REGRESSION (agy review, GH-ListRollup PR #4): when every archived round was dropped, the
+# "Earlier review rounds" <details> wrapper was still emitted around nothing.
+check "the archive <details> wrapper is guarded on a non-empty archive" "2" \
+  "$(grep -c '^    if \[ -s "\$archived_file" \]; then$' "$SCRIPT_DIR/agy-review.sh")"
 
 check "a lowercase error (agy under unbuffer) is caught" "MATCH" \
   "$(se 'error: Eligibility check failed: PERMISSION_DENIED (code 403): Request had insufficient authentication scopes.. Please log out (/logout) and log back in (/login).')"
