@@ -103,7 +103,7 @@ results in the sprint notes.
 
 **Acceptance criteria:**
 
-- [ ] All Phase 1 exit criteria checked.
+- [x] All Phase 1 exit criteria checked (Phase 1 overview).
 - [x] `CHANGELOG.md` `[Unreleased]` has a line under "Added" for the listing collapse.
 
 **Dependencies:** T-GNR-105 to T-GNR-108 | **Reference:** `docs/testing-strategy.md` §5 | **Complexity:** S
@@ -112,7 +112,8 @@ results in the sprint notes.
 
 ## Sprint review checklist
 
-- [ ] Demo: cold load, toggle, soft navigation, extension reload.
+- [x] Demo: cold load, toggle, soft navigation, extension reload. Covered by the live checks in both
+      browsers; the reload case by `t-gnr-004.mjs`, where teardown leaves the listing usable.
 - [x] `docs/ui-behavior.md` updated for any behaviour that changed during implementation.
 
 ## Completion notes (2026-11-16)
@@ -157,7 +158,5 @@ results in the sprint notes.
     **0 flash frames** in two runs of a cold load plus ten expanded navigations each (Chromium).
     Before the fix it found one navigation flash, and the cold-load flash was confirmed by the class
     probe.
-- **Still open:**
-  - The maintainer's Firefox re-check of the flash fixes.
-  - 20 consecutive soft navigations in Firefox for the Phase 1 exit criterion. Chromium did 20
-    (automated); Firefox has had "a few" so far.
+- **Maintainer re-check in Firefox, after the flash fixes (2026-11-16):** no flash on cold load or
+  navigation, and **20 consecutive soft navigations each showed exactly one chevron**.
