@@ -53,3 +53,6 @@ agy-*.log
 # GitHub's own JS bundles). Only the README describing them is tracked.
 ref-docs/raw/**
 !ref-docs/raw/README.md
+
+# Antigravity PR reviewer: large-diff on-disk handoff (transient, removed by the script).
+/.agy-review-work/
