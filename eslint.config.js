@@ -23,6 +23,7 @@ export default tseslint.config(
     ignores: [
       '.output/',
       '.wxt/',
+      'test-builds/',
       'coverage/',
       'node_modules/',
       // Local raw research captures (gitignored), including GitHub's own JS bundles.

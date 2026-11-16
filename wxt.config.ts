@@ -29,4 +29,7 @@ export default defineConfig({
   webExt: {
     startUrls: ['https://github.com/wxt-dev/wxt'],
   },
+  zip: {
+    excludeSources: ['test-builds/**', 'coverage/**', 'ref-docs/raw/**'],
+  },
 });
