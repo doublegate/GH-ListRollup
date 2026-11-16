@@ -18,5 +18,7 @@ correct or extend one, add a dated supplement such as `research-update-2027-03.m
 | `testing-extensions.md` | Vitest with WXT, Playwright for Chromium, the Firefox options, `web-ext lint`, the selector-drift tests |
 | `prior-art.md` | Refined GitHub, Tako, Gitako, Octotree and others, with lessons and licenses |
 
-Raw captures of public GitHub pages used during research were kept out of the repository. Saved HTML
-fixtures for tests are created in Phase 1, with user data stripped (`docs/testing-strategy.md` §3).
+Raw captures from the research live in `raw/`, which is gitignored and kept only on the development
+machine (see `raw/README.md`): GitHub pages and headers, tree JSON responses, GitHub's JS bundles and
+MDN compatibility data. Sanitized HTML fixtures for tests are created separately in Phase 0
+Sprint 2, with user data stripped (`docs/testing-strategy.md` §3).

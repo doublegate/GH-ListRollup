@@ -13,7 +13,18 @@ const noHtmlSinks = [
 ];
 
 export default tseslint.config(
-  { ignores: ['.output/', '.wxt/', 'coverage/', 'node_modules/'] },
+  {
+    ignores: [
+      '.output/',
+      '.wxt/',
+      'coverage/',
+      'node_modules/',
+      // Local raw research captures (gitignored), including GitHub's own JS bundles.
+      'ref-docs/raw/',
+      // Standalone Playwright scripts run outside the project's dependencies (see their README).
+      'tests/e2e/manual/',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {

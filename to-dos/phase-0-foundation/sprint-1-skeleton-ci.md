@@ -58,16 +58,49 @@ with owner and repo. It is pure and has unit tests.
 
 **Description:** `src/github/nav.ts` debounces `soft-nav:end`, `soft-nav:react-done`, `turbo:render`,
 `turbo:load`, `popstate` and `wxt:locationchange` into one callback per frame, using
-`ctx.addEventListener`. The content script logs `[gnr] page <kind> <owner> <repo>`.
+`ctx.addEventListener`. The content script logs `[gnr] page <kind> [<owner>/<repo>] path=<path>`.
 
 **Acceptance criteria:**
 
 - [x] Builds, and the content script matches `https://github.com/*` at `document_start`.
-- [ ] Manual check in Chrome: a log line on the root page, on a folder page, and after clicking a
+- [x] Manual check in Chrome: a log line on the root page, on a folder page, and after clicking a
       folder link (soft navigation) without reload.
-- [ ] The same manual check in Firefox.
-- [ ] Reloading the extension leaves no duplicate log lines on the next navigation, which shows that
+- [x] The same manual check in Firefox.
+- [x] Reloading the extension leaves no duplicate log lines on the next navigation, which shows that
       `ctx` invalidation works.
+
+**Verification (2026-11-16, live `github.com/wxt-dev/wxt`, logged out, production builds):**
+
+| Step                                | Chrome (Playwright bundled Chromium, scripted)  | Firefox (web-ext run, manual)                   |
+| ----------------------------------- | ----------------------------------------------- | ----------------------------------------------- |
+| Full load of the root               | 1 line, `repo-root`                             | 1 line, `repo-root`                             |
+| Click `packages` (soft navigation)  | 1 line, `repo-tree`                             | 1 line, `repo-tree`                             |
+| Browser Back (soft)                 | 1 line, `repo-root`                             | 1 line, `repo-root`                             |
+| Issues tab (soft)                   | 1 line, `other`                                 | 1 line, `other`                                 |
+| Code tab (soft)                     | 1 line, `repo-root`                             | 1 line, `repo-root`                             |
+| Extension reload, then click folder | 0 `page` lines; old script logged `invalidated` | 1 line from re-injection, then 1 per navigation |
+| Full page reload, then click folder | not testable (see notes)                        | 1 line each, no duplicates                      |
+
+The Chrome run used a page-world marker to confirm that each "soft" step really was an in-page
+navigation, not a full load.
+
+Notes:
+
+- **Chrome reload under automation.** After `chrome.runtime.reload()`, Playwright's Chromium does
+  not bring back an extension that was side-loaded with `--load-extension`: there is no service
+  worker, and even a new tab gets no content script. The "new script logs once" half of the reload
+  criterion was therefore verified in Firefox. The "old script goes quiet" half was verified in
+  both browsers.
+- **Firefox re-injection.** Firefox injects declared content scripts into already-open matching
+  tabs when an extension reloads; Chrome does not. Expected and harmless.
+- **WXT dev mode in Firefox can go stale.** `pnpm dev:firefox` registers the content script
+  dynamically. After a hot reload, the tab kept running the old script, even after F5. This
+  produced a false `repo-root` on a folder click. Verify Firefox behaviour on the production build
+  with `web-ext run --source-dir .output/firefox-mv3`. This is recorded in
+  `docs/build-and-tooling.md` §3.
+- **T-GNR-106 (Navigation API in Firefox content scripts).** Still open. Detection worked in
+  Firefox, but this run does not show whether the trigger was GitHub's `soft-nav:*`/`turbo:*`
+  events or WXT's fallback polling.
 
 **Dependencies:** T-GNR-003 | **Reference:** `docs/dom-integration.md` §4 | **Complexity:** S
 
@@ -89,5 +122,5 @@ Ubuntu with Node 26. Actions are pinned, and the job uploads both builds as arti
 
 ## Sprint review checklist
 
-- [ ] All tickets checked off or explicitly deferred, with the reason.
-- [ ] `CHANGELOG.md` `[Unreleased]` lists the skeleton.
+- [x] All tickets checked off or explicitly deferred, with the reason (2026-11-16).
+- [x] `CHANGELOG.md` `[Unreleased]` lists the skeleton.

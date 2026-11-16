@@ -20,7 +20,9 @@ export default defineContentScript({
       if (location.href === lastHref) return;
       lastHref = location.href;
       const page = detectPage(new URL(location.href));
-      log.info('page', page.kind, page.owner ?? '', page.repo ?? '');
+      const repo = page.owner && page.repo ? [`${page.owner}/${page.repo}`] : [];
+      // The path makes it visible which URL the detector saw (T-GNR-004 Firefox diagnosis).
+      log.info('page', page.kind, ...repo, `path=${location.pathname}${location.search}`);
     };
 
     report();
