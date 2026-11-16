@@ -216,4 +216,30 @@ describe('readListingPage', () => {
       expect(readListingPage(new URL(fixtureUrl('folder')), doc)?.ref).toBe('master');
     });
   });
+
+  it('a folder page that lost the parent link and the breadcrumb testid still reads correctly (agy, #14)', () => {
+    // Without folder evidence it would read as a root and the ref would come out as `master/contrib`,
+    // which passes the root cross-check: a WRONG ref, not null.
+    const doc = loadHtmlFixture('folder');
+    const parent = doc.querySelector('a[data-testid="up-tree"]');
+    parent?.removeAttribute('data-testid');
+    parent?.removeAttribute('aria-label');
+    for (const el of doc.querySelectorAll('[data-testid^="breadcrumbs"]'))
+      el.removeAttribute('data-testid');
+    expect(readListingPage(new URL(fixtureUrl('folder')), doc)).toMatchObject({
+      layout: 'folder',
+      ref: 'master',
+      path: 'contrib',
+    });
+  });
+
+  it('reads a two-level breadcrumb through its id fallbacks', () => {
+    const doc = loadHtmlFixture('folder-deep');
+    for (const el of doc.querySelectorAll('[data-testid^="breadcrumbs"]'))
+      el.removeAttribute('data-testid');
+    expect(readListingPage(new URL(fixtureUrl('folder-deep')), doc)).toMatchObject({
+      ref: 'master',
+      path: 'contrib/completion',
+    });
+  });
 });

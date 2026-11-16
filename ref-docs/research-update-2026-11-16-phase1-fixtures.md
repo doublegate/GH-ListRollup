@@ -106,3 +106,10 @@ shows the old page, or none.
 - So the collapse controller (T-GNR-106) must not act on the first read after a navigation. It has
   to wait, for example with the first-listing observer, until the listing matches the URL.
 
+**Follow-up, same day (#14 review).** The table above came from a content script whose same-URL
+guard consumed the first, early signal and then ignored the later ones. With inspection separated
+from that guard and repeated on every signal, the same live run ends each listing step with the
+correct reading. For example, step 2 logs `layout=root ref=null` and then
+`layout=folder ref=main path=packages`. So a later signal for the same URL does arrive after React
+has rendered, and the controller can rely on re-running on each signal.
+

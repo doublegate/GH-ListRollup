@@ -107,8 +107,13 @@ export function readListingPage(url: URL, doc: Document): ListingPage | null {
   const { owner, repo } = info;
 
   const listing = query('listing', doc)?.element ?? null;
+  // Folder evidence, any one suffices: the parent link, the breadcrumb, or the folder-name heading.
+  // Only if all of them fail at every rank does a folder page read as a root, and then its ref
+  // would come out as `<ref>/<path>` (agy review, #14); hence several independent hooks.
   const folder =
-    (listing !== null && query('upTree', listing) !== null) || query('breadcrumbs', doc) !== null;
+    (listing !== null && query('upTree', listing) !== null) ||
+    query('breadcrumbs', doc) !== null ||
+    query('breadcrumbFilename', doc) !== null;
   const layout = folder ? 'folder' : 'root';
   const path = folder ? readBreadcrumbPath(doc) : '';
 

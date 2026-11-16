@@ -67,10 +67,15 @@ export const SELECTORS = {
     primary: 'svg.octicon-file-directory-fill',
     fallbacks: [],
   },
-  /** The breadcrumb on folder pages. Two exist (header and sticky); the first is used. */
+  /**
+   * The breadcrumb on folder pages. Two exist (header and sticky); the first is used. The id
+   * fallbacks exist only on folder pages (verified on every fixture, root ones included): with the
+   * parent link this is a folder page's evidence, and losing both would misread it as a root
+   * (agy review, #14).
+   */
   breadcrumbs: {
     primary: '[data-testid="breadcrumbs"]',
-    fallbacks: [],
+    fallbacks: ['#repos-header-breadcrumb', '#sticky-breadcrumb'],
   },
   /** Inside the breadcrumb: one link per folder level. The repository link comes first. */
   breadcrumbLinks: {
@@ -80,12 +85,12 @@ export const SELECTORS = {
   /** Inside the breadcrumb: the repository link, which is not a path segment. */
   breadcrumbRepoLink: {
     primary: '[data-testid="breadcrumbs-repo-link"]',
-    fallbacks: [],
+    fallbacks: ['ol > li:first-child > a'],
   },
-  /** The current folder's name, after the breadcrumb. */
+  /** The current folder's name, after the breadcrumb. Folder pages only. */
   breadcrumbFilename: {
     primary: '[data-testid="breadcrumbs-filename"] h1',
-    fallbacks: [],
+    fallbacks: ['h1#file-name-id'],
   },
   /** The latest-commit bar's details. Its parent's parent is the bar's inner row. */
   commitDetails: {
