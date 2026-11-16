@@ -85,11 +85,25 @@ tabs on reload; Chrome does not.
 `.github/workflows/ci.yml` runs on pull requests and pushes to `main`. It uses Ubuntu, Node 26 and
 pnpm via corepack, with action versions pinned. Two jobs:
 
-- **check** runs `pnpm install --frozen-lockfile`, then `pnpm audit`, then `pnpm check`, then uploads
-  both builds as artifacts.
+- **check** runs `pnpm install --frozen-lockfile`, then `pnpm audit`, `pnpm check` and the
+  Antigravity reviewer self-test (`scripts/agy-review-selftest.sh`), then uploads both builds as
+  artifacts.
 - **secrets** scans the full git history with gitleaks, a pinned and checksum-verified binary using
   the built-in rules. The repo has no `.gitleaks.toml`. If one is ever added, it must start with
   `[extend] useDefault = true`; otherwise it silently replaces every built-in rule.
+
+`.github/workflows/antigravity-review.yml` is the **Antigravity PR reviewer**, installed from the
+workspace template. Operations guide: `.github/AGY-REVIEWER.md`; project rules:
+`.github/agy-review.md`.
+
+- **Triggers:** every same-repository PR is reviewed on open and on each push, and `/agy-review`
+  in a PR comment re-runs it. Reviews come from `agy` on a long-lived self-hosted runner labelled
+  `agy`: `github-agy-runner@gh-listrollup`, a `systemd --user` service that runs while the
+  maintainer is logged in.
+- **Fork PRs** need approval for every outside contributor before any workflow runs.
+- **Keep the template files byte-identical:** the workflow and the operations doc are excluded
+  from Prettier, because the self-test parses the workflow. Update them only by re-syncing from
+  the template.
 
 To run the secret scan locally, give gitleaks an **absolute path**:
 `gitleaks git "$PWD" --redact`. On this workstation the `gitleaks` command is a wrapper that changes
