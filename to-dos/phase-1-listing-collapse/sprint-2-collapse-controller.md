@@ -160,3 +160,16 @@ results in the sprint notes.
     probe.
 - **Maintainer re-check in Firefox, after the flash fixes (2026-11-16):** no flash on cold load or
   navigation, and **20 consecutive soft navigations each showed exactly one chevron**.
+- **Review round 4 (agy, Codex), after that sign-off.** The `<html>` marker must be removed by
+  every exit that ends without a toggle, and two did not remove it: an exception inside `apply()`,
+  and a no-listing exit outside a click or back/forward navigation. The no-listing exit also
+  watched the gate's `<meta>` fallback.
+
+  While verifying the fixes, the flash probe found a race: the cold-load watchdog (4 s) cleared a
+  navigation's pre-hide that had just started. All of these are fixed, with tests that fail on the
+  old code. The flash probe now times its first navigation into that window.
+
+- **Final maintainer re-check in Firefox on the merged build (`dc2a688`):** no flash, 20 consecutive
+  navigations each with one chevron, and a folder click about 4 s after load to hit the race.
+- **Follow-ups:** the deferred non-blocking edge cases are tracked in issue #17 (and #13 and #15 for
+  Sprint 1). None of them leaves files hidden or leaks data.

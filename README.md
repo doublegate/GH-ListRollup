@@ -46,7 +46,8 @@ GH-ListRollup changes two things:
 > **Project status: alpha.** The whole-listing collapse (Level 1) works in Chrome and Firefox. It was
 > verified live on github.com, across soft navigations, re-renders and themes, with no flash of the
 > full listing. The inline nested folder tree (Level 2) is next, in Phase 2. There is no store
-> release yet; install from source. See the [roadmap](#roadmap).
+> release yet; install from source. See the [roadmap](#roadmap). Known non-blocking edge cases are
+> tracked in [GitHub issues](https://github.com/doublegate/GH-ListRollup/issues).
 
 ## Features
 
