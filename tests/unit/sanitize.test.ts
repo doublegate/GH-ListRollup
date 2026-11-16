@@ -544,3 +544,61 @@ describe('sanitizers end to end: placeholder collisions (#12)', () => {
     expect(out).not.toContain('fixture-user@fixture-user');
   });
 });
+
+describe('replaceIdentity: identity values that contain placeholder text (#12, round 2)', () => {
+  // The round-1 fix pre-masked placeholders without boundaries, which split identity values that
+  // contain placeholder text before their own pass ran; one case leaked the email domain while
+  // passing the leftovers check.
+  it.each([
+    [
+      'login inside its own email',
+      { login: 'fixture-user', email: 'fixture-user@mail.example' },
+      'fixture-user@mail.example',
+    ],
+    [
+      'placeholder inside an email local part',
+      { login: 'someone', email: 'someone+fixture-user@company.com' },
+      'someone+fixture-user@company.com',
+    ],
+    [
+      'email built from a colliding login',
+      { login: 'example', email: 'example@mail.example' },
+      'example@mail.example',
+    ],
+  ])('%s is replaced whole', (_label, identity, email) => {
+    const out = replaceIdentity(`"userEmail":"${email}"`, identity);
+    expect(out).toBe(`"userEmail":"${PLACEHOLDER_EMAIL}"`);
+    expect(identityLeftovers(out, identity)).toEqual([]);
+  });
+
+  it('a login that extends the login placeholder is replaced whole', () => {
+    const identity = { login: 'fixture-user-dev' };
+    expect(replaceIdentity('"login":"fixture-user-dev"', identity)).toBe(
+      `"login":"${PLACEHOLDER_LOGIN}"`,
+    );
+  });
+
+  it('an id that extends the id placeholder is replaced whole', () => {
+    const identity = { login: 'someone', id: 10000019 };
+    expect(replaceIdentity('"id":10000019', identity)).toBe(`"id":${PLACEHOLDER_ID}`);
+  });
+
+  it('existing placeholders survive every colliding login', () => {
+    for (const login of ['example', 'invalid', 'fixture', 'user', 'fixture-user']) {
+      const text = `"a":"${PLACEHOLDER_EMAIL}","b":"${PLACEHOLDER_NODE_ID}","c":${PLACEHOLDER_ID}`;
+      expect(replaceIdentity(text, { login }), login).toBe(text);
+    }
+  });
+});
+
+describe('identityLeftovers ignores placeholders without hiding real values (#12)', () => {
+  it('does not flag a login that occurs only inside PLACEHOLDER_EMAIL', () => {
+    expect(identityLeftovers(`"e":"${PLACEHOLDER_EMAIL}"`, { login: 'example' })).toEqual([]);
+  });
+
+  it('still flags an unreplaced login that extends the login placeholder', () => {
+    expect(identityLeftovers('"login":"fixture-user-dev"', { login: 'fixture-user-dev' })).toEqual([
+      'fixture-user-dev',
+    ]);
+  });
+});

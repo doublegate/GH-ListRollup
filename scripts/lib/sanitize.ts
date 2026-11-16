@@ -125,14 +125,25 @@ export function normalizeVolatileText(text: string): string {
  * every capture whose page holds such a SHA (agy and Codex reviews, PR #3).
  */
 export function identityLeftovers(text: string, identity: Identity): string[] {
-  const lower = text.toLowerCase();
+  // Placeholders are removed first: a login such as `example` or `fixture-user` occurs inside
+  // PLACEHOLDER_EMAIL itself, and would otherwise fail every capture for that account (#12). A real
+  // value next to a placeholder still remains in the text and is still found.
+  // The login placeholder only as a whole token, with replaceIdentity's boundaries: scrubbing it
+  // from inside `fixture-user-dev` would hide that unreplaced login from the check below.
+  const scrubbed = text
+    .split(PLACEHOLDER_EMAIL)
+    .join(' ')
+    .split(PLACEHOLDER_NODE_ID)
+    .join(' ')
+    .replace(new RegExp(`(?<![A-Za-z0-9-])${PLACEHOLDER_LOGIN}(?![A-Za-z0-9-])`, 'g'), ' ');
+  const lower = scrubbed.toLowerCase();
   const found: string[] = [];
   for (const v of [identity.login, identity.nodeId ?? '', identity.email ?? '']) {
     if (v.length > 0 && lower.includes(v.toLowerCase())) found.push(v);
   }
   if (
     identity.id !== undefined &&
-    new RegExp(`(?<![0-9A-Za-z])${identity.id}(?![0-9A-Za-z])`).test(text)
+    new RegExp(`(?<![0-9A-Za-z])${identity.id}(?![0-9A-Za-z])`).test(scrubbed)
   ) {
     found.push(String(identity.id));
   }
@@ -247,51 +258,40 @@ function redactAll(value: unknown): unknown {
 export function replaceIdentity(text: string, identity: Identity | undefined): string {
   if (!identity) return text;
   const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  // The email and node id go FIRST (bootstrap review, #8): both can contain the login or the id
-  // (`someuser@mail.example`, `12345+someuser@users.noreply.github.com`), and replacing those first
-  // left a half-rewritten address that the email pattern, and the leftovers check, no longer saw.
+  // ONE left-to-right pass over a single alternation, so no replacement is ever re-scanned.
+  // Sequential passes kept interacting (#8, #11, #12): an earlier pass could split a value a later
+  // pass needed whole (an email containing the login), or a later pass could rewrite a placeholder
+  // an earlier one inserted (a login of `example` inside `fixture-user@example.invalid`).
   //
-  // Each pass writes a one-character private-use SENTINEL, and the placeholders are swapped in only
-  // at the end (#11): written directly, a placeholder inserted by an earlier pass could itself be
-  // rewritten by a later one, for example a login of `example` inside `fixture-user@example.invalid`.
-  // A sentinel cannot match any later pattern, which are all ASCII.
-  //
-  // Placeholders ALREADY in the input are masked the same way first (#12): redactSecrets writes
-  // PLACEHOLDER_EMAIL before this runs, and sanitizeGitHubHtml calls this twice (payload JSON, then
-  // the serialized page). The email goes before the login because `fixture-user` occurs inside it.
-  let out = text
-    .replaceAll(PLACEHOLDER_EMAIL, SENTINEL.email)
-    .replaceAll(PLACEHOLDER_NODE_ID, SENTINEL.nodeId)
-    .replaceAll(PLACEHOLDER_LOGIN, SENTINEL.login)
-    .replaceAll(PLACEHOLDER_ID, SENTINEL.id);
-  if (identity.email) out = out.replace(new RegExp(esc(identity.email), 'gi'), SENTINEL.email);
-  if (identity.nodeId) out = out.split(identity.nodeId).join(SENTINEL.nodeId);
-  out = out.replace(
-    new RegExp(`(?<![A-Za-z0-9-])${esc(identity.login)}(?![A-Za-z0-9-])`, 'gi'),
-    SENTINEL.login,
+  // Order inside the alternation decides ties at one position: the real email and node id first
+  // (either may contain the login or the id), then the existing placeholders (kept as they are),
+  // then the login and the id with their boundaries. The login and email match case-insensitively;
+  // the ids are exact. A match starting earlier always wins, so a placeholder that only overlaps a
+  // real value's tail cannot cut it.
+  const loginB = (v: string) => `(?<![A-Za-z0-9-])${v}(?![A-Za-z0-9-])`;
+  const idB = (v: string) => `(?<![0-9A-Za-z])${v}(?![0-9A-Za-z])`;
+  const alternatives: [pattern: string, replacement: string][] = [];
+  if (identity.email) alternatives.push([`(?i:${esc(identity.email)})`, PLACEHOLDER_EMAIL]);
+  if (identity.nodeId) alternatives.push([esc(identity.nodeId), PLACEHOLDER_NODE_ID]);
+  alternatives.push(
+    [esc(PLACEHOLDER_EMAIL), PLACEHOLDER_EMAIL],
+    [esc(PLACEHOLDER_NODE_ID), PLACEHOLDER_NODE_ID],
+    [`(?i:${loginB(esc(identity.login))})`, PLACEHOLDER_LOGIN],
+    [loginB(esc(PLACEHOLDER_LOGIN)), PLACEHOLDER_LOGIN],
   );
   if (identity.id !== undefined) {
     // Alphanumeric boundaries, not digit-only: the id must not match inside a hex SHA or other
     // hashed identifier (agy review, PR #3).
-    out = out.replace(
-      new RegExp(`(?<![0-9A-Za-z])${identity.id}(?![0-9A-Za-z])`, 'g'),
-      SENTINEL.id,
-    );
+    alternatives.push([idB(String(identity.id)), PLACEHOLDER_ID]);
   }
-  return out
-    .replaceAll(SENTINEL.email, PLACEHOLDER_EMAIL)
-    .replaceAll(SENTINEL.nodeId, PLACEHOLDER_NODE_ID)
-    .replaceAll(SENTINEL.login, PLACEHOLDER_LOGIN)
-    .replaceAll(SENTINEL.id, PLACEHOLDER_ID);
-}
+  alternatives.push([idB(esc(PLACEHOLDER_ID)), PLACEHOLDER_ID]);
 
-/** Private-use code points: never present in a GitHub page, and matched by no identity pattern. */
-const SENTINEL = {
-  email: '\uE010',
-  nodeId: '\uE011',
-  login: '\uE012',
-  id: '\uE013',
-} as const;
+  const combined = new RegExp(alternatives.map(([p]) => `(${p})`).join('|'), 'g');
+  return text.replace(combined, (...groups: unknown[]) => {
+    const index = groups.slice(1, alternatives.length + 1).findIndex((g) => g !== undefined);
+    return alternatives[index]?.[1] ?? String(groups[0]);
+  });
+}
 
 /**
  * Sanitizes a captured GitHub page. Output is deterministic for identical input: no timestamps,
