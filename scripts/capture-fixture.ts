@@ -153,6 +153,7 @@ async function captureFromFile(
   spec: FixtureSpec,
   file: string,
   identity: Identity,
+  check: boolean,
 ): Promise<Result> {
   if (spec.kind !== 'html') fail('--from-file supports HTML fixtures only');
   const body = await readFile(file, 'utf8');
@@ -174,7 +175,7 @@ async function captureFromFile(
   const encoded = findEncodedIdentity(content, identity);
   if (encoded.length > 0)
     fail(`identity still present inside base64-encoded data: ${encoded.length} value(s)`);
-  return store(spec, content, 200, false);
+  return store(spec, content, 200, check);
 }
 
 async function store(
@@ -230,8 +231,13 @@ async function main(): Promise<void> {
       ...(values['node-id'] !== undefined ? { nodeId: values['node-id'] } : {}),
       ...(values.email !== undefined ? { email: values.email } : {}),
     };
-    const result = await captureFromFile(spec, values['from-file'], identity);
+    // --check is honoured here too: compare only, write nothing, exit 1 on drift.
+    const result = await captureFromFile(spec, values['from-file'], identity, values.check);
     console.info(`${result.padEnd(9)} ${relative(ROOT, join(FIXTURES, 'html', `${name}.html`))}`);
+    if (result === 'drift') {
+      console.error('capture-fixture: the saved page differs from the committed fixture');
+      process.exit(1);
+    }
     return;
   }
 
