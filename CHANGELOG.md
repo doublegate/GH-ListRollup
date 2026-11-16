@@ -23,6 +23,13 @@ All notable user-visible changes to this project are documented here. The format
   - Dependabot configuration, with grouped monthly updates
 - CI: `pnpm audit` step, and a gitleaks job that scans the full git history (pinned binary,
   checksum-verified).
+- Test fixtures and tooling (Phase 0 Sprint 2):
+  - `pnpm fixtures:capture`, `fixtures:check` and `fixtures:report`: capture sanitized GitHub
+    pages and tree JSON, detect drift, and compare selector matches.
+  - Four HTML fixtures (root and folder layouts, signed in and out) and eight tree-JSON fixtures.
+  - A Vitest fixture loader (`tests/helpers/fixture.ts`).
+  - Fixtures are minimized to factual structure: no site chrome, READMEs or other rendered
+    markdown, or icon artwork.
 
 ### Security
 

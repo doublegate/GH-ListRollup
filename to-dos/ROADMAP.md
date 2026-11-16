@@ -6,10 +6,9 @@ ticket 04). They are stable: cite them in branches, commits and PRs.
 
 ## Status
 
-- **Current phase:** Phase 0, Foundation.
-- **Current sprint:** Sprint 2, Fixtures and capture tooling. Sprint 1 (Skeleton and CI) completed
-  2026-11-16.
-- **Last updated:** 2026-11-15.
+- **Current phase:** Phase 1, Listing detection and whole-listing collapse (Phase 0 complete 2026-11-16).
+- **Current sprint:** Phase 1 Sprint 1, Selectors and page model.
+- **Last updated:** 2026-11-16.
 
 ## Phases
 
@@ -54,7 +53,8 @@ ticket 04). They are stable: cite them in branches, commits and PRs.
 
 From `ref-docs/research-report.md` §8:
 
-1. Logged-in DOM differences (answered by T-GNR-012).
+1. ~~Logged-in DOM differences~~: resolved by T-GNR-012 on 2026-11-16, with no differences
+   (`ref-docs/research-update-2026-11-16-logged-in-dom.md`).
 2. Private repos and Firefox cookie behaviour on the tree JSON (T-GNR-201).
 3. Whether the `navigate` event reaches Firefox content scripts (T-GNR-106).
 4. Whether the REST fallback ships in v1 (decided at the end of Phase 2; ADR needed).

@@ -142,7 +142,9 @@ pnpm dev:firefox
 
 From `ref-docs/research-report.md` §8:
 
-- Does the logged-in DOM differ from the logged-out observations? (T-GNR-012)
+- ~~Does the logged-in DOM differ from the logged-out observations?~~ Resolved 2026-11-16 (T-GNR-012):
+  no selector differs. See `ref-docs/research-update-2026-11-16-logged-in-dom.md`. That page also
+  records the 100-row server render limit.
 - Does the same-origin tree JSON work for private repos in Firefox MV3, and in SAML-enforced orgs?
   (T-GNR-201, which gates the need for the REST fallback)
 - Does the Navigation API's `navigate` event reach Firefox content scripts? (T-GNR-106)

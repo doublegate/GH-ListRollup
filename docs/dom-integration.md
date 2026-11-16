@@ -73,7 +73,19 @@ arrow and "N items". See `docs/settings.md`.
 - A row whose link `title` reads "This path skips through empty directories" is a simplified chain.
   Expanding it expands the deepest folder, which is the row link's `href`.
 - Submodule rows (link to another repository) and symlink rows (`aria-label` ends `(Symlink to file)`)
-  get no arrow.
+  get no arrow. Observed link suffixes are `(Directory)`, `(File)`, `(Submodule)` and
+  `(Symlink to file)`. **Only `(Directory)` gets an arrow**, so a suffix GitHub adds later is
+  safely ignored.
+- **The server renders at most 100 rows.** The embedded JSON carries every entry; on larger folders
+  React presumably adds the rest after hydration. `apply()` must decorate rows that appear after
+  the first pass (§4, step 5).
+- **The "View all files" row is mobile-only truncation** (`show-for-mobile` / `truncate-for-mobile`),
+  not the 100-row limit.
+- **Signed in or out makes no difference.** Every selector in the table above matches the same
+  elements on both layouts. See `ref-docs/research-update-2026-11-16-logged-in-dom.md` and
+  `pnpm fixtures:report`.
+- **Don't use branch-picker ids to tell layouts apart.** Folder pages carry both the root id and the
+  `-wide` id. Use the `up-tree` row or the URL.
 
 ## 3. Page model
 

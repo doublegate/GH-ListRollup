@@ -43,18 +43,21 @@ Imports use the `@/` alias for `src/`. WXT APIs are imported explicitly from the
 
 ## 3. Commands
 
-| Command                             | What it does                                                                  |
-| ----------------------------------- | ----------------------------------------------------------------------------- |
-| `pnpm install`                      | Installs, then `postinstall` runs `wxt prepare` to generate `.wxt/`           |
-| `pnpm dev` / `pnpm dev:firefox`     | Dev build with reload. WXT launches a browser at the `webExt.startUrls` page. |
-| `pnpm build` / `pnpm build:firefox` | Production builds into `.output/chrome-mv3` and `.output/firefox-mv3`         |
-| `pnpm zip` / `pnpm zip:firefox`     | Store packages. The Firefox command also writes the AMO sources zip.          |
-| `pnpm typecheck`                    | `tsc --noEmit` (needs `.wxt/` from `wxt prepare`)                             |
-| `pnpm lint`                         | ESLint, zero warnings allowed                                                 |
-| `pnpm lint:firefox`                 | `web-ext lint --warnings-as-errors` on the Firefox build                      |
-| `pnpm format` / `pnpm format:check` | Prettier                                                                      |
-| `pnpm test` / `pnpm test:coverage`  | Vitest                                                                        |
-| `pnpm check`                        | Every gate in CI order                                                        |
+| Command                             | What it does                                                                    |
+| ----------------------------------- | ------------------------------------------------------------------------------- |
+| `pnpm install`                      | Installs, then `postinstall` runs `wxt prepare` to generate `.wxt/`             |
+| `pnpm dev` / `pnpm dev:firefox`     | Dev build with reload. WXT launches a browser at the `webExt.startUrls` page.   |
+| `pnpm build` / `pnpm build:firefox` | Production builds into `.output/chrome-mv3` and `.output/firefox-mv3`           |
+| `pnpm zip` / `pnpm zip:firefox`     | Store packages. The Firefox command also writes the AMO sources zip.            |
+| `pnpm typecheck`                    | `tsc --noEmit` (needs `.wxt/` from `wxt prepare`)                               |
+| `pnpm lint`                         | ESLint, zero warnings allowed                                                   |
+| `pnpm lint:firefox`                 | `web-ext lint --warnings-as-errors` on the Firefox build                        |
+| `pnpm format` / `pnpm format:check` | Prettier                                                                        |
+| `pnpm test` / `pnpm test:coverage`  | Vitest                                                                          |
+| `pnpm fixtures:capture [names]`     | Re-captures GitHub test fixtures from `tests/fixtures/manifest.json`, sanitized |
+| `pnpm fixtures:check`               | Compares fixtures with live GitHub; exits 1 on drift (writes nothing)           |
+| `pnpm fixtures:report`              | Selector match counts per HTML fixture; flags signed-in/out differences         |
+| `pnpm check`                        | Every gate in CI order                                                          |
 
 ### Loading unpacked builds
 

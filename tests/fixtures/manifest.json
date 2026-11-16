@@ -1,0 +1,80 @@
+{
+  "$comment": "Fixture sources for scripts/capture-fixture.ts (T-GNR-011, T-GNR-013). Re-capture deliberately: fixtures are golden vectors (docs/testing-strategy.md section 3).",
+  "fixtures": [
+    {
+      "name": "root",
+      "kind": "html",
+      "url": "https://github.com/git/git",
+      "purpose": "Repository root (overview layout): directories, files, a submodule (sha1collisiondetection) and a file symlink (RelNotes)."
+    },
+    {
+      "name": "folder",
+      "kind": "html",
+      "url": "https://github.com/git/git/tree/master/contrib",
+      "purpose": "Folder page layout: sticky breadcrumb header, separate latest-commit box, parent-directory (up-tree) row."
+    },
+    {
+      "name": "root-logged-in",
+      "kind": "html",
+      "url": "https://github.com/git/git",
+      "loggedIn": true,
+      "purpose": "Same page as root.html, rendered for a signed-in user (T-GNR-012). Identity replaced with fixture-user."
+    },
+    {
+      "name": "folder-logged-in",
+      "kind": "html",
+      "url": "https://github.com/git/git/tree/master/contrib",
+      "loggedIn": true,
+      "purpose": "Same page as folder.html, rendered for a signed-in user (T-GNR-012). Identity replaced with fixture-user."
+    },
+    {
+      "name": "root",
+      "kind": "json",
+      "url": "https://github.com/git/git/tree/master",
+      "purpose": "Root listing: directory, file, submodule and symlink_file entries (564 items, under the cap)."
+    },
+    {
+      "name": "nested",
+      "kind": "json",
+      "url": "https://github.com/microsoft/vscode/tree/main/src/vs",
+      "purpose": "Nested folder: directories followed by files."
+    },
+    {
+      "name": "capped-1000",
+      "kind": "json",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types",
+      "purpose": "Folder over the 1,000-item cap: items.length is 1000 while totalCount is about 8,600."
+    },
+    {
+      "name": "simplified-chain",
+      "kind": "json",
+      "url": "https://github.com/microsoft/vscode/tree/main",
+      "purpose": "Contains a single-child folder chain (.agents/skills/launch) with hasSimplifiedPath."
+    },
+    {
+      "name": "submodule",
+      "kind": "json",
+      "url": "https://github.com/rust-lang/rust/tree/main/src/tools",
+      "purpose": "Several submodule entries (cargo, enzyme, rustc-perf) with submoduleUrl."
+    },
+    {
+      "name": "symlink-directory",
+      "kind": "json",
+      "url": "https://github.com/torvalds/linux/tree/master/scripts/dtc/include-prefixes",
+      "purpose": "symlink_directory entries (contentType not documented in the original research)."
+    },
+    {
+      "name": "slash-ref",
+      "kind": "json",
+      "url": "https://github.com/refined-github/sandbox/tree/branch/with/slashes",
+      "purpose": "Branch name containing slashes; refInfo.name is branch/with/slashes."
+    },
+    {
+      "name": "not-found-404",
+      "kind": "json",
+      "url": "https://github.com/git/git/tree/master/this-path-does-not-exist-gnr",
+      "expectStatus": 404,
+      "purpose": "Missing path: GitHub answers 404 with a JSON body."
+    }
+  ]
+}

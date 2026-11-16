@@ -29,6 +29,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "fixtures:capture": "node scripts/capture-fixture.ts",
+    "fixtures:check": "node scripts/capture-fixture.ts --check",
+    "fixtures:report": "node scripts/fixture-dom-report.ts",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm build:firefox && pnpm lint:firefox",
     "postinstall": "wxt prepare"
   },

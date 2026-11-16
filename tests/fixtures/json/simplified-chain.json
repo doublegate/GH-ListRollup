@@ -1,0 +1,591 @@
+{
+  "meta": {
+    "title": "GitHub - microsoft/vscode: Visual Studio Code"
+  },
+  "payload": {
+    "codeViewTreeRoute": {
+      "path": "/",
+      "refInfo": {
+        "name": "main",
+        "listCacheKey": "v0:0",
+        "canEdit": false,
+        "refType": "branch",
+        "currentOid": "6659689e6b03ec062f5b7bcea9850b4c59045807"
+      },
+      "tree": {
+        "items": [
+          {
+            "name": ".agents/skills/launch",
+            "path": ".agents/skills/launch",
+            "contentType": "directory",
+            "hasSimplifiedPath": true
+          },
+          {
+            "name": ".config",
+            "path": ".config",
+            "contentType": "directory"
+          },
+          {
+            "name": ".devcontainer",
+            "path": ".devcontainer",
+            "contentType": "directory"
+          },
+          {
+            "name": ".eslint-plugin-local",
+            "path": ".eslint-plugin-local",
+            "contentType": "directory"
+          },
+          {
+            "name": ".github",
+            "path": ".github",
+            "contentType": "directory"
+          },
+          {
+            "name": ".vscode",
+            "path": ".vscode",
+            "contentType": "directory"
+          },
+          {
+            "name": "build",
+            "path": "build",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli",
+            "path": "cli",
+            "contentType": "directory"
+          },
+          {
+            "name": "copilot_shim",
+            "path": "copilot_shim",
+            "contentType": "directory"
+          },
+          {
+            "name": "extensions",
+            "path": "extensions",
+            "contentType": "directory"
+          },
+          {
+            "name": "remote",
+            "path": "remote",
+            "contentType": "directory"
+          },
+          {
+            "name": "resources",
+            "path": "resources",
+            "contentType": "directory"
+          },
+          {
+            "name": "scripts",
+            "path": "scripts",
+            "contentType": "directory"
+          },
+          {
+            "name": "src",
+            "path": "src",
+            "contentType": "directory"
+          },
+          {
+            "name": "test",
+            "path": "test",
+            "contentType": "directory"
+          },
+          {
+            "name": ".editorconfig",
+            "path": ".editorconfig",
+            "contentType": "file"
+          },
+          {
+            "name": ".eslint-allowed-bracket-notation-files",
+            "path": ".eslint-allowed-bracket-notation-files",
+            "contentType": "file"
+          },
+          {
+            "name": ".eslint-allowed-javascript-files",
+            "path": ".eslint-allowed-javascript-files",
+            "contentType": "file"
+          },
+          {
+            "name": ".eslint-ignore",
+            "path": ".eslint-ignore",
+            "contentType": "file"
+          },
+          {
+            "name": ".git-blame-ignore-revs",
+            "path": ".git-blame-ignore-revs",
+            "contentType": "file"
+          },
+          {
+            "name": ".gitattributes",
+            "path": ".gitattributes",
+            "contentType": "file"
+          },
+          {
+            "name": ".gitignore",
+            "path": ".gitignore",
+            "contentType": "file"
+          },
+          {
+            "name": ".lsifrc.json",
+            "path": ".lsifrc.json",
+            "contentType": "file"
+          },
+          {
+            "name": ".mailmap",
+            "path": ".mailmap",
+            "contentType": "file"
+          },
+          {
+            "name": ".mcp.json",
+            "path": ".mcp.json",
+            "contentType": "file"
+          },
+          {
+            "name": ".mention-bot",
+            "path": ".mention-bot",
+            "contentType": "file"
+          },
+          {
+            "name": ".nvmrc",
+            "path": ".nvmrc",
+            "contentType": "file"
+          },
+          {
+            "name": ".pnpmfile.mjs",
+            "path": ".pnpmfile.mjs",
+            "contentType": "file"
+          },
+          {
+            "name": ".vscode-test.js",
+            "path": ".vscode-test.js",
+            "contentType": "file"
+          },
+          {
+            "name": "AGENTS.md",
+            "path": "AGENTS.md",
+            "contentType": "file"
+          },
+          {
+            "name": "CONTRIBUTING.md",
+            "path": "CONTRIBUTING.md",
+            "contentType": "file"
+          },
+          {
+            "name": "LICENSE.txt",
+            "path": "LICENSE.txt",
+            "contentType": "file"
+          },
+          {
+            "name": "README.md",
+            "path": "README.md",
+            "contentType": "file"
+          },
+          {
+            "name": "SECURITY.md",
+            "path": "SECURITY.md",
+            "contentType": "file"
+          },
+          {
+            "name": "ThirdPartyNotices.txt",
+            "path": "ThirdPartyNotices.txt",
+            "contentType": "file"
+          },
+          {
+            "name": "cglicenses.json",
+            "path": "cglicenses.json",
+            "contentType": "file"
+          },
+          {
+            "name": "cgmanifest.json",
+            "path": "cgmanifest.json",
+            "contentType": "file"
+          },
+          {
+            "name": "eslint.config.js",
+            "path": "eslint.config.js",
+            "contentType": "file"
+          },
+          {
+            "name": "gulpfile.mjs",
+            "path": "gulpfile.mjs",
+            "contentType": "file"
+          },
+          {
+            "name": "oxlint.config.ts",
+            "path": "oxlint.config.ts",
+            "contentType": "file"
+          },
+          {
+            "name": "package.json",
+            "path": "package.json",
+            "contentType": "file"
+          },
+          {
+            "name": "pnpm-lock.yaml",
+            "path": "pnpm-lock.yaml",
+            "contentType": "file"
+          },
+          {
+            "name": "pnpm-workspace.yaml",
+            "path": "pnpm-workspace.yaml",
+            "contentType": "file"
+          },
+          {
+            "name": "product.json",
+            "path": "product.json",
+            "contentType": "file"
+          },
+          {
+            "name": "tsfmt.json",
+            "path": "tsfmt.json",
+            "contentType": "file"
+          }
+        ],
+        "totalCount": 45,
+        "templateDirectorySuggestionUrl": null,
+        "readme": null,
+        "showBranchInfobar": false
+      },
+      "userNameDisplayConfiguration": "name_handle",
+      "treeExpanded": false,
+      "symbolsExpanded": false,
+      "copilotSWEAgentEnabled": false,
+      "copilotAccessAllowed": false,
+      "isOverview": true,
+      "overview": {
+        "banners": {
+          "shouldRecommendReadme": false,
+          "isPersonalRepo": false,
+          "showUseActionBanner": false,
+          "actionSlug": null,
+          "actionId": null,
+          "showProtectBranchBanner": false,
+          "requiredCustomPropertyValuesMissingCount": 0,
+          "transactionalMessageBanner": null,
+          "publishBannersInfo": {
+            "dismissActionNoticePath": "/settings/dismiss-notice/publish_action_from_repo",
+            "releasePath": "/microsoft/vscode/releases/new?marketplace=true",
+            "showPublishActionBanner": false
+          },
+          "interactionLimitBanner": null,
+          "showInvitationBanner": false,
+          "inviterName": null,
+          "actionsMigrationBannerInfo": {
+            "releaseTags": [],
+            "showImmutableActionsMigrationBanner": false,
+            "initialMigrationStatus": null
+          },
+          "copilotSurveyBanner": null,
+          "showSpammyBanner": false,
+          "blockedContributorsBanner": null,
+          "codespacesSurveyBanner": null
+        },
+        "codeButton": {
+          "contactPath": "/contact",
+          "isEnterprise": false,
+          "local": {
+            "protocolInfo": {
+              "httpAvailable": true,
+              "sshAvailable": null,
+              "httpUrl": "https://github.com/microsoft/vscode.git",
+              "showCloneWarning": null,
+              "sshUrl": null,
+              "sshCertificatesRequired": null,
+              "sshCertificatesAvailable": null,
+              "ghCliUrl": "gh repo clone microsoft/vscode",
+              "defaultProtocol": "http",
+              "newSshKeyUrl": "/settings/ssh/new",
+              "setProtocolPath": "/users/set_protocol?protocol_type=clone"
+            },
+            "platformInfo": {
+              "cloneUrl": "https://desktop.github.com",
+              "showVisualStudioCloneButton": false,
+              "visualStudioCloneUrl": "https://windows.github.com",
+              "showXcodeCloneButton": false,
+              "xcodeCloneUrl": "xcode://clone?repo=https%3A%2F%2Fgithub.com%2Fmicrosoft%2Fvscode",
+              "zipballUrl": "/microsoft/vscode/archive/refs/heads/main.zip"
+            }
+          },
+          "newCodespacePath": "/codespaces/new?hide_repo_select=true&ref=main&repo=41881900"
+        },
+        "popovers": {
+          "rename": null,
+          "renamedParentRepo": null
+        },
+        "commitCount": "171,824",
+        "overviewFiles": [
+          {
+            "displayName": "README.md",
+            "repoName": "vscode",
+            "refName": "main",
+            "path": "README.md",
+            "preferredFileType": "readme",
+            "tabName": "README",
+            "richText": "",
+            "loaded": true,
+            "timedOut": false,
+            "errorMessage": null,
+            "headerInfo": {
+              "toc": [
+                {
+                  "level": 1,
+                  "text": "Visual Studio Code - Open Source (\"Code - OSS\")",
+                  "anchor": "visual-studio-code---open-source-code---oss",
+                  "htmlText": "Visual Studio Code - Open Source (\"Code - OSS\")"
+                },
+                {
+                  "level": 2,
+                  "text": "The Repository",
+                  "anchor": "the-repository",
+                  "htmlText": "The Repository"
+                },
+                {
+                  "level": 2,
+                  "text": "Visual Studio Code",
+                  "anchor": "visual-studio-code",
+                  "htmlText": "Visual Studio Code"
+                },
+                {
+                  "level": 2,
+                  "text": "Contributing",
+                  "anchor": "contributing",
+                  "htmlText": "Contributing"
+                },
+                {
+                  "level": 2,
+                  "text": "Feedback",
+                  "anchor": "feedback",
+                  "htmlText": "Feedback"
+                },
+                {
+                  "level": 2,
+                  "text": "Related Projects",
+                  "anchor": "related-projects",
+                  "htmlText": "Related Projects"
+                },
+                {
+                  "level": 2,
+                  "text": "Bundled Extensions",
+                  "anchor": "bundled-extensions",
+                  "htmlText": "Bundled Extensions"
+                },
+                {
+                  "level": 2,
+                  "text": "Development Container",
+                  "anchor": "development-container",
+                  "htmlText": "Development Container"
+                },
+                {
+                  "level": 2,
+                  "text": "Code of Conduct",
+                  "anchor": "code-of-conduct",
+                  "htmlText": "Code of Conduct"
+                },
+                {
+                  "level": 2,
+                  "text": "License",
+                  "anchor": "license",
+                  "htmlText": "License"
+                }
+              ],
+              "siteNavLoginPath": "/login"
+            }
+          },
+          {
+            "displayName": "CODE_OF_CONDUCT.md",
+            "repoName": ".github",
+            "refName": "main",
+            "path": "CODE_OF_CONDUCT.md",
+            "preferredFileType": "code_of_conduct",
+            "tabName": "Code of conduct",
+            "richText": null,
+            "loaded": false,
+            "timedOut": false,
+            "errorMessage": null,
+            "headerInfo": {
+              "toc": null,
+              "siteNavLoginPath": "/login"
+            }
+          },
+          {
+            "displayName": "CONTRIBUTING.md",
+            "repoName": "vscode",
+            "refName": "main",
+            "path": "CONTRIBUTING.md",
+            "preferredFileType": "contributing",
+            "tabName": "Contributing",
+            "richText": null,
+            "loaded": false,
+            "timedOut": false,
+            "errorMessage": null,
+            "headerInfo": {
+              "toc": null,
+              "siteNavLoginPath": "/login"
+            }
+          },
+          {
+            "displayName": "LICENSE.txt",
+            "repoName": "vscode",
+            "refName": "main",
+            "path": "LICENSE.txt",
+            "preferredFileType": "license",
+            "tabName": "MIT",
+            "richText": null,
+            "loaded": false,
+            "timedOut": false,
+            "errorMessage": null,
+            "headerInfo": {
+              "toc": null,
+              "siteNavLoginPath": "/login"
+            }
+          },
+          {
+            "displayName": "SECURITY.md",
+            "repoName": "vscode",
+            "refName": "main",
+            "path": "SECURITY.md",
+            "preferredFileType": "security",
+            "tabName": "Security",
+            "richText": null,
+            "loaded": false,
+            "timedOut": false,
+            "errorMessage": null,
+            "headerInfo": {
+              "toc": null,
+              "siteNavLoginPath": "/login"
+            }
+          }
+        ],
+        "overviewFilesProcessingTime": 0,
+        "copilotSWEAgentEnabled": false,
+        "sidebarAboutData": {
+          "description": "Visual Studio Code",
+          "formattedDescription": "Visual Studio Code",
+          "website": "https://code.visualstudio.com",
+          "topics": [
+            {
+              "name": "editor"
+            },
+            {
+              "name": "electron"
+            },
+            {
+              "name": "microsoft"
+            },
+            {
+              "name": "typescript"
+            },
+            {
+              "name": "visual-studio-code"
+            }
+          ],
+          "showInsights": true,
+          "canOpenStargazersAndWatchers": false,
+          "stargazerCount": 0,
+          "watcherCount": 0,
+          "forksCount": 0,
+          "stargazersPath": "/microsoft/vscode/stargazers",
+          "watchersPath": "/microsoft/vscode/watchers",
+          "forkNetworkPath": "/microsoft/vscode/forks",
+          "activityPath": "/microsoft/vscode/activity",
+          "customPropertiesPath": "/microsoft/vscode/custom-properties",
+          "reportPath": "/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fmicrosoft%2Fvscode&report=microsoft+%28user%29",
+          "canEditMetadata": false,
+          "ownerLogin": "microsoft",
+          "repoName": "vscode",
+          "isOrg": true,
+          "sections": {
+            "releases": {
+              "releaseCount": 255,
+              "tagCount": 406
+            },
+            "sponsors": false,
+            "deployments": false,
+            "packages": false,
+            "usedBy": true,
+            "contributors": true,
+            "languages": true,
+            "cta": false,
+            "suggestedWorkflows": false
+          },
+          "hasCitation": false,
+          "repo": {
+            "ownerAvatarUrl": "",
+            "ownerId": 6154722,
+            "isPrivate": false,
+            "isTemplate": false,
+            "isFork": false,
+            "isMirror": false,
+            "isArchived": false,
+            "visibilityLabel": "Public",
+            "license": {
+              "spdxId": "MIT",
+              "name": "MIT License"
+            },
+            "isAdvisoryWorkspace": false
+          },
+          "star": {
+            "viewerHasStarred": false,
+            "canStar": false
+          },
+          "fork": {
+            "canFork": false,
+            "forkabilityError": "not_logged_in"
+          },
+          "pin": {
+            "canPin": false,
+            "isPinned": true,
+            "isOrgOwned": true,
+            "pinItemsRemaining": 1
+          },
+          "watch": {
+            "canWatch": false,
+            "watchData": {
+              "repositoryId": "41881900",
+              "repositoryName": "microsoft/vscode",
+              "watchersCount": 0,
+              "subscriptionType": "none",
+              "subscribableThreadTypes": [
+                {
+                  "name": "Issue",
+                  "enabled": true,
+                  "subscribed": false
+                },
+                {
+                  "name": "PullRequest",
+                  "enabled": true,
+                  "subscribed": false
+                },
+                {
+                  "name": "Release",
+                  "enabled": true,
+                  "subscribed": false
+                },
+                {
+                  "name": "Discussion",
+                  "enabled": false,
+                  "subscribed": false
+                },
+                {
+                  "name": "SecurityAlert",
+                  "enabled": true,
+                  "subscribed": false
+                }
+              ],
+              "showLabelSubscriptions": false,
+              "subscribedLabels": []
+            }
+          },
+          "viewer": {
+            "isLoggedIn": false,
+            "isSiteAdmin": false,
+            "emuContributionBlocked": false
+          },
+          "showSponsorButton": false,
+          "showTemplateButton": false,
+          "showDemoNotification": false
+        }
+      }
+    }
+  }
+}
