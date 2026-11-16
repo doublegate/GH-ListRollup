@@ -1,6 +1,6 @@
 # Project Status
 
-**Last updated:** 2026-11-15 | **Version:** 0.1.0 (unreleased) | **Phase:** 0, Foundation
+**Last updated:** 2026-11-16 | **Version:** 0.1.0 (unreleased) | **Phase:** 0, Foundation
 
 ## Summary
 
@@ -42,8 +42,8 @@ is implemented yet. The next step is the manual load check of the skeleton in bo
 
 ## Known issues
 
-- The repository social preview image is not set yet (GitHub has no API for it). Upload
-  `assets/banner.png` under Settings > General > Social preview.
+- deepmerge (GHSA-gcqx-w48m-w2h4, low) has no fixed release. It is dev-time only and reviewed; see
+  `docs/build-and-tooling.md` §4.
 - Every github.com observation so far was made logged out. Logged-in markup and private-repo data
   access remain unverified (T-GNR-012, T-GNR-201).
 
@@ -51,5 +51,4 @@ is implemented yet. The next step is the manual load check of the skeleton in bo
 
 1. T-GNR-004: load both builds and confirm the log lines on the root page, a folder page, and after a
    soft navigation.
-2. Review the Dependabot pull requests opened on first push.
-3. Phase 0 Sprint 2: fixture capture tooling.
+2. Phase 0 Sprint 2: fixture capture tooling.

@@ -32,6 +32,10 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # Fails on any advisory not explicitly reviewed in pnpm-workspace.yaml auditConfig.
+      - name: Dependency audit
+        run: pnpm audit
+
       # Same gate as local `pnpm check` (docs/testing-strategy.md section 7).
       - name: Check
         run: pnpm check
@@ -44,3 +48,29 @@ jobs:
             .output/chrome-mv3
             .output/firefox-mv3
           retention-days: 14
+
+  secrets:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GITLEAKS_VERSION: 8.30.1
+      # SHA-256 of gitleaks_8.30.1_linux_x64.tar.gz from the upstream checksums file.
+      GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0 # scan the full history, not just the tip
+
+      - name: Install gitleaks (pinned, checksum-verified)
+        run: |
+          curl -sSfL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          rm gitleaks.tgz
+
+      # Built-in rules only; there is no .gitleaks.toml (a custom config without
+      # [extend] useDefault = true would silently disable every built-in rule).
+      - name: Scan git history
+        run: ./gitleaks git . --no-banner --redact --exit-code 1

@@ -8,18 +8,18 @@
 Every devDependency in `package.json` is pinned to an exact version, with no `^`. AMO reviewers must be
 able to rebuild byte-identical output (`docs/release.md` §3).
 
-| Tool                                              | Version                               | Notes                                                                                      |
-| ------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Node                                              | 26 LTS (`.nvmrc`), `engines` >= 22.18 | WXT needs Node 22 or later                                                                 |
-| pnpm                                              | 12.21.0 (`packageManager`)            | Use `corepack enable` to get the pinned version                                            |
-| wxt                                               | 0.21.5                                | `vite` 8.3.8 is a required peer and is listed explicitly                                   |
-| @wxt-dev/storage                                  | 1.3.0                                 | Used from Phase 3 (`docs/settings.md`)                                                     |
-| typescript                                        | 6.0.3                                 | **Do not upgrade to 7.x** until `typescript-eslint` supports it (8.72.2 requires `<6.1.0`) |
-| eslint / @eslint/js / typescript-eslint / globals | 10.15.0 / 10.0.1 / 8.72.2 / 17.14.0   | Flat config, type-checked rules                                                            |
-| prettier                                          | 3.10.1                                |                                                                                            |
-| vitest / @vitest/coverage-v8 / happy-dom          | 5.1.0 / 5.1.0 / 21.0.4                |                                                                                            |
-| web-ext                                           | 10.8.0                                | Lints the Firefox build                                                                    |
-| @playwright/test                                  | 1.65.1                                | Added in Phase 4 (T-GNR-401)                                                               |
+| Tool                                              | Version                               | Notes                                                                                                                                      |
+| ------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Node                                              | 26 LTS (`.nvmrc`), `engines` >= 22.18 | WXT needs Node 22 or later                                                                                                                 |
+| pnpm                                              | 12.21.0 (`packageManager`)            | Use `corepack enable` to get the pinned version                                                                                            |
+| wxt                                               | 0.21.5                                | `vite` 8.3.8 is a required peer and is listed explicitly                                                                                   |
+| @wxt-dev/storage                                  | 1.3.0                                 | Used from Phase 3 (`docs/settings.md`)                                                                                                     |
+| typescript                                        | 6.0.3                                 | **Do not upgrade to 7.x** until `typescript-eslint` supports it (8.72.2 and the 8.72.3 canary both require `<6.1.0`; rechecked 2026-11-16) |
+| eslint / @eslint/js / typescript-eslint / globals | 10.15.0 / 10.0.1 / 8.72.2 / 17.14.0   | Flat config, type-checked rules                                                                                                            |
+| prettier                                          | 3.10.1                                |                                                                                                                                            |
+| vitest / @vitest/coverage-v8 / happy-dom          | 5.1.0 / 5.1.0 / 21.0.4                |                                                                                                                                            |
+| web-ext                                           | 10.8.0                                | Lints the Firefox build                                                                                                                    |
+| @playwright/test                                  | 1.65.1                                | Added in Phase 4 (T-GNR-401)                                                                                                               |
 
 ## 2. Layout
 
@@ -69,8 +69,30 @@ page console on load and after each soft navigation.
 ## 4. CI
 
 `.github/workflows/ci.yml` runs on pull requests and pushes to `main`. It uses Ubuntu, Node 26 and
-pnpm via corepack, with action versions pinned. It runs `pnpm install --frozen-lockfile`, then
-`pnpm check`, then uploads both builds as artifacts.
+pnpm via corepack, with action versions pinned. Two jobs:
+
+- **check** runs `pnpm install --frozen-lockfile`, then `pnpm audit`, then `pnpm check`, then uploads
+  both builds as artifacts.
+- **secrets** scans the full git history with gitleaks, a pinned and checksum-verified binary using
+  the built-in rules. The repo has no `.gitleaks.toml`. If one is ever added, it must start with
+  `[extend] useDefault = true`; otherwise it silently replaces every built-in rule.
+
+To run the secret scan locally, give gitleaks an **absolute path**:
+`gitleaks git "$PWD" --redact`. On this workstation the `gitleaks` command is a wrapper that changes
+into its own install directory first, so `gitleaks dir .` scans the wrapper's files, not the
+project.
+
+### Dependency overrides and audit exceptions
+
+These live in `pnpm-workspace.yaml`. pnpm 10 and later ignore the `pnpm` field in `package.json`.
+
+| Entry                                                | Why                                                                                                                                                            | Remove when                                                   |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `overrides`: `minimatch@>=7.0.0 <11.0.1` to `11.0.8` | GHSA-g3hv-75wg-m249 (moderate) in a copy pulled by `@typescript-eslint/typescript-estree`. Dependabot cannot bump transitive pins.                             | typescript-eslint depends on minimatch 11.0.1 or later itself |
+| `auditConfig.ignoreGhsas`: GHSA-gcqx-w48m-w2h4       | deepmerge 4.3.1, low. No patched release exists. It is reached only through web-ext > addons-linter at lint time, with no untrusted input, and is not shipped. | web-ext drops or replaces deepmerge, or a fix is released     |
+
+Dependabot is configured in `.github/dependabot.yml`: grouped monthly updates for npm and Actions,
+with TypeScript held below 6.1. Upgrade sweeps re-check every pin with `npm view <pkg> version`.
 
 Planned additions:
 
