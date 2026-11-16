@@ -25,3 +25,13 @@ Sprint 2, with user data stripped (`docs/testing-strategy.md` §3).
 
 This index is maintained as `ref-docs/` grows. The immutability rule (`CLAUDE.md`) applies to the
 research files it lists: corrections to them go in dated `research-update-*.md` supplements.
+
+## Supplements
+
+Dated corrections and extensions, newest last:
+
+| File | Supplements | Topic |
+| --- | --- | --- |
+| `research-update-2026-11-16-content-types.md` | `github-data-sources.md` | Tree JSON `contentType` values, including `symlink_directory` |
+| `research-update-2026-11-16-logged-in-dom.md` | `github-code-view-dom.md` §7 | The signed-in DOM matches the signed-out one; the 100-row server limit |
+| `research-update-2026-11-16-phase1-fixtures.md` | `github-code-view-dom.md` §3-§4 | Breadcrumb structure, the commit bar's inner row, refs from row links, the empty repository |

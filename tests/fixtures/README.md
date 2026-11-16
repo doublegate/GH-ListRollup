@@ -9,12 +9,17 @@ purpose, in a commit that names the GitHub change they track (`docs/testing-stra
 
 ## HTML (`html/`)
 
-| Fixture                 | Source                                   | Covers                                                                                                |
-| ----------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `root.html`             | `git/git`                                | Repository root (overview layout): listing inside the commit-bar box, submodule and file-symlink rows |
-| `folder.html`           | `git/git/tree/master/contrib`            | Folder layout: sticky breadcrumb, separate latest-commit box, parent-directory (`up-tree`) row        |
-| `root-logged-in.html`   | `git/git`, signed in                     | The same page rendered for a signed-in user; identity replaced by `fixture-user`                      |
-| `folder-logged-in.html` | `git/git/tree/master/contrib`, signed in | The same page rendered for a signed-in user; identity replaced by `fixture-user`                      |
+| Fixture                 | Source                                            | Covers                                                                                                |
+| ----------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `root.html`             | `git/git`                                         | Repository root (overview layout): listing inside the commit-bar box, submodule and file-symlink rows |
+| `folder.html`           | `git/git/tree/master/contrib`                     | Folder layout: sticky breadcrumb, separate latest-commit box, parent-directory (`up-tree`) row        |
+| `root-logged-in.html`   | `git/git`, signed in                              | The same page rendered for a signed-in user; identity replaced by `fixture-user`                      |
+| `folder-logged-in.html` | `git/git/tree/master/contrib`, signed in          | The same page rendered for a signed-in user; identity replaced by `fixture-user`                      |
+| `folder-deep.html`      | `git/git/tree/master/contrib/completion`          | Two-level folder: a breadcrumb with an intermediate segment (T-GNR-103)                               |
+| `root-tag.html`         | `git/git/tree/v2.47.0`                            | Root listing at a tag ref                                                                             |
+| `root-sha.html`         | `git/git` at a full commit SHA                    | Root listing at a commit SHA                                                                          |
+| `root-slash-ref.html`   | `refined-github/sandbox/tree/branch/with/slashes` | Root on a ref containing `/`, with a single file row (`/blob/` link)                                  |
+| `empty-repo.html`       | `bihealth/dafthelper`                             | An empty repository: no code-view app or listing, but the fallback page gate matches                  |
 
 ## JSON (`json/`)
 

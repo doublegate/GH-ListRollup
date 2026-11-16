@@ -75,6 +75,36 @@
       "url": "https://github.com/git/git/tree/master/this-path-does-not-exist-gnr",
       "expectStatus": 404,
       "purpose": "Missing path: GitHub answers 404 with a JSON body."
+    },
+    {
+      "name": "folder-deep",
+      "kind": "html",
+      "url": "https://github.com/git/git/tree/master/contrib/completion",
+      "purpose": "Two-level folder page (contrib/completion): breadcrumb with an intermediate segment (T-GNR-103)."
+    },
+    {
+      "name": "root-tag",
+      "kind": "html",
+      "url": "https://github.com/git/git/tree/v2.47.0",
+      "purpose": "Root listing at a tag ref (T-GNR-103)."
+    },
+    {
+      "name": "root-sha",
+      "kind": "html",
+      "url": "https://github.com/git/git/tree/7fb6055e678f800320d8ab8cd8f201d9493d1ba0",
+      "purpose": "Root listing at a full commit SHA (T-GNR-103)."
+    },
+    {
+      "name": "root-slash-ref",
+      "kind": "html",
+      "url": "https://github.com/refined-github/sandbox/tree/branch/with/slashes",
+      "purpose": "Root listing on a ref containing slashes; the URL alone cannot locate the ref boundary (T-GNR-103)."
+    },
+    {
+      "name": "empty-repo",
+      "kind": "html",
+      "url": "https://github.com/bihealth/dafthelper",
+      "purpose": "An empty public repository: no code-view app and no listing, but the fallback page gate matches (T-GNR-103)."
     }
   ]
 }
