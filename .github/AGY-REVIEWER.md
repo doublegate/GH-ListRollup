@@ -78,8 +78,13 @@ agy -p "reply with the single word: ok"     # should print: ok
 
 # Tools the reviewer uses (all already present here):
 #   gh jq sqlite3 col script  + unbuffer (from `expect`)
+#   iconv (glibc) for UTF-8 scrubbing; python3 is an optional fallback used only without iconv
 pacman -Q github-cli jq sqlite expect util-linux >/dev/null   # verify; install any missing with paru/pacman
 ```
+
+`unbuffer` is preferred. Without it, the reviewer falls back to `script(1)` and strips the
+`Script started on` and `Script done on` records that util-linux writes into the capture even
+with `-q`.
 
 If `agy -p` prints nothing, fix auth first (run `agy` interactively once to
 complete the Google sign-in) — the reviewer can't work until that one-liner does.

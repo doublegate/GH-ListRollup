@@ -62,7 +62,7 @@ log() { :; }
 # absence-reads-as-agreement failure the markers were adopted to prevent.
 for guard in "service-error guard" "oauth guard" "ours-comment filter" "duration parser" \
              "numeric env validation" "diff-size scaling" "truncation helpers" \
-             "diff-limit classifier"; do
+             "diff-limit classifier" "script capture filter"; do
   blk="$(extract_block "$guard")"
   [ -n "$blk" ] || { echo "FAIL: SELFTEST-EXTRACT block '$guard' is missing or empty" >&2; exit 1; }
   printf '%s\n' "$blk" | bash -n - 2>/dev/null \
@@ -385,11 +385,50 @@ for t in python3 mv rm; do ln -sf "$(command -v "$t")" "$TMPD/noiconv/$t"; done
 printf 'abc\xe2\x82' > "$TMPD/split"
 ( PATH="$TMPD/noiconv"; agy_scrub_utf8 "$TMPD/split" )
 check "the python3 fallback scrubs when iconv is absent" "abc" "$(cat "$TMPD/split")"
+# REGRESSION (agy review, GH-ListRollup PR #4): GNU `iconv -c` exits 1 when it drops a byte, and
+# the iconv branch treated that as failure, so only python3 ever scrubbed byte-cut input --
+# python3 was a silent hard requirement. With iconv present and python3 absent, iconv's output
+# must be used.
+if command -v iconv >/dev/null 2>&1; then
+  mkdir -p "$TMPD/nopython"
+  for t in iconv mv rm; do ln -sf "$(command -v "$t")" "$TMPD/nopython/$t"; done
+  printf 'abc\xe2\x82' > "$TMPD/split"
+  ( PATH="$TMPD/nopython"; agy_scrub_utf8 "$TMPD/split" )
+  check "iconv alone scrubs a split sequence (python3 absent, iconv -c exits 1)" "abc" \
+    "$(cat "$TMPD/split")"
+fi
 printf '\xe2\x82' > "$TMPD/allbad"            # no valid byte: every sanitizer yields nothing
 agy_scrub_utf8 "$TMPD/allbad"
 check "a sanitizer's empty result never replaces the file" "2" "$(wc -c < "$TMPD/allbad" | tr -d ' ')"
 check "both byte-cap paths call the shared scrub" "2" \
   "$(grep -c '^ *agy_scrub_utf8 "\$' "$SCRIPT_DIR/agy-review.sh")"
+# --- script(1) fallback capture: its framing records are not agy output -----------
+# REGRESSION (Codex review, GH-ListRollup PR #4): util-linux `script -qfec` still writes
+# "Script started on" / "Script done on" records into the typescript, so an empty or failed agy
+# run read as non-empty output, and a backend error was no longer on the first line.
+ts_start='Script started on 2026-11-16 02:05:52-05:00 [COMMAND="x" <not executed on terminal>]'
+ts_done='Script done on 2026-11-16 02:05:52-05:00 [COMMAND_EXIT_CODE="0"]'
+check "script records around an empty run leave nothing" "" \
+  "$(printf '%s\n\n%s\n' "$ts_start" "$ts_done" | agy_strip_script_records)"
+check "script records around a review leave only the review" "## Review|body" \
+  "$(printf '%s\n## Review\nbody\n\n%s\n' "$ts_start" "$ts_done" | agy_strip_script_records | paste -sd'|')"
+check "a backend error is back on the first line" "MATCH" \
+  "$(se "$(printf '%s\nerror: backend unavailable\n%s\n' "$ts_start" "$ts_done" | agy_strip_script_records)")"
+check "text that merely mentions a record mid-review is kept" "a|Script done on Tuesday|b" \
+  "$(printf 'a\nScript done on Tuesday\nb\n' | agy_strip_script_records | paste -sd'|')"
+check "the script fallback pipes its capture through the filter" "1" \
+  "$(grep -c 'col -b < "\$raw" | agy_strip_script_records > "\$out_file"' "$SCRIPT_DIR/agy-review.sh")"
+
+# --- every mktemp'd variable is removed by the EXIT trap -------------------------
+# REGRESSION (agy review, GH-ListRollup PR #4): _perm_err, compare_err and trimmed were created
+# mid-flight but missing from cleanup(), so an abort while they existed leaked them.
+cleanup_src="$(sed -n '/^cleanup() {/,/^}/p' "$SCRIPT_DIR/agy-review.sh")"
+missing=""
+for v in $(grep -oE '[A-Za-z_][A-Za-z0-9_]*="\$\(mktemp' "$SCRIPT_DIR/agy-review.sh" | cut -d= -f1 | sort -u); do
+  printf '%s' "$cleanup_src" | grep -qF "\${$v:-}" || missing="$missing $v"
+done
+check "every mktemp'd variable is in the cleanup trap" "" "${missing# }"
+
 # A failed jq step in the archive lookup must be logged, not swallowed.
 check "archive jq failures are logged" "no" \
   "$(grep -n 'SELECT_OURS_JQ" 2>/dev/null' "$SCRIPT_DIR/agy-review.sh" >/dev/null && echo yes || echo no)"

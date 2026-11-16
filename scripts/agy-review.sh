@@ -397,6 +397,9 @@ log "reviewing ${REPO}#${PR}"
 # Remove every temp file on exit. Pre-declared so the trap is safe under `set -u` even if the
 # script exits before a given file is created.
 diff_file= diff_err= meta_file= prompt_file= out_file= raw= body_file= agy_diff_file= agy_work_dir= jq_err= prior_body_file= archived_file= api_err=
+# Also created mid-flight (permission lookup, compare-API merge base, archive trimming); a signal
+# or abort while one of those commands runs would otherwise leak the file in /tmp.
+_perm_err='' compare_err='' trimmed=''
 # Set to 1 if agy printed its interactive OAuth login flow instead of a review (lapsed session);
 # gates the no-post abort below. Pre-declared so `${auth_failed:-0}` is set-u-safe on every path.
 auth_failed=0
@@ -438,7 +441,8 @@ cleanup() {
   # cause. The pre-declaration stays and is still the actual guarantee; this is the cheap second
   # line for a function that only ever runs while something else is going wrong.
   for f in "${diff_file:-}" "${diff_err:-}" "${meta_file:-}" "${out_file:-}" "${raw:-}" "${body_file:-}" \
-           "${jq_err:-}" "${prior_body_file:-}" "${archived_file:-}" "${api_err:-}"; do
+           "${jq_err:-}" "${prior_body_file:-}" "${archived_file:-}" "${api_err:-}" \
+           "${_perm_err:-}" "${compare_err:-}" "${trimmed:-}"; do
     [ -n "$f" ] && doomed+=("$f")
   done
   if [ -z "$keep_set" ]; then
@@ -706,9 +710,18 @@ agy_cap_round() {
 # output, otherwise keep the original. A failed mv is fatal under `set -e`; the function returns
 # 0 when no sanitizer succeeded, so a host with neither tool proceeds with the original bytes.
 agy_scrub_utf8() {
-  if command -v iconv >/dev/null 2>&1 \
-      && iconv -c -f UTF-8 -t UTF-8 "$1" > "$1.utf8" 2>/dev/null && [ -s "$1.utf8" ]; then
-    mv "$1.utf8" "$1"; return
+  # iconv's exit status is NOT the success test. With -c, GNU iconv exits 1 precisely when it
+  # dropped invalid bytes -- after writing every valid byte -- so 0 and 1 both mean "usable
+  # output". Treating 1 as failure made python3 a silent hard requirement (it was the only path
+  # that ever succeeded on byte-cut input), although it is documented as a fallback. Any higher
+  # status, or empty output, still falls through to python3.
+  local iconv_rc
+  if command -v iconv >/dev/null 2>&1; then
+    iconv_rc=0
+    iconv -c -f UTF-8 -t UTF-8 "$1" > "$1.utf8" 2>/dev/null || iconv_rc=$?
+    if [ "$iconv_rc" -le 1 ] && [ -s "$1.utf8" ]; then
+      mv "$1.utf8" "$1"; return
+    fi
   fi
   rm -f "$1.utf8"
   if command -v python3 >/dev/null 2>&1 \
@@ -717,6 +730,34 @@ agy_scrub_utf8() {
     mv "$1.utf8" "$1"; return
   fi
   rm -f "$1.utf8"
+}
+# <<< SELFTEST-EXTRACT
+
+# >>> SELFTEST-EXTRACT: script capture filter
+# Filter (stdin -> stdout) for the script(1) fallback capture. util-linux `script` writes a
+# "Script started on ..." record as the first line of the typescript and a "Script done on ..."
+# record as the last, and `-q` does NOT suppress them in the file (measured: util-linux 2.42.4;
+# -q only silences the terminal messages). Left in, they make an EMPTY or failed agy run look
+# like non-empty output, and they push a backend error off the first line where
+# service_error_present looks for it -- so the retry loop could accept, and post, session
+# metadata or a failure as a review. Only those two framing records are removed: the first line
+# if it is a start record, and the last non-blank line if it is a done record. A review that
+# merely mentions such text elsewhere is left intact.
+agy_strip_script_records() {
+  awk '
+    NR == 1 && /^Script started on / { next }
+    { lines[++n] = $0 }
+    END {
+      last = n
+      while (last > 0 && lines[last] ~ /^[[:space:]]*$/) last--
+      if (last > 0 && lines[last] ~ /^Script done on /) {
+        last--
+        while (last > 0 && lines[last] ~ /^[[:space:]]*$/) last--
+      } else {
+        last = n
+      }
+      for (i = 1; i <= last; i++) print lines[i]
+    }'
 }
 # <<< SELFTEST-EXTRACT
 
@@ -1012,7 +1053,9 @@ for (( attempt=1; attempt<=AGY_RETRIES; attempt++ )); do
     # by `sh -c` (command injection); `%q` quotes each token exactly.
     cmd="$(printf '%q ' "$here/_agy_print.sh" "$prompt_file" "${flags[@]}")"
     "${agy_env[@]}" AGY_BIN="$AGY_BIN" script -qfec "$cmd" "$raw" >/dev/null 2>>"$LOG" || true
-    col -b < "$raw" > "$out_file"
+    # Strip script(1)'s own start/done records so they cannot pass as agy output (see
+    # agy_strip_script_records).
+    col -b < "$raw" | agy_strip_script_records > "$out_file"
     rm -f "$raw"   # each retry makes a fresh $raw; the EXIT trap only holds the last one
   fi
 
