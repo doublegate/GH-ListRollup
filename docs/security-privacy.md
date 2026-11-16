@@ -30,7 +30,8 @@ names, and README content. They cannot run code in the extension's contexts.
    dot segments, an owner, repo, ref segment or path segment that is empty, `.` or `..` is rejected
    before encoding; Git allows none of these as names. After building, the URL's origin must be the
    expected one and its pathname must equal the built pathname and start with the expected prefix
-   (`/<owner>/<repo>/tree/`, or `/repos/<owner>/<repo>/contents/` for the fallback). Anything else is
+   (`/<owner>/<repo>/tree/` for a tree fetch or a folder link, `/<owner>/<repo>/blob/` for a file
+   link, or `/repos/<owner>/<repo>/contents/` for the fallback). Anything else is
    a typed error and no request is sent (`docs/data-fetching.md` §2, §4). The test suite covers these,
    including a traversal path such as `a/../../settings`.
 3. **One origin.** Host permissions are `https://github.com/*` and, for the fallback,
@@ -70,7 +71,7 @@ data collected; single purpose "collapse and expand the file listing on GitHub r
 
 ## 4. Review checklist (run before each release)
 
-- [ ] `rg -n "innerHTML|outerHTML|insertAdjacentHTML|document\.write|parseFromString|eval\(|new Function" src`
+- [ ] `rg -n "innerHTML|outerHTML|insertAdjacentHTML|document\.write|parseFromString|createContextualFragment|eval\(|new Function" src`
       returns nothing. ESLint also bans these sinks in `src/`.
 - [ ] Manifest permissions unchanged from `docs/cross-browser.md`, or the change is justified in the
       CHANGELOG.

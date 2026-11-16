@@ -268,8 +268,15 @@ async function main(): Promise<void> {
     },
   });
 
-  // Refuse flag combinations that a mode would silently ignore (bootstrap review, #8).
+  // Refuse flag combinations that a mode would silently ignore (bootstrap review, #8, #10).
   const fromFile = values['from-file'] !== undefined;
+  const modes = [
+    values.reprocess && '--reprocess',
+    fromFile && '--from-file',
+    values.url !== undefined && '--url',
+  ].filter(Boolean);
+  if (modes.length > 1) fail(`${modes.join(', ')} are mutually exclusive`);
+  if (values.json && values.url === undefined) fail('--json applies only to --url');
   const identityFlags = ['login', 'user-id', 'node-id', 'email'] as const;
   if (!fromFile && identityFlags.some((f) => values[f] !== undefined)) {
     fail('--login, --user-id, --node-id and --email apply only to --from-file');

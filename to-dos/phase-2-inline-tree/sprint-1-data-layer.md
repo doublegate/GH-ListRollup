@@ -52,7 +52,8 @@ against `location.origin`, and then check the result's origin and pathname prefi
 - [ ] Traversal is refused: path `a/../../settings`, path `.`, ref `main/..`, repo `..` and an empty
       segment (`a//b`) each throw `InvalidKeyError`, and the stubbed `fetch` is never called.
 - [ ] A literal name `%2e` builds `.../%252e`, and every built URL has origin `https://github.com`
-      and a pathname that starts with `/<owner>/<repo>/tree/`.
+      and a pathname that starts with `/<owner>/<repo>/tree/` (tree fetches and folder links) or
+      `/<owner>/<repo>/blob/` (file links).
 
 **Dependencies:** none | **Reference:** `docs/security-privacy.md` §2.2 | **Complexity:** S
 

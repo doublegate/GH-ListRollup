@@ -115,16 +115,20 @@ Refs may contain `/` (`feature/x`), so the ref is never cut out of the URL. It i
 1. **Path.** On the root layout (no `up-tree` row) the path is `''`. On the folder layout it is the
    breadcrumb's segments after `breadcrumbs-repo-link`, ending with `breadcrumbs-filename`, joined
    with `/` (§2).
-2. **Reference row.** The first listing row whose link `aria-label` ends `(Directory)` or `(File)`,
-   that is not a simplified chain, and whose `href` starts with this repository's `/<o>/<r>/tree/`
-   or `/<o>/<r>/blob/`. Submodule rows, which link to another repository, and symlink rows are
-   skipped.
+2. **Reference row.** The first listing row that §2.2 classifies as a folder or a file (by its
+   `aria-label` suffix, or by the §2.2 fallback when GitHub drops the suffixes), and whose `href`
+   starts with this repository's `/<o>/<r>/tree/` or `/<o>/<r>/blob/`. Submodule rows, which link to
+   another repository, and symlink rows are skipped. A simplified-chain row (`a/b/c`) is used only
+   when no other row qualifies; its `<name>` is then the chain's full displayed path. Without that,
+   a folder holding only chains (`src/` with only `main/java/...` and `test/java/...`) would never
+   resolve its ref.
 3. **Subtraction.** The row's decoded `href` is `/<o>/<r>/(tree|blob)/<ref>/<path>/<name>` (with no
    `<path>/` at the root). Removing the known prefix, `<path>` and the link's `<name>` from the two
    ends leaves `<ref>`, which must be non-empty.
-4. **Cross-check.** The decoded `location.pathname` must equal `/<o>/<r>/tree/<ref>/<path>`, or on
-   the root `/<o>/<r>` or `/<o>/<r>/tree/<ref>`. This is a whole-string comparison, not a split, and
-   it catches rows left over from the previous page after a soft navigation.
+4. **Cross-check.** The decoded `location.pathname`, with any trailing `/` removed (as `detectPage`
+   accepts it), must equal `/<o>/<r>/tree/<ref>/<path>`, or on the root `/<o>/<r>` or
+   `/<o>/<r>/tree/<ref>`. This is a whole-string comparison, not a split, and it catches rows left
+   over from the previous page after a soft navigation.
 
 If any step fails, `ref` is `null`. Level 1 does not need the ref, so the collapse still works. Level
 2 adds no folder arrows on that page and logs the reason under `debug.logging`. An empty listing has

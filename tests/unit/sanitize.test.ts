@@ -446,12 +446,23 @@ describe('bootstrap review findings (#8)', () => {
     // agy: login was replaced first, so `someuser@mail.example` became `fixture-user@mail.example`
     // and the email pattern then no longer matched; the domain survived the leftovers check.
     const identity = { login: 'someuser', id: 4242421, email: 'someuser@mail.example' };
-    const out = replaceIdentity(
-      '"userEmail":"someuser@mail.example","x":"12345+someuser@users.noreply.github.com"',
-      identity,
-    );
+    const out = replaceIdentity('"userEmail":"someuser@mail.example"', identity);
     expect(out).not.toContain('mail.example');
     expect(out).toContain(PLACEHOLDER_EMAIL);
+  });
+
+  it('replaces a noreply email that contains both the id and the login (#10)', () => {
+    const identity = {
+      login: 'someuser',
+      id: 4242421,
+      email: '4242421+someuser@users.noreply.github.com',
+    };
+    const out = replaceIdentity(
+      '"userEmail":"4242421+someuser@users.noreply.github.com"',
+      identity,
+    );
+    expect(out).toBe(`"userEmail":"${PLACEHOLDER_EMAIL}"`);
+    expect(identityLeftovers(out, identity)).toEqual([]);
   });
 
   it('keeps </script> inside the embedded JSON escaped, so the fixture stays a fixed point', async () => {
