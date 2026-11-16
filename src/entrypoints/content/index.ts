@@ -5,7 +5,7 @@
  * collapse and tree features arrive in Phases 1 and 2.
  */
 import { defineContentScript } from 'wxt/utils/define-content-script';
-import { detectPage } from '@/github/page';
+import { detectPage, pageKey } from '@/github/page';
 import { watchNavigation } from '@/github/nav';
 import { log } from '@/log';
 
@@ -15,10 +15,11 @@ export default defineContentScript({
   matches: ['https://github.com/*'],
   runAt: 'document_start',
   main(ctx) {
-    let lastHref = '';
+    let lastKey = '';
     const report = (): void => {
-      if (location.href === lastHref) return;
-      lastHref = location.href;
+      const key = pageKey(new URL(location.href));
+      if (key === lastKey) return;
+      lastKey = key;
       const page = detectPage(new URL(location.href));
       const repo = page.owner && page.repo ? [`${page.owner}/${page.repo}`] : [];
       // The path makes it visible which URL the detector saw (T-GNR-004 Firefox diagnosis).

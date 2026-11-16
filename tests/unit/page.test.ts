@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { detectPage } from '@/github/page';
+import { detectPage, pageKey } from '@/github/page';
 
 const at = (path: string) => detectPage(new URL(`https://github.com${path}`));
 
@@ -18,6 +18,11 @@ describe('detectPage', () => {
 
   it('treats a slash-containing ref plus path as repo-tree without parsing the ref', () => {
     expect(at('/refined-github/sandbox/tree/branch/with/slashes').kind).toBe('repo-tree');
+  });
+
+  it('treats a bare /tree with no ref as other, not repo-root (bootstrap review, #8)', () => {
+    expect(at('/wxt-dev/wxt/tree').kind).toBe('other');
+    expect(at('/wxt-dev/wxt/tree/').kind).toBe('other');
   });
 
   it('ignores trailing slashes and query strings', () => {
@@ -43,5 +48,18 @@ describe('detectPage', () => {
 
   it('rejects owner names with characters GitHub does not allow', () => {
     expect(at('/bad%20name/repo').kind).toBe('other');
+  });
+});
+
+describe('pageKey', () => {
+  const key = (u: string) => pageKey(new URL(u));
+
+  it('ignores the fragment, so in-page anchors do not count as navigations (#8)', () => {
+    expect(key('https://github.com/o/r#readme')).toBe(key('https://github.com/o/r'));
+  });
+
+  it('distinguishes path and query changes', () => {
+    expect(key('https://github.com/o/r/tree/main/src')).not.toBe(key('https://github.com/o/r'));
+    expect(key('https://github.com/o/r?tab=x')).not.toBe(key('https://github.com/o/r'));
   });
 });

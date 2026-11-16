@@ -10,6 +10,12 @@ const noHtmlSinks = [
     message: 'Repository-controlled strings must never become HTML. Use textContent.',
   })),
   { property: 'insertAdjacentHTML', message: 'Use insertAdjacentElement with built nodes.' },
+  // DOMParser and Range parse strings as HTML too (docs/security-privacy.md section 2; enforcement
+  // was missing until the bootstrap review, #8). Dev tooling and tests may parse captured pages.
+  ...['parseFromString', 'createContextualFragment'].map((property) => ({
+    property,
+    message: 'Repository-controlled strings must never be parsed as HTML. Build nodes instead.',
+  })),
 ];
 
 export default tseslint.config(
@@ -42,6 +48,18 @@ export default tseslint.config(
     // Dev tooling (fixture capture) runs in Node, not in the extension.
     files: ['scripts/**/*.ts'],
     languageOptions: { globals: { ...globals.node } },
+  },
+  {
+    // Dev tooling and tests parse captured GitHub pages on purpose; the extension (src/) never may.
+    files: ['scripts/**/*.ts', 'tests/**/*.ts'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        ...noHtmlSinks.filter(
+          (r) => r.property !== 'parseFromString' && r.property !== 'createContextualFragment',
+        ),
+      ],
+    },
   },
   {
     files: ['eslint.config.js'],
