@@ -32,6 +32,12 @@ All notable user-visible changes to this project are documented here. The format
     markdown, or icon artwork.
   - `pnpm test` checks every fixture against its sidecar SHA-256 and the current sanitizer, and
     the signed-in capture path requires every identifier of the account being replaced.
+- GitHub page reading (Phase 1 Sprint 1), no visible change yet:
+  - a single selectors module with ranked fallbacks (`src/github/selectors.ts`);
+  - a page model that resolves the ref, including refs with `/`, tags and commit SHAs, without
+    splitting the URL;
+  - the locator for the header line the collapsed listing keeps;
+  - a selector probe, logged at debug level on listing pages.
 
 ### Fixed
 

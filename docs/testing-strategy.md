@@ -44,6 +44,9 @@ fixture.
     (`git/git` `contrib`, with the parent-directory row). Phase 0.
   - `root-logged-in.html`, `folder-logged-in.html`: the same pages signed in (T-GNR-012). They
     are captured from a browser with `--from-file`, with the identity replaced by `fixture-user`.
+  - `folder-deep`, `root-tag`, `root-sha`, `root-slash-ref` and `empty-repo` (Phase 1 Sprint 1):
+    the ref and path cases of T-GNR-103. Variants with stripped hooks or a removed commit bar are
+    derived inside the tests, never saved as edited fixtures.
   - `pnpm fixtures:report` compares selector matches across all HTML fixtures and flags
     signed-in/out differences.
   - Still to add, in the ticket that first needs them:

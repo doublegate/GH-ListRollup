@@ -7,7 +7,7 @@ ticket 04). They are stable: cite them in branches, commits and PRs.
 ## Status
 
 - **Current phase:** Phase 1, Listing detection and whole-listing collapse (Phase 0 complete 2026-11-16).
-- **Current sprint:** Phase 1 Sprint 1, Selectors and page model.
+- **Current sprint:** Phase 1 Sprint 2, Collapse controller and lifecycle (Sprint 1 complete 2026-11-16).
 - **Last updated:** 2026-11-16.
 
 ## Phases

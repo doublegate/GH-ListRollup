@@ -49,6 +49,11 @@ the answer in `docs/dom-integration.md`.
 - [ ] Test: replacing `tbody` restores the toggle within one frame.
 - [ ] Test: `apply()` called 10 times produces one toggle.
 - [ ] Firefox Navigation API finding recorded.
+- [ ] Test: after a soft navigation, `apply()` acts only once the listing in the DOM belongs to the
+      new URL (`readListingPage` resolves a ref that passes the cross-check, or the layout and path
+      match the URL). Observed live 2026-11-16: GitHub fires `soft-nav:*`/`turbo:*` **before** React
+      renders the new listing, so the first read sees the previous page's DOM
+      (`ref-docs/research-update-2026-11-16-phase1-fixtures.md` §6).
 
 **Dependencies:** T-GNR-105 | **Reference:** `docs/dom-integration.md` §4 | **Complexity:** M
 
