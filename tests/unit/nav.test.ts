@@ -40,6 +40,19 @@ describe('watchNavigation', () => {
     expect(onChange).toHaveBeenCalledTimes(2);
   });
 
+  it('cancels a frame callback already scheduled when the context is invalidated (#11)', async () => {
+    ctx = new ContentScriptContext('test');
+    const onChange = vi.fn();
+    watchNavigation(ctx, onChange);
+
+    document.dispatchEvent(new Event('soft-nav:end'));
+    ctx.notifyInvalidated();
+    await nextFrame();
+    await nextFrame();
+
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it('stops listening once the context is invalidated', async () => {
     ctx = new ContentScriptContext('test');
     const onChange = vi.fn();

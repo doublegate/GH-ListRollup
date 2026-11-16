@@ -115,9 +115,11 @@ Refs may contain `/` (`feature/x`), so the ref is never cut out of the URL. It i
 1. **Path.** On the root layout (no `up-tree` row) the path is `''`. On the folder layout it is the
    breadcrumb's segments after `breadcrumbs-repo-link`, ending with `breadcrumbs-filename`, joined
    with `/` (§2).
-2. **Reference row.** The first listing row that §2.2 classifies as a folder or a file (by its
-   `aria-label` suffix, or by the §2.2 fallback when GitHub drops the suffixes), and whose `href`
-   starts with this repository's `/<o>/<r>/tree/` or `/<o>/<r>/blob/`. Submodule rows, which link to
+2. **Reference row.** The first listing row that is a folder (by its `, (Directory)` suffix, or by
+   the §2.2 folder fallback when GitHub drops the suffixes) or a file (by its `, (File)` suffix only),
+   and whose `href` starts with this repository's `/<o>/<r>/tree/` or `/<o>/<r>/blob/`. There is no
+   suffix-less file fallback: file symlinks such as `RelNotes` also link under `/blob/`, so without
+   the suffix a file cannot be told from one (#11). Submodule rows, which link to
    another repository, and symlink rows are skipped. A simplified-chain row (`a/b/c`) is used only
    when no other row qualifies; its `<name>` is then the chain's full displayed path. Without that,
    a folder holding only chains (`src/` with only `main/java/...` and `test/java/...`) would never

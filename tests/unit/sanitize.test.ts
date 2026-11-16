@@ -492,3 +492,25 @@ describe('bootstrap review findings (#8)', () => {
     expect(JSON.parse(sanitizeTreeJson(raw))).toEqual(JSON.parse(raw));
   });
 });
+
+describe('replaceIdentity placeholder collisions (#11)', () => {
+  it.each(['example', 'invalid', 'fixture', 'user', 'node', 'id', 'FIXTURE_NODE_ID'])(
+    'a login of %s does not rewrite the placeholders inserted for other fields',
+    (login) => {
+      const identity = {
+        login,
+        id: 4242421,
+        nodeId: 'U_kgDOAAAA',
+        email: 'someone@mail.example',
+      };
+      // Neutral keys: the login is replaced everywhere, keys included, by design.
+      const out = replaceIdentity(
+        `{"a":"${login}","b":"someone@mail.example","c":"U_kgDOAAAA","d":4242421}`,
+        identity,
+      );
+      expect(out).toBe(
+        `{"a":"${PLACEHOLDER_LOGIN}","b":"${PLACEHOLDER_EMAIL}","c":"${PLACEHOLDER_NODE_ID}","d":${PLACEHOLDER_ID}}`,
+      );
+    },
+  );
+});

@@ -294,7 +294,6 @@ async function main(): Promise<void> {
   if (values.kind !== undefined) {
     if (values.kind !== 'html' && values.kind !== 'json') fail('--kind must be html or json');
     if (values.url !== undefined) fail('--kind does not apply to --url; use --json for JSON');
-    if (values.json) fail('--json and --kind are mutually exclusive');
     if (values.reprocess) fail('--kind does not apply to --reprocess (signed-in HTML only)');
     if (values['from-file'] !== undefined) fail('--kind does not apply to --from-file (HTML only)');
   }

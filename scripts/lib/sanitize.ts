@@ -250,23 +250,40 @@ export function replaceIdentity(text: string, identity: Identity | undefined): s
   // The email and node id go FIRST (bootstrap review, #8): both can contain the login or the id
   // (`someuser@mail.example`, `12345+someuser@users.noreply.github.com`), and replacing those first
   // left a half-rewritten address that the email pattern, and the leftovers check, no longer saw.
+  //
+  // Each pass writes a one-character private-use SENTINEL, and the placeholders are swapped in only
+  // at the end (#11): written directly, a placeholder inserted by an earlier pass could itself be
+  // rewritten by a later one, for example a login of `example` inside `fixture-user@example.invalid`.
+  // A sentinel cannot match any later pattern, which are all ASCII.
   let out = text;
-  if (identity.email) out = out.replace(new RegExp(esc(identity.email), 'gi'), PLACEHOLDER_EMAIL);
-  if (identity.nodeId) out = out.split(identity.nodeId).join(PLACEHOLDER_NODE_ID);
+  if (identity.email) out = out.replace(new RegExp(esc(identity.email), 'gi'), SENTINEL.email);
+  if (identity.nodeId) out = out.split(identity.nodeId).join(SENTINEL.nodeId);
   out = out.replace(
     new RegExp(`(?<![A-Za-z0-9-])${esc(identity.login)}(?![A-Za-z0-9-])`, 'gi'),
-    PLACEHOLDER_LOGIN,
+    SENTINEL.login,
   );
   if (identity.id !== undefined) {
     // Alphanumeric boundaries, not digit-only: the id must not match inside a hex SHA or other
     // hashed identifier (agy review, PR #3).
     out = out.replace(
       new RegExp(`(?<![0-9A-Za-z])${identity.id}(?![0-9A-Za-z])`, 'g'),
-      PLACEHOLDER_ID,
+      SENTINEL.id,
     );
   }
-  return out;
+  return out
+    .replaceAll(SENTINEL.email, PLACEHOLDER_EMAIL)
+    .replaceAll(SENTINEL.nodeId, PLACEHOLDER_NODE_ID)
+    .replaceAll(SENTINEL.login, PLACEHOLDER_LOGIN)
+    .replaceAll(SENTINEL.id, PLACEHOLDER_ID);
 }
+
+/** Private-use code points: never present in a GitHub page, and matched by no identity pattern. */
+const SENTINEL = {
+  email: '\uE010',
+  nodeId: '\uE011',
+  login: '\uE012',
+  id: '\uE013',
+} as const;
 
 /**
  * Sanitizes a captured GitHub page. Output is deterministic for identical input: no timestamps,
