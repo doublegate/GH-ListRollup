@@ -13,7 +13,7 @@ GitHub fixtures exist for later phases.
 - [x] CI workflow green on GitHub (2026-11-15).
 - [x] Skeleton verified in Chrome and Firefox: log lines on root, folder and after soft navigation
       (2026-11-16, T-GNR-004).
-- [ ] Fixtures for both layouts committed (Sprint 2).
+- [x] Fixtures for both layouts, signed in and out, plus JSON cases (Sprint 2, 2026-11-16).
 
 ## Scope
 

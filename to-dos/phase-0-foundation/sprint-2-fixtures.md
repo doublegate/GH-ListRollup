@@ -16,10 +16,10 @@ generic User-Agent and no credentials, strips scripts, analytics meta, nonces an
 
 **Acceptance criteria:**
 
-- [ ] Captures `root.html` (a public repo root) and `folder.html` (a nested folder).
-- [ ] The output contains no `<script>` bodies except an allowlisted embedded-data block, and no
+- [x] Captures `root.html` (a public repo root) and `folder.html` (a nested folder).
+- [x] The output contains no `<script>` bodies except an allowlisted embedded-data block, and no
       `nonce=` attributes.
-- [ ] Re-running on an unchanged page produces a byte-identical file.
+- [x] Re-running on an unchanged page produces a byte-identical file.
 
 **Dependencies:** T-GNR-001 | **Reference:** `docs/testing-strategy.md` §3 | **Complexity:** M
 
@@ -33,9 +33,9 @@ from the logged-out markup.
 
 **Acceptance criteria:**
 
-- [ ] `root-logged-in.html` and `folder-logged-in.html` committed, with no personal data (reviewed).
-- [ ] The supplement exists and resolves open question 1 in the research report.
-- [ ] `docs/dom-integration.md` §2 updated if any selector differs.
+- [x] `root-logged-in.html` and `folder-logged-in.html` committed, with no personal data (reviewed).
+- [x] The supplement exists and resolves open question 1 in the research report.
+- [x] `docs/dom-integration.md` §2 updated if any selector differs.
 
 **Dependencies:** T-GNR-011 | **Reference:** `ref-docs/github-code-view-dom.md` §7 | **Complexity:** M
 
@@ -48,9 +48,9 @@ from the logged-out markup.
 
 **Acceptance criteria:**
 
-- [ ] One file per case under `tests/fixtures/json/`, each with a header comment in an adjacent
+- [x] One file per case under `tests/fixtures/json/`, each with a header comment in an adjacent
       `.md` recording its source URL and capture date.
-- [ ] Each file is under 200 KB (trim the capped folder's items if needed, keeping `totalCount`).
+- [x] Each file is under 200 KB (trim the capped folder's items if needed, keeping `totalCount`).
 
 **Dependencies:** T-GNR-011 | **Reference:** `docs/data-fetching.md` §6 | **Complexity:** S
 
@@ -63,14 +63,37 @@ given `location`, and resets it between tests.
 
 **Acceptance criteria:**
 
-- [ ] A test loads `root.html` and finds `[data-testid="directory-content"]`.
-- [ ] A test loads `folder.html` and finds the `up-tree` row.
+- [x] A test loads `root.html` and finds `[data-testid="directory-content"]`.
+- [x] A test loads `folder.html` and finds the `up-tree` row.
 
 **Dependencies:** T-GNR-011 | **Reference:** `docs/testing-strategy.md` §1 | **Complexity:** S
 
 ---
 
+## Completion notes (2026-11-16)
+
+- **T-GNR-011.** `scripts/capture-fixture.ts` and `scripts/lib/sanitize.ts`, plus
+  `pnpm fixtures:capture` and `fixtures:check`. Re-capture is byte-identical: the drift check
+  stayed clean for the signed-out fixtures over about an hour.
+  - Sources of nondeterminism found and normalized: random UUID element ids, `jwt=`-signed README
+    image URLs, server `*ProcessingTime` values, and star, fork and watcher counters.
+  - Leaks found and removed: anonymous `uploadToken` and `csrf_tokens` in the embedded JSON,
+    owner avatar URLs in the JSON, and `data-nonce` attributes.
+- **T-GNR-012.** Captured signed in (doublegate) by fetching the server HTML from the user's Chrome
+  session, then sanitized with `--from-file`.
+  - Review caught things the first identity check missed: the primary email in
+    `currentUser.userEmail`, and the user id base64-encoded inside a signed `data-channel`.
+  - Both are now handled by the sanitizer. The capture fails if any identifier survives in plain
+    text or inside base64, and tests guard against regressions.
+  - The raw downloads were deleted.
+  - Result: no selector differs between signed-in and signed-out pages
+    (`ref-docs/research-update-2026-11-16-logged-in-dom.md`, `pnpm fixtures:report`).
+- **T-GNR-013.** Eight JSON fixtures, the largest 145 KB. Found the undocumented
+  `symlink_directory` content type (`ref-docs/research-update-2026-11-16-content-types.md`).
+- **T-GNR-014.** `tests/helpers/fixture.ts`. happy-dom's `document.replaceChild` rejects swapping
+  the root element, so the loader removes the old root and then appends the new one.
+
 ## Sprint review checklist
 
-- [ ] Fixtures reviewed for personal data before commit.
-- [ ] Phase 0 exit criteria all checked.
+- [x] Fixtures reviewed for personal data before commit.
+- [x] Phase 0 exit criteria all checked.

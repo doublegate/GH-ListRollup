@@ -1,0 +1,2876 @@
+{
+  "meta": {
+    "title": "File not found"
+  },
+  "payload": {
+    "codeViewTreeRoute": {
+      "path": "this-path-does-not-exist-gnr",
+      "repo": {
+        "id": 36502,
+        "defaultBranch": "master",
+        "name": "git",
+        "ownerLogin": "git",
+        "currentUserCanPush": false,
+        "isFork": false,
+        "isEmpty": false,
+        "createdAt": "2008-07-23T14:21:26.000Z",
+        "ownerAvatar": "",
+        "public": true,
+        "private": false,
+        "isOrgOwned": true,
+        "isArchived": false
+      },
+      "refInfo": {
+        "name": "master",
+        "listCacheKey": "v0:1790611954.0",
+        "canEdit": false,
+        "refType": "branch",
+        "currentOid": "7fb6055e678f800320d8ab8cd8f201d9493d1ba0"
+      },
+      "currentUser": null,
+      "fileTree": {
+        "": {
+          "items": [
+            {
+              "name": ".github",
+              "path": ".github",
+              "contentType": "directory"
+            },
+            {
+              "name": "Documentation",
+              "path": "Documentation",
+              "contentType": "directory"
+            },
+            {
+              "name": "bin-wrappers",
+              "path": "bin-wrappers",
+              "contentType": "directory"
+            },
+            {
+              "name": "block-sha1",
+              "path": "block-sha1",
+              "contentType": "directory"
+            },
+            {
+              "name": "builtin",
+              "path": "builtin",
+              "contentType": "directory"
+            },
+            {
+              "name": "ci",
+              "path": "ci",
+              "contentType": "directory"
+            },
+            {
+              "name": "compat",
+              "path": "compat",
+              "contentType": "directory"
+            },
+            {
+              "name": "compiler-tricks",
+              "path": "compiler-tricks",
+              "contentType": "directory"
+            },
+            {
+              "name": "contrib",
+              "path": "contrib",
+              "contentType": "directory"
+            },
+            {
+              "name": "ewah",
+              "path": "ewah",
+              "contentType": "directory"
+            },
+            {
+              "name": "git-gui",
+              "path": "git-gui",
+              "contentType": "directory"
+            },
+            {
+              "name": "gitk-git",
+              "path": "gitk-git",
+              "contentType": "directory"
+            },
+            {
+              "name": "gitweb",
+              "path": "gitweb",
+              "contentType": "directory"
+            },
+            {
+              "name": "mergetools",
+              "path": "mergetools",
+              "contentType": "directory"
+            },
+            {
+              "name": "negotiator",
+              "path": "negotiator",
+              "contentType": "directory"
+            },
+            {
+              "name": "odb",
+              "path": "odb",
+              "contentType": "directory"
+            },
+            {
+              "name": "oss-fuzz",
+              "path": "oss-fuzz",
+              "contentType": "directory"
+            },
+            {
+              "name": "perl",
+              "path": "perl",
+              "contentType": "directory"
+            },
+            {
+              "name": "po",
+              "path": "po",
+              "contentType": "directory"
+            },
+            {
+              "name": "refs",
+              "path": "refs",
+              "contentType": "directory"
+            },
+            {
+              "name": "reftable",
+              "path": "reftable",
+              "contentType": "directory"
+            },
+            {
+              "name": "sha1",
+              "path": "sha1",
+              "contentType": "directory"
+            },
+            {
+              "name": "sha1collisiondetection",
+              "path": "sha1collisiondetection",
+              "contentType": "submodule",
+              "submoduleUrl": "/cr-marcstevens/sha1collisiondetection/tree/855827c583bc30645ba427885caa40c5b81764d2",
+              "submoduleDisplayName": "sha1collisiondetection @ 855827c"
+            },
+            {
+              "name": "sha1dc",
+              "path": "sha1dc",
+              "contentType": "directory"
+            },
+            {
+              "name": "sha256",
+              "path": "sha256",
+              "contentType": "directory"
+            },
+            {
+              "name": "src",
+              "path": "src",
+              "contentType": "directory"
+            },
+            {
+              "name": "subprojects",
+              "path": "subprojects",
+              "contentType": "directory"
+            },
+            {
+              "name": "t",
+              "path": "t",
+              "contentType": "directory"
+            },
+            {
+              "name": "templates",
+              "path": "templates",
+              "contentType": "directory"
+            },
+            {
+              "name": "tools",
+              "path": "tools",
+              "contentType": "directory"
+            },
+            {
+              "name": "trace2",
+              "path": "trace2",
+              "contentType": "directory"
+            },
+            {
+              "name": "xdiff",
+              "path": "xdiff",
+              "contentType": "directory"
+            },
+            {
+              "name": ".b4-config",
+              "path": ".b4-config",
+              "contentType": "file"
+            },
+            {
+              "name": ".b4-cover-template",
+              "path": ".b4-cover-template",
+              "contentType": "file"
+            },
+            {
+              "name": ".cirrus.yml",
+              "path": ".cirrus.yml",
+              "contentType": "file"
+            },
+            {
+              "name": ".clang-format",
+              "path": ".clang-format",
+              "contentType": "file"
+            },
+            {
+              "name": ".editorconfig",
+              "path": ".editorconfig",
+              "contentType": "file"
+            },
+            {
+              "name": ".gitattributes",
+              "path": ".gitattributes",
+              "contentType": "file"
+            },
+            {
+              "name": ".gitignore",
+              "path": ".gitignore",
+              "contentType": "file"
+            },
+            {
+              "name": ".gitlab-ci.yml",
+              "path": ".gitlab-ci.yml",
+              "contentType": "file"
+            },
+            {
+              "name": ".gitmodules",
+              "path": ".gitmodules",
+              "contentType": "file"
+            },
+            {
+              "name": ".mailmap",
+              "path": ".mailmap",
+              "contentType": "file"
+            },
+            {
+              "name": ".tsan-suppressions",
+              "path": ".tsan-suppressions",
+              "contentType": "file"
+            },
+            {
+              "name": "CODE_OF_CONDUCT.md",
+              "path": "CODE_OF_CONDUCT.md",
+              "contentType": "file"
+            },
+            {
+              "name": "COPYING",
+              "path": "COPYING",
+              "contentType": "file"
+            },
+            {
+              "name": "Cargo.toml",
+              "path": "Cargo.toml",
+              "contentType": "file"
+            },
+            {
+              "name": "GIT-BUILD-OPTIONS.in",
+              "path": "GIT-BUILD-OPTIONS.in",
+              "contentType": "file"
+            },
+            {
+              "name": "GIT-VERSION-FILE.in",
+              "path": "GIT-VERSION-FILE.in",
+              "contentType": "file"
+            },
+            {
+              "name": "GIT-VERSION-GEN",
+              "path": "GIT-VERSION-GEN",
+              "contentType": "file"
+            },
+            {
+              "name": "INSTALL",
+              "path": "INSTALL",
+              "contentType": "file"
+            },
+            {
+              "name": "LGPL-2.1",
+              "path": "LGPL-2.1",
+              "contentType": "file"
+            },
+            {
+              "name": "Makefile",
+              "path": "Makefile",
+              "contentType": "file"
+            },
+            {
+              "name": "README.md",
+              "path": "README.md",
+              "contentType": "file"
+            },
+            {
+              "name": "RelNotes",
+              "path": "RelNotes",
+              "contentType": "symlink_file"
+            },
+            {
+              "name": "SECURITY.md",
+              "path": "SECURITY.md",
+              "contentType": "file"
+            },
+            {
+              "name": "abspath.c",
+              "path": "abspath.c",
+              "contentType": "file"
+            },
+            {
+              "name": "abspath.h",
+              "path": "abspath.h",
+              "contentType": "file"
+            },
+            {
+              "name": "aclocal.m4",
+              "path": "aclocal.m4",
+              "contentType": "file"
+            },
+            {
+              "name": "add-interactive.c",
+              "path": "add-interactive.c",
+              "contentType": "file"
+            },
+            {
+              "name": "add-interactive.h",
+              "path": "add-interactive.h",
+              "contentType": "file"
+            },
+            {
+              "name": "add-patch.c",
+              "path": "add-patch.c",
+              "contentType": "file"
+            },
+            {
+              "name": "add-patch.h",
+              "path": "add-patch.h",
+              "contentType": "file"
+            },
+            {
+              "name": "advice.c",
+              "path": "advice.c",
+              "contentType": "file"
+            },
+            {
+              "name": "advice.h",
+              "path": "advice.h",
+              "contentType": "file"
+            },
+            {
+              "name": "alias.c",
+              "path": "alias.c",
+              "contentType": "file"
+            },
+            {
+              "name": "alias.h",
+              "path": "alias.h",
+              "contentType": "file"
+            },
+            {
+              "name": "alloc.c",
+              "path": "alloc.c",
+              "contentType": "file"
+            },
+            {
+              "name": "alloc.h",
+              "path": "alloc.h",
+              "contentType": "file"
+            },
+            {
+              "name": "apply.c",
+              "path": "apply.c",
+              "contentType": "file"
+            },
+            {
+              "name": "apply.h",
+              "path": "apply.h",
+              "contentType": "file"
+            },
+            {
+              "name": "archive-tar.c",
+              "path": "archive-tar.c",
+              "contentType": "file"
+            },
+            {
+              "name": "archive-zip.c",
+              "path": "archive-zip.c",
+              "contentType": "file"
+            },
+            {
+              "name": "archive.c",
+              "path": "archive.c",
+              "contentType": "file"
+            },
+            {
+              "name": "archive.h",
+              "path": "archive.h",
+              "contentType": "file"
+            },
+            {
+              "name": "attr.c",
+              "path": "attr.c",
+              "contentType": "file"
+            },
+            {
+              "name": "attr.h",
+              "path": "attr.h",
+              "contentType": "file"
+            },
+            {
+              "name": "banned.h",
+              "path": "banned.h",
+              "contentType": "file"
+            },
+            {
+              "name": "base85.c",
+              "path": "base85.c",
+              "contentType": "file"
+            },
+            {
+              "name": "base85.h",
+              "path": "base85.h",
+              "contentType": "file"
+            },
+            {
+              "name": "bisect.c",
+              "path": "bisect.c",
+              "contentType": "file"
+            },
+            {
+              "name": "bisect.h",
+              "path": "bisect.h",
+              "contentType": "file"
+            },
+            {
+              "name": "blame.c",
+              "path": "blame.c",
+              "contentType": "file"
+            },
+            {
+              "name": "blame.h",
+              "path": "blame.h",
+              "contentType": "file"
+            },
+            {
+              "name": "blob.c",
+              "path": "blob.c",
+              "contentType": "file"
+            },
+            {
+              "name": "blob.h",
+              "path": "blob.h",
+              "contentType": "file"
+            },
+            {
+              "name": "bloom.c",
+              "path": "bloom.c",
+              "contentType": "file"
+            },
+            {
+              "name": "bloom.h",
+              "path": "bloom.h",
+              "contentType": "file"
+            },
+            {
+              "name": "branch.c",
+              "path": "branch.c",
+              "contentType": "file"
+            },
+            {
+              "name": "branch.h",
+              "path": "branch.h",
+              "contentType": "file"
+            },
+            {
+              "name": "build.rs",
+              "path": "build.rs",
+              "contentType": "file"
+            },
+            {
+              "name": "builtin.h",
+              "path": "builtin.h",
+              "contentType": "file"
+            },
+            {
+              "name": "bundle-uri.c",
+              "path": "bundle-uri.c",
+              "contentType": "file"
+            },
+            {
+              "name": "bundle-uri.h",
+              "path": "bundle-uri.h",
+              "contentType": "file"
+            },
+            {
+              "name": "bundle.c",
+              "path": "bundle.c",
+              "contentType": "file"
+            },
+            {
+              "name": "bundle.h",
+              "path": "bundle.h",
+              "contentType": "file"
+            },
+            {
+              "name": "cache-tree.c",
+              "path": "cache-tree.c",
+              "contentType": "file"
+            },
+            {
+              "name": "cache-tree.h",
+              "path": "cache-tree.h",
+              "contentType": "file"
+            },
+            {
+              "name": "cbtree.c",
+              "path": "cbtree.c",
+              "contentType": "file"
+            },
+            {
+              "name": "cbtree.h",
+              "path": "cbtree.h",
+              "contentType": "file"
+            },
+            {
+              "name": "chdir-notify.c",
+              "path": "chdir-notify.c",
+              "contentType": "file"
+            },
+            {
+              "name": "chdir-notify.h",
+              "path": "chdir-notify.h",
+              "contentType": "file"
+            },
+            {
+              "name": "checkout.c",
+              "path": "checkout.c",
+              "contentType": "file"
+            },
+            {
+              "name": "checkout.h",
+              "path": "checkout.h",
+              "contentType": "file"
+            },
+            {
+              "name": "chunk-format.c",
+              "path": "chunk-format.c",
+              "contentType": "file"
+            },
+            {
+              "name": "chunk-format.h",
+              "path": "chunk-format.h",
+              "contentType": "file"
+            },
+            {
+              "name": "color.c",
+              "path": "color.c",
+              "contentType": "file"
+            },
+            {
+              "name": "color.h",
+              "path": "color.h",
+              "contentType": "file"
+            },
+            {
+              "name": "column.c",
+              "path": "column.c",
+              "contentType": "file"
+            },
+            {
+              "name": "column.h",
+              "path": "column.h",
+              "contentType": "file"
+            },
+            {
+              "name": "combine-diff.c",
+              "path": "combine-diff.c",
+              "contentType": "file"
+            },
+            {
+              "name": "command-list.txt",
+              "path": "command-list.txt",
+              "contentType": "file"
+            },
+            {
+              "name": "commit-graph.c",
+              "path": "commit-graph.c",
+              "contentType": "file"
+            },
+            {
+              "name": "commit-graph.h",
+              "path": "commit-graph.h",
+              "contentType": "file"
+            },
+            {
+              "name": "commit-reach.c",
+              "path": "commit-reach.c",
+              "contentType": "file"
+            },
+            {
+              "name": "commit-reach.h",
+              "path": "commit-reach.h",
+              "contentType": "file"
+            },
+            {
+              "name": "commit-slab-decl.h",
+              "path": "commit-slab-decl.h",
+              "contentType": "file"
+            },
+            {
+              "name": "commit-slab-impl.h",
+              "path": "commit-slab-impl.h",
+              "contentType": "file"
+            },
+            {
+              "name": "commit-slab.h",
+              "path": "commit-slab.h",
+              "contentType": "file"
+            },
+            {
+              "name": "commit.c",
+              "path": "commit.c",
+              "contentType": "file"
+            },
+            {
+              "name": "commit.h",
+              "path": "commit.h",
+              "contentType": "file"
+            },
+            {
+              "name": "common-exit.c",
+              "path": "common-exit.c",
+              "contentType": "file"
+            },
+            {
+              "name": "common-init.c",
+              "path": "common-init.c",
+              "contentType": "file"
+            },
+            {
+              "name": "common-init.h",
+              "path": "common-init.h",
+              "contentType": "file"
+            },
+            {
+              "name": "common-main.c",
+              "path": "common-main.c",
+              "contentType": "file"
+            },
+            {
+              "name": "config.c",
+              "path": "config.c",
+              "contentType": "file"
+            },
+            {
+              "name": "config.h",
+              "path": "config.h",
+              "contentType": "file"
+            },
+            {
+              "name": "config.mak.dev",
+              "path": "config.mak.dev",
+              "contentType": "file"
+            },
+            {
+              "name": "config.mak.in",
+              "path": "config.mak.in",
+              "contentType": "file"
+            },
+            {
+              "name": "config.mak.uname",
+              "path": "config.mak.uname",
+              "contentType": "file"
+            },
+            {
+              "name": "configure.ac",
+              "path": "configure.ac",
+              "contentType": "file"
+            },
+            {
+              "name": "connect.c",
+              "path": "connect.c",
+              "contentType": "file"
+            },
+            {
+              "name": "connect.h",
+              "path": "connect.h",
+              "contentType": "file"
+            },
+            {
+              "name": "connected.c",
+              "path": "connected.c",
+              "contentType": "file"
+            },
+            {
+              "name": "connected.h",
+              "path": "connected.h",
+              "contentType": "file"
+            },
+            {
+              "name": "convert.c",
+              "path": "convert.c",
+              "contentType": "file"
+            },
+            {
+              "name": "convert.h",
+              "path": "convert.h",
+              "contentType": "file"
+            },
+            {
+              "name": "copy.c",
+              "path": "copy.c",
+              "contentType": "file"
+            },
+            {
+              "name": "copy.h",
+              "path": "copy.h",
+              "contentType": "file"
+            },
+            {
+              "name": "credential.c",
+              "path": "credential.c",
+              "contentType": "file"
+            },
+            {
+              "name": "credential.h",
+              "path": "credential.h",
+              "contentType": "file"
+            },
+            {
+              "name": "csum-file.c",
+              "path": "csum-file.c",
+              "contentType": "file"
+            },
+            {
+              "name": "csum-file.h",
+              "path": "csum-file.h",
+              "contentType": "file"
+            },
+            {
+              "name": "ctype.c",
+              "path": "ctype.c",
+              "contentType": "file"
+            },
+            {
+              "name": "daemon.c",
+              "path": "daemon.c",
+              "contentType": "file"
+            },
+            {
+              "name": "date.c",
+              "path": "date.c",
+              "contentType": "file"
+            },
+            {
+              "name": "date.h",
+              "path": "date.h",
+              "contentType": "file"
+            },
+            {
+              "name": "decorate.c",
+              "path": "decorate.c",
+              "contentType": "file"
+            },
+            {
+              "name": "decorate.h",
+              "path": "decorate.h",
+              "contentType": "file"
+            },
+            {
+              "name": "delta-islands.c",
+              "path": "delta-islands.c",
+              "contentType": "file"
+            },
+            {
+              "name": "delta-islands.h",
+              "path": "delta-islands.h",
+              "contentType": "file"
+            },
+            {
+              "name": "delta.h",
+              "path": "delta.h",
+              "contentType": "file"
+            },
+            {
+              "name": "diagnose.c",
+              "path": "diagnose.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diagnose.h",
+              "path": "diagnose.h",
+              "contentType": "file"
+            },
+            {
+              "name": "diff-delta.c",
+              "path": "diff-delta.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diff-lib.c",
+              "path": "diff-lib.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diff-merges.c",
+              "path": "diff-merges.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diff-merges.h",
+              "path": "diff-merges.h",
+              "contentType": "file"
+            },
+            {
+              "name": "diff-no-index.c",
+              "path": "diff-no-index.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diff.c",
+              "path": "diff.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diff.h",
+              "path": "diff.h",
+              "contentType": "file"
+            },
+            {
+              "name": "diffcore-break.c",
+              "path": "diffcore-break.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diffcore-delta.c",
+              "path": "diffcore-delta.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diffcore-order.c",
+              "path": "diffcore-order.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diffcore-pickaxe.c",
+              "path": "diffcore-pickaxe.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diffcore-rename.c",
+              "path": "diffcore-rename.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diffcore-rotate.c",
+              "path": "diffcore-rotate.c",
+              "contentType": "file"
+            },
+            {
+              "name": "diffcore.h",
+              "path": "diffcore.h",
+              "contentType": "file"
+            },
+            {
+              "name": "dir-iterator.c",
+              "path": "dir-iterator.c",
+              "contentType": "file"
+            },
+            {
+              "name": "dir-iterator.h",
+              "path": "dir-iterator.h",
+              "contentType": "file"
+            },
+            {
+              "name": "dir.c",
+              "path": "dir.c",
+              "contentType": "file"
+            },
+            {
+              "name": "dir.h",
+              "path": "dir.h",
+              "contentType": "file"
+            },
+            {
+              "name": "editor.c",
+              "path": "editor.c",
+              "contentType": "file"
+            },
+            {
+              "name": "editor.h",
+              "path": "editor.h",
+              "contentType": "file"
+            },
+            {
+              "name": "entry.c",
+              "path": "entry.c",
+              "contentType": "file"
+            },
+            {
+              "name": "entry.h",
+              "path": "entry.h",
+              "contentType": "file"
+            },
+            {
+              "name": "environment.c",
+              "path": "environment.c",
+              "contentType": "file"
+            },
+            {
+              "name": "environment.h",
+              "path": "environment.h",
+              "contentType": "file"
+            },
+            {
+              "name": "exec-cmd.c",
+              "path": "exec-cmd.c",
+              "contentType": "file"
+            },
+            {
+              "name": "exec-cmd.h",
+              "path": "exec-cmd.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fetch-negotiator.c",
+              "path": "fetch-negotiator.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fetch-negotiator.h",
+              "path": "fetch-negotiator.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fetch-object-info.c",
+              "path": "fetch-object-info.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fetch-object-info.h",
+              "path": "fetch-object-info.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fetch-pack.c",
+              "path": "fetch-pack.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fetch-pack.h",
+              "path": "fetch-pack.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fmt-merge-msg.c",
+              "path": "fmt-merge-msg.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fmt-merge-msg.h",
+              "path": "fmt-merge-msg.h",
+              "contentType": "file"
+            },
+            {
+              "name": "for-each-ref.h",
+              "path": "for-each-ref.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fsck.c",
+              "path": "fsck.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fsck.h",
+              "path": "fsck.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor--daemon.h",
+              "path": "fsmonitor--daemon.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor-ipc.c",
+              "path": "fsmonitor-ipc.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor-ipc.h",
+              "path": "fsmonitor-ipc.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor-ll.h",
+              "path": "fsmonitor-ll.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor-path-utils.h",
+              "path": "fsmonitor-path-utils.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor-settings.c",
+              "path": "fsmonitor-settings.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor-settings.h",
+              "path": "fsmonitor-settings.h",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor.c",
+              "path": "fsmonitor.c",
+              "contentType": "file"
+            },
+            {
+              "name": "fsmonitor.h",
+              "path": "fsmonitor.h",
+              "contentType": "file"
+            },
+            {
+              "name": "gettext.c",
+              "path": "gettext.c",
+              "contentType": "file"
+            },
+            {
+              "name": "gettext.h",
+              "path": "gettext.h",
+              "contentType": "file"
+            },
+            {
+              "name": "git-archimport.perl",
+              "path": "git-archimport.perl",
+              "contentType": "file"
+            },
+            {
+              "name": "git-compat-util.h",
+              "path": "git-compat-util.h",
+              "contentType": "file"
+            },
+            {
+              "name": "git-curl-compat.h",
+              "path": "git-curl-compat.h",
+              "contentType": "file"
+            },
+            {
+              "name": "git-cvsexportcommit.perl",
+              "path": "git-cvsexportcommit.perl",
+              "contentType": "file"
+            },
+            {
+              "name": "git-cvsimport.perl",
+              "path": "git-cvsimport.perl",
+              "contentType": "file"
+            },
+            {
+              "name": "git-cvsserver.perl",
+              "path": "git-cvsserver.perl",
+              "contentType": "file"
+            },
+            {
+              "name": "git-difftool--helper.sh",
+              "path": "git-difftool--helper.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-filter-branch.sh",
+              "path": "git-filter-branch.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-instaweb.sh",
+              "path": "git-instaweb.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-merge-octopus.sh",
+              "path": "git-merge-octopus.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-merge-one-file.sh",
+              "path": "git-merge-one-file.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-merge-resolve.sh",
+              "path": "git-merge-resolve.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-mergetool--lib.sh",
+              "path": "git-mergetool--lib.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-mergetool.sh",
+              "path": "git-mergetool.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-p4.py",
+              "path": "git-p4.py",
+              "contentType": "file"
+            },
+            {
+              "name": "git-quiltimport.sh",
+              "path": "git-quiltimport.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-request-pull.sh",
+              "path": "git-request-pull.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-send-email.perl",
+              "path": "git-send-email.perl",
+              "contentType": "file"
+            },
+            {
+              "name": "git-sh-i18n.sh",
+              "path": "git-sh-i18n.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-sh-setup.sh",
+              "path": "git-sh-setup.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-submodule.sh",
+              "path": "git-submodule.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-svn.perl",
+              "path": "git-svn.perl",
+              "contentType": "file"
+            },
+            {
+              "name": "git-web--browse.sh",
+              "path": "git-web--browse.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "git-zlib.c",
+              "path": "git-zlib.c",
+              "contentType": "file"
+            },
+            {
+              "name": "git-zlib.h",
+              "path": "git-zlib.h",
+              "contentType": "file"
+            },
+            {
+              "name": "git.c",
+              "path": "git.c",
+              "contentType": "file"
+            },
+            {
+              "name": "git.rc.in",
+              "path": "git.rc.in",
+              "contentType": "file"
+            },
+            {
+              "name": "gpg-interface.c",
+              "path": "gpg-interface.c",
+              "contentType": "file"
+            },
+            {
+              "name": "gpg-interface.h",
+              "path": "gpg-interface.h",
+              "contentType": "file"
+            },
+            {
+              "name": "graph.c",
+              "path": "graph.c",
+              "contentType": "file"
+            },
+            {
+              "name": "graph.h",
+              "path": "graph.h",
+              "contentType": "file"
+            },
+            {
+              "name": "grep.c",
+              "path": "grep.c",
+              "contentType": "file"
+            },
+            {
+              "name": "grep.h",
+              "path": "grep.h",
+              "contentType": "file"
+            },
+            {
+              "name": "hash-lookup.c",
+              "path": "hash-lookup.c",
+              "contentType": "file"
+            },
+            {
+              "name": "hash-lookup.h",
+              "path": "hash-lookup.h",
+              "contentType": "file"
+            },
+            {
+              "name": "hash.c",
+              "path": "hash.c",
+              "contentType": "file"
+            },
+            {
+              "name": "hash.h",
+              "path": "hash.h",
+              "contentType": "file"
+            },
+            {
+              "name": "hashmap.c",
+              "path": "hashmap.c",
+              "contentType": "file"
+            },
+            {
+              "name": "hashmap.h",
+              "path": "hashmap.h",
+              "contentType": "file"
+            },
+            {
+              "name": "help.c",
+              "path": "help.c",
+              "contentType": "file"
+            },
+            {
+              "name": "help.h",
+              "path": "help.h",
+              "contentType": "file"
+            },
+            {
+              "name": "hex-ll.c",
+              "path": "hex-ll.c",
+              "contentType": "file"
+            },
+            {
+              "name": "hex-ll.h",
+              "path": "hex-ll.h",
+              "contentType": "file"
+            },
+            {
+              "name": "hex.c",
+              "path": "hex.c",
+              "contentType": "file"
+            },
+            {
+              "name": "hex.h",
+              "path": "hex.h",
+              "contentType": "file"
+            },
+            {
+              "name": "hook.c",
+              "path": "hook.c",
+              "contentType": "file"
+            },
+            {
+              "name": "hook.h",
+              "path": "hook.h",
+              "contentType": "file"
+            },
+            {
+              "name": "http-backend.c",
+              "path": "http-backend.c",
+              "contentType": "file"
+            },
+            {
+              "name": "http-fetch.c",
+              "path": "http-fetch.c",
+              "contentType": "file"
+            },
+            {
+              "name": "http-push.c",
+              "path": "http-push.c",
+              "contentType": "file"
+            },
+            {
+              "name": "http-walker.c",
+              "path": "http-walker.c",
+              "contentType": "file"
+            },
+            {
+              "name": "http.c",
+              "path": "http.c",
+              "contentType": "file"
+            },
+            {
+              "name": "http.h",
+              "path": "http.h",
+              "contentType": "file"
+            },
+            {
+              "name": "ident.c",
+              "path": "ident.c",
+              "contentType": "file"
+            },
+            {
+              "name": "ident.h",
+              "path": "ident.h",
+              "contentType": "file"
+            },
+            {
+              "name": "imap-send.c",
+              "path": "imap-send.c",
+              "contentType": "file"
+            },
+            {
+              "name": "iterator.h",
+              "path": "iterator.h",
+              "contentType": "file"
+            },
+            {
+              "name": "json-writer.c",
+              "path": "json-writer.c",
+              "contentType": "file"
+            },
+            {
+              "name": "json-writer.h",
+              "path": "json-writer.h",
+              "contentType": "file"
+            },
+            {
+              "name": "khash.h",
+              "path": "khash.h",
+              "contentType": "file"
+            },
+            {
+              "name": "kwset.c",
+              "path": "kwset.c",
+              "contentType": "file"
+            },
+            {
+              "name": "kwset.h",
+              "path": "kwset.h",
+              "contentType": "file"
+            },
+            {
+              "name": "levenshtein.c",
+              "path": "levenshtein.c",
+              "contentType": "file"
+            },
+            {
+              "name": "levenshtein.h",
+              "path": "levenshtein.h",
+              "contentType": "file"
+            },
+            {
+              "name": "line-log.c",
+              "path": "line-log.c",
+              "contentType": "file"
+            },
+            {
+              "name": "line-log.h",
+              "path": "line-log.h",
+              "contentType": "file"
+            },
+            {
+              "name": "line-range.c",
+              "path": "line-range.c",
+              "contentType": "file"
+            },
+            {
+              "name": "line-range.h",
+              "path": "line-range.h",
+              "contentType": "file"
+            },
+            {
+              "name": "linear-assignment.c",
+              "path": "linear-assignment.c",
+              "contentType": "file"
+            },
+            {
+              "name": "linear-assignment.h",
+              "path": "linear-assignment.h",
+              "contentType": "file"
+            },
+            {
+              "name": "list-objects-filter-options.c",
+              "path": "list-objects-filter-options.c",
+              "contentType": "file"
+            },
+            {
+              "name": "list-objects-filter-options.h",
+              "path": "list-objects-filter-options.h",
+              "contentType": "file"
+            },
+            {
+              "name": "list-objects-filter.c",
+              "path": "list-objects-filter.c",
+              "contentType": "file"
+            },
+            {
+              "name": "list-objects-filter.h",
+              "path": "list-objects-filter.h",
+              "contentType": "file"
+            },
+            {
+              "name": "list-objects.c",
+              "path": "list-objects.c",
+              "contentType": "file"
+            },
+            {
+              "name": "list-objects.h",
+              "path": "list-objects.h",
+              "contentType": "file"
+            },
+            {
+              "name": "list.h",
+              "path": "list.h",
+              "contentType": "file"
+            },
+            {
+              "name": "lockfile.c",
+              "path": "lockfile.c",
+              "contentType": "file"
+            },
+            {
+              "name": "lockfile.h",
+              "path": "lockfile.h",
+              "contentType": "file"
+            },
+            {
+              "name": "log-tree.c",
+              "path": "log-tree.c",
+              "contentType": "file"
+            },
+            {
+              "name": "log-tree.h",
+              "path": "log-tree.h",
+              "contentType": "file"
+            },
+            {
+              "name": "loose.c",
+              "path": "loose.c",
+              "contentType": "file"
+            },
+            {
+              "name": "loose.h",
+              "path": "loose.h",
+              "contentType": "file"
+            },
+            {
+              "name": "ls-refs.c",
+              "path": "ls-refs.c",
+              "contentType": "file"
+            },
+            {
+              "name": "ls-refs.h",
+              "path": "ls-refs.h",
+              "contentType": "file"
+            },
+            {
+              "name": "mailinfo.c",
+              "path": "mailinfo.c",
+              "contentType": "file"
+            },
+            {
+              "name": "mailinfo.h",
+              "path": "mailinfo.h",
+              "contentType": "file"
+            },
+            {
+              "name": "mailmap.c",
+              "path": "mailmap.c",
+              "contentType": "file"
+            },
+            {
+              "name": "mailmap.h",
+              "path": "mailmap.h",
+              "contentType": "file"
+            },
+            {
+              "name": "match-trees.c",
+              "path": "match-trees.c",
+              "contentType": "file"
+            },
+            {
+              "name": "match-trees.h",
+              "path": "match-trees.h",
+              "contentType": "file"
+            },
+            {
+              "name": "mem-pool.c",
+              "path": "mem-pool.c",
+              "contentType": "file"
+            },
+            {
+              "name": "mem-pool.h",
+              "path": "mem-pool.h",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-blobs.c",
+              "path": "merge-blobs.c",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-blobs.h",
+              "path": "merge-blobs.h",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-ll.c",
+              "path": "merge-ll.c",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-ll.h",
+              "path": "merge-ll.h",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-ort-wrappers.c",
+              "path": "merge-ort-wrappers.c",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-ort-wrappers.h",
+              "path": "merge-ort-wrappers.h",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-ort.c",
+              "path": "merge-ort.c",
+              "contentType": "file"
+            },
+            {
+              "name": "merge-ort.h",
+              "path": "merge-ort.h",
+              "contentType": "file"
+            },
+            {
+              "name": "merge.c",
+              "path": "merge.c",
+              "contentType": "file"
+            },
+            {
+              "name": "merge.h",
+              "path": "merge.h",
+              "contentType": "file"
+            },
+            {
+              "name": "mergesort.h",
+              "path": "mergesort.h",
+              "contentType": "file"
+            },
+            {
+              "name": "meson.build",
+              "path": "meson.build",
+              "contentType": "file"
+            },
+            {
+              "name": "meson_options.txt",
+              "path": "meson_options.txt",
+              "contentType": "file"
+            },
+            {
+              "name": "midx-write.c",
+              "path": "midx-write.c",
+              "contentType": "file"
+            },
+            {
+              "name": "midx.c",
+              "path": "midx.c",
+              "contentType": "file"
+            },
+            {
+              "name": "midx.h",
+              "path": "midx.h",
+              "contentType": "file"
+            },
+            {
+              "name": "name-hash.c",
+              "path": "name-hash.c",
+              "contentType": "file"
+            },
+            {
+              "name": "name-hash.h",
+              "path": "name-hash.h",
+              "contentType": "file"
+            },
+            {
+              "name": "notes-cache.c",
+              "path": "notes-cache.c",
+              "contentType": "file"
+            },
+            {
+              "name": "notes-cache.h",
+              "path": "notes-cache.h",
+              "contentType": "file"
+            },
+            {
+              "name": "notes-merge.c",
+              "path": "notes-merge.c",
+              "contentType": "file"
+            },
+            {
+              "name": "notes-merge.h",
+              "path": "notes-merge.h",
+              "contentType": "file"
+            },
+            {
+              "name": "notes-utils.c",
+              "path": "notes-utils.c",
+              "contentType": "file"
+            },
+            {
+              "name": "notes-utils.h",
+              "path": "notes-utils.h",
+              "contentType": "file"
+            },
+            {
+              "name": "notes.c",
+              "path": "notes.c",
+              "contentType": "file"
+            },
+            {
+              "name": "notes.h",
+              "path": "notes.h",
+              "contentType": "file"
+            },
+            {
+              "name": "object-file-convert.c",
+              "path": "object-file-convert.c",
+              "contentType": "file"
+            },
+            {
+              "name": "object-file-convert.h",
+              "path": "object-file-convert.h",
+              "contentType": "file"
+            },
+            {
+              "name": "object-file.c",
+              "path": "object-file.c",
+              "contentType": "file"
+            },
+            {
+              "name": "object-file.h",
+              "path": "object-file.h",
+              "contentType": "file"
+            },
+            {
+              "name": "object-name.c",
+              "path": "object-name.c",
+              "contentType": "file"
+            },
+            {
+              "name": "object-name.h",
+              "path": "object-name.h",
+              "contentType": "file"
+            },
+            {
+              "name": "object.c",
+              "path": "object.c",
+              "contentType": "file"
+            },
+            {
+              "name": "object.h",
+              "path": "object.h",
+              "contentType": "file"
+            },
+            {
+              "name": "odb.c",
+              "path": "odb.c",
+              "contentType": "file"
+            },
+            {
+              "name": "odb.h",
+              "path": "odb.h",
+              "contentType": "file"
+            },
+            {
+              "name": "oid-array.c",
+              "path": "oid-array.c",
+              "contentType": "file"
+            },
+            {
+              "name": "oid-array.h",
+              "path": "oid-array.h",
+              "contentType": "file"
+            },
+            {
+              "name": "oidmap.c",
+              "path": "oidmap.c",
+              "contentType": "file"
+            },
+            {
+              "name": "oidmap.h",
+              "path": "oidmap.h",
+              "contentType": "file"
+            },
+            {
+              "name": "oidset.c",
+              "path": "oidset.c",
+              "contentType": "file"
+            },
+            {
+              "name": "oidset.h",
+              "path": "oidset.h",
+              "contentType": "file"
+            },
+            {
+              "name": "oidtree.c",
+              "path": "oidtree.c",
+              "contentType": "file"
+            },
+            {
+              "name": "oidtree.h",
+              "path": "oidtree.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-bitmap-write.c",
+              "path": "pack-bitmap-write.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-bitmap.c",
+              "path": "pack-bitmap.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-bitmap.h",
+              "path": "pack-bitmap.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-check.c",
+              "path": "pack-check.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-mtimes.c",
+              "path": "pack-mtimes.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-mtimes.h",
+              "path": "pack-mtimes.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-objects.c",
+              "path": "pack-objects.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-objects.h",
+              "path": "pack-objects.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-refs.c",
+              "path": "pack-refs.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-refs.h",
+              "path": "pack-refs.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-revindex.c",
+              "path": "pack-revindex.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-revindex.h",
+              "path": "pack-revindex.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pack-write.c",
+              "path": "pack-write.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pack.h",
+              "path": "pack.h",
+              "contentType": "file"
+            },
+            {
+              "name": "packfile-list.c",
+              "path": "packfile-list.c",
+              "contentType": "file"
+            },
+            {
+              "name": "packfile-list.h",
+              "path": "packfile-list.h",
+              "contentType": "file"
+            },
+            {
+              "name": "packfile.c",
+              "path": "packfile.c",
+              "contentType": "file"
+            },
+            {
+              "name": "packfile.h",
+              "path": "packfile.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pager.c",
+              "path": "pager.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pager.h",
+              "path": "pager.h",
+              "contentType": "file"
+            },
+            {
+              "name": "parallel-checkout.c",
+              "path": "parallel-checkout.c",
+              "contentType": "file"
+            },
+            {
+              "name": "parallel-checkout.h",
+              "path": "parallel-checkout.h",
+              "contentType": "file"
+            },
+            {
+              "name": "parse-options-cb.c",
+              "path": "parse-options-cb.c",
+              "contentType": "file"
+            },
+            {
+              "name": "parse-options.c",
+              "path": "parse-options.c",
+              "contentType": "file"
+            },
+            {
+              "name": "parse-options.h",
+              "path": "parse-options.h",
+              "contentType": "file"
+            },
+            {
+              "name": "parse.c",
+              "path": "parse.c",
+              "contentType": "file"
+            },
+            {
+              "name": "parse.h",
+              "path": "parse.h",
+              "contentType": "file"
+            },
+            {
+              "name": "patch-delta.c",
+              "path": "patch-delta.c",
+              "contentType": "file"
+            },
+            {
+              "name": "patch-ids.c",
+              "path": "patch-ids.c",
+              "contentType": "file"
+            },
+            {
+              "name": "patch-ids.h",
+              "path": "patch-ids.h",
+              "contentType": "file"
+            },
+            {
+              "name": "path-walk.c",
+              "path": "path-walk.c",
+              "contentType": "file"
+            },
+            {
+              "name": "path-walk.h",
+              "path": "path-walk.h",
+              "contentType": "file"
+            },
+            {
+              "name": "path.c",
+              "path": "path.c",
+              "contentType": "file"
+            },
+            {
+              "name": "path.h",
+              "path": "path.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pathspec.c",
+              "path": "pathspec.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pathspec.h",
+              "path": "pathspec.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pkt-line.c",
+              "path": "pkt-line.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pkt-line.h",
+              "path": "pkt-line.h",
+              "contentType": "file"
+            },
+            {
+              "name": "preload-index.c",
+              "path": "preload-index.c",
+              "contentType": "file"
+            },
+            {
+              "name": "preload-index.h",
+              "path": "preload-index.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pretty.c",
+              "path": "pretty.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pretty.h",
+              "path": "pretty.h",
+              "contentType": "file"
+            },
+            {
+              "name": "prio-queue.c",
+              "path": "prio-queue.c",
+              "contentType": "file"
+            },
+            {
+              "name": "prio-queue.h",
+              "path": "prio-queue.h",
+              "contentType": "file"
+            },
+            {
+              "name": "progress.c",
+              "path": "progress.c",
+              "contentType": "file"
+            },
+            {
+              "name": "progress.h",
+              "path": "progress.h",
+              "contentType": "file"
+            },
+            {
+              "name": "promisor-remote.c",
+              "path": "promisor-remote.c",
+              "contentType": "file"
+            },
+            {
+              "name": "promisor-remote.h",
+              "path": "promisor-remote.h",
+              "contentType": "file"
+            },
+            {
+              "name": "prompt.c",
+              "path": "prompt.c",
+              "contentType": "file"
+            },
+            {
+              "name": "prompt.h",
+              "path": "prompt.h",
+              "contentType": "file"
+            },
+            {
+              "name": "protocol-caps.c",
+              "path": "protocol-caps.c",
+              "contentType": "file"
+            },
+            {
+              "name": "protocol-caps.h",
+              "path": "protocol-caps.h",
+              "contentType": "file"
+            },
+            {
+              "name": "protocol.c",
+              "path": "protocol.c",
+              "contentType": "file"
+            },
+            {
+              "name": "protocol.h",
+              "path": "protocol.h",
+              "contentType": "file"
+            },
+            {
+              "name": "prune-packed.c",
+              "path": "prune-packed.c",
+              "contentType": "file"
+            },
+            {
+              "name": "prune-packed.h",
+              "path": "prune-packed.h",
+              "contentType": "file"
+            },
+            {
+              "name": "pseudo-merge.c",
+              "path": "pseudo-merge.c",
+              "contentType": "file"
+            },
+            {
+              "name": "pseudo-merge.h",
+              "path": "pseudo-merge.h",
+              "contentType": "file"
+            },
+            {
+              "name": "quote.c",
+              "path": "quote.c",
+              "contentType": "file"
+            },
+            {
+              "name": "quote.h",
+              "path": "quote.h",
+              "contentType": "file"
+            },
+            {
+              "name": "range-diff.c",
+              "path": "range-diff.c",
+              "contentType": "file"
+            },
+            {
+              "name": "range-diff.h",
+              "path": "range-diff.h",
+              "contentType": "file"
+            },
+            {
+              "name": "reachable.c",
+              "path": "reachable.c",
+              "contentType": "file"
+            },
+            {
+              "name": "reachable.h",
+              "path": "reachable.h",
+              "contentType": "file"
+            },
+            {
+              "name": "read-cache-ll.h",
+              "path": "read-cache-ll.h",
+              "contentType": "file"
+            },
+            {
+              "name": "read-cache.c",
+              "path": "read-cache.c",
+              "contentType": "file"
+            },
+            {
+              "name": "read-cache.h",
+              "path": "read-cache.h",
+              "contentType": "file"
+            },
+            {
+              "name": "rebase-interactive.c",
+              "path": "rebase-interactive.c",
+              "contentType": "file"
+            },
+            {
+              "name": "rebase-interactive.h",
+              "path": "rebase-interactive.h",
+              "contentType": "file"
+            },
+            {
+              "name": "rebase.c",
+              "path": "rebase.c",
+              "contentType": "file"
+            },
+            {
+              "name": "rebase.h",
+              "path": "rebase.h",
+              "contentType": "file"
+            },
+            {
+              "name": "ref-filter.c",
+              "path": "ref-filter.c",
+              "contentType": "file"
+            },
+            {
+              "name": "ref-filter.h",
+              "path": "ref-filter.h",
+              "contentType": "file"
+            },
+            {
+              "name": "reflog-walk.c",
+              "path": "reflog-walk.c",
+              "contentType": "file"
+            },
+            {
+              "name": "reflog-walk.h",
+              "path": "reflog-walk.h",
+              "contentType": "file"
+            },
+            {
+              "name": "reflog.c",
+              "path": "reflog.c",
+              "contentType": "file"
+            },
+            {
+              "name": "reflog.h",
+              "path": "reflog.h",
+              "contentType": "file"
+            },
+            {
+              "name": "refs.c",
+              "path": "refs.c",
+              "contentType": "file"
+            },
+            {
+              "name": "refs.h",
+              "path": "refs.h",
+              "contentType": "file"
+            },
+            {
+              "name": "refspec.c",
+              "path": "refspec.c",
+              "contentType": "file"
+            },
+            {
+              "name": "refspec.h",
+              "path": "refspec.h",
+              "contentType": "file"
+            },
+            {
+              "name": "remote-curl.c",
+              "path": "remote-curl.c",
+              "contentType": "file"
+            },
+            {
+              "name": "remote.c",
+              "path": "remote.c",
+              "contentType": "file"
+            },
+            {
+              "name": "remote.h",
+              "path": "remote.h",
+              "contentType": "file"
+            },
+            {
+              "name": "repack-cruft.c",
+              "path": "repack-cruft.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repack-filtered.c",
+              "path": "repack-filtered.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repack-geometry.c",
+              "path": "repack-geometry.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repack-midx.c",
+              "path": "repack-midx.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repack-promisor.c",
+              "path": "repack-promisor.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repack.c",
+              "path": "repack.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repack.h",
+              "path": "repack.h",
+              "contentType": "file"
+            },
+            {
+              "name": "replace-object.c",
+              "path": "replace-object.c",
+              "contentType": "file"
+            },
+            {
+              "name": "replace-object.h",
+              "path": "replace-object.h",
+              "contentType": "file"
+            },
+            {
+              "name": "replay.c",
+              "path": "replay.c",
+              "contentType": "file"
+            },
+            {
+              "name": "replay.h",
+              "path": "replay.h",
+              "contentType": "file"
+            },
+            {
+              "name": "repo-settings.c",
+              "path": "repo-settings.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repo-settings.h",
+              "path": "repo-settings.h",
+              "contentType": "file"
+            },
+            {
+              "name": "repository.c",
+              "path": "repository.c",
+              "contentType": "file"
+            },
+            {
+              "name": "repository.h",
+              "path": "repository.h",
+              "contentType": "file"
+            },
+            {
+              "name": "rerere.c",
+              "path": "rerere.c",
+              "contentType": "file"
+            },
+            {
+              "name": "rerere.h",
+              "path": "rerere.h",
+              "contentType": "file"
+            },
+            {
+              "name": "reset.c",
+              "path": "reset.c",
+              "contentType": "file"
+            },
+            {
+              "name": "reset.h",
+              "path": "reset.h",
+              "contentType": "file"
+            },
+            {
+              "name": "resolve-undo.c",
+              "path": "resolve-undo.c",
+              "contentType": "file"
+            },
+            {
+              "name": "resolve-undo.h",
+              "path": "resolve-undo.h",
+              "contentType": "file"
+            },
+            {
+              "name": "revision.c",
+              "path": "revision.c",
+              "contentType": "file"
+            },
+            {
+              "name": "revision.h",
+              "path": "revision.h",
+              "contentType": "file"
+            },
+            {
+              "name": "run-command.c",
+              "path": "run-command.c",
+              "contentType": "file"
+            },
+            {
+              "name": "run-command.h",
+              "path": "run-command.h",
+              "contentType": "file"
+            },
+            {
+              "name": "sane-ctype.h",
+              "path": "sane-ctype.h",
+              "contentType": "file"
+            },
+            {
+              "name": "scalar.c",
+              "path": "scalar.c",
+              "contentType": "file"
+            },
+            {
+              "name": "send-pack.c",
+              "path": "send-pack.c",
+              "contentType": "file"
+            },
+            {
+              "name": "send-pack.h",
+              "path": "send-pack.h",
+              "contentType": "file"
+            },
+            {
+              "name": "sequencer.c",
+              "path": "sequencer.c",
+              "contentType": "file"
+            },
+            {
+              "name": "sequencer.h",
+              "path": "sequencer.h",
+              "contentType": "file"
+            },
+            {
+              "name": "serve.c",
+              "path": "serve.c",
+              "contentType": "file"
+            },
+            {
+              "name": "serve.h",
+              "path": "serve.h",
+              "contentType": "file"
+            },
+            {
+              "name": "server-info.c",
+              "path": "server-info.c",
+              "contentType": "file"
+            },
+            {
+              "name": "server-info.h",
+              "path": "server-info.h",
+              "contentType": "file"
+            },
+            {
+              "name": "setup.c",
+              "path": "setup.c",
+              "contentType": "file"
+            },
+            {
+              "name": "setup.h",
+              "path": "setup.h",
+              "contentType": "file"
+            },
+            {
+              "name": "sh-i18n--envsubst.c",
+              "path": "sh-i18n--envsubst.c",
+              "contentType": "file"
+            },
+            {
+              "name": "sha1dc_git.c",
+              "path": "sha1dc_git.c",
+              "contentType": "file"
+            },
+            {
+              "name": "sha1dc_git.h",
+              "path": "sha1dc_git.h",
+              "contentType": "file"
+            },
+            {
+              "name": "shallow.c",
+              "path": "shallow.c",
+              "contentType": "file"
+            },
+            {
+              "name": "shallow.h",
+              "path": "shallow.h",
+              "contentType": "file"
+            },
+            {
+              "name": "shared.mak",
+              "path": "shared.mak",
+              "contentType": "file"
+            },
+            {
+              "name": "shell.c",
+              "path": "shell.c",
+              "contentType": "file"
+            },
+            {
+              "name": "shortlog.h",
+              "path": "shortlog.h",
+              "contentType": "file"
+            },
+            {
+              "name": "sideband.c",
+              "path": "sideband.c",
+              "contentType": "file"
+            },
+            {
+              "name": "sideband.h",
+              "path": "sideband.h",
+              "contentType": "file"
+            },
+            {
+              "name": "sigchain.c",
+              "path": "sigchain.c",
+              "contentType": "file"
+            },
+            {
+              "name": "sigchain.h",
+              "path": "sigchain.h",
+              "contentType": "file"
+            },
+            {
+              "name": "simple-ipc.h",
+              "path": "simple-ipc.h",
+              "contentType": "file"
+            },
+            {
+              "name": "sparse-index.c",
+              "path": "sparse-index.c",
+              "contentType": "file"
+            },
+            {
+              "name": "sparse-index.h",
+              "path": "sparse-index.h",
+              "contentType": "file"
+            },
+            {
+              "name": "split-index.c",
+              "path": "split-index.c",
+              "contentType": "file"
+            },
+            {
+              "name": "split-index.h",
+              "path": "split-index.h",
+              "contentType": "file"
+            },
+            {
+              "name": "stable-qsort.c",
+              "path": "stable-qsort.c",
+              "contentType": "file"
+            },
+            {
+              "name": "stash.h",
+              "path": "stash.h",
+              "contentType": "file"
+            },
+            {
+              "name": "statinfo.c",
+              "path": "statinfo.c",
+              "contentType": "file"
+            },
+            {
+              "name": "statinfo.h",
+              "path": "statinfo.h",
+              "contentType": "file"
+            },
+            {
+              "name": "strbuf.c",
+              "path": "strbuf.c",
+              "contentType": "file"
+            },
+            {
+              "name": "strbuf.h",
+              "path": "strbuf.h",
+              "contentType": "file"
+            },
+            {
+              "name": "string-list.c",
+              "path": "string-list.c",
+              "contentType": "file"
+            },
+            {
+              "name": "string-list.h",
+              "path": "string-list.h",
+              "contentType": "file"
+            },
+            {
+              "name": "strmap.c",
+              "path": "strmap.c",
+              "contentType": "file"
+            },
+            {
+              "name": "strmap.h",
+              "path": "strmap.h",
+              "contentType": "file"
+            },
+            {
+              "name": "strvec.c",
+              "path": "strvec.c",
+              "contentType": "file"
+            },
+            {
+              "name": "strvec.h",
+              "path": "strvec.h",
+              "contentType": "file"
+            },
+            {
+              "name": "sub-process.c",
+              "path": "sub-process.c",
+              "contentType": "file"
+            },
+            {
+              "name": "sub-process.h",
+              "path": "sub-process.h",
+              "contentType": "file"
+            },
+            {
+              "name": "submodule-config.c",
+              "path": "submodule-config.c",
+              "contentType": "file"
+            },
+            {
+              "name": "submodule-config.h",
+              "path": "submodule-config.h",
+              "contentType": "file"
+            },
+            {
+              "name": "submodule.c",
+              "path": "submodule.c",
+              "contentType": "file"
+            },
+            {
+              "name": "submodule.h",
+              "path": "submodule.h",
+              "contentType": "file"
+            },
+            {
+              "name": "symlinks.c",
+              "path": "symlinks.c",
+              "contentType": "file"
+            },
+            {
+              "name": "symlinks.h",
+              "path": "symlinks.h",
+              "contentType": "file"
+            },
+            {
+              "name": "tag.c",
+              "path": "tag.c",
+              "contentType": "file"
+            },
+            {
+              "name": "tag.h",
+              "path": "tag.h",
+              "contentType": "file"
+            },
+            {
+              "name": "tar.h",
+              "path": "tar.h",
+              "contentType": "file"
+            },
+            {
+              "name": "tempfile.c",
+              "path": "tempfile.c",
+              "contentType": "file"
+            },
+            {
+              "name": "tempfile.h",
+              "path": "tempfile.h",
+              "contentType": "file"
+            },
+            {
+              "name": "thread-utils.c",
+              "path": "thread-utils.c",
+              "contentType": "file"
+            },
+            {
+              "name": "thread-utils.h",
+              "path": "thread-utils.h",
+              "contentType": "file"
+            },
+            {
+              "name": "tmp-objdir.c",
+              "path": "tmp-objdir.c",
+              "contentType": "file"
+            },
+            {
+              "name": "tmp-objdir.h",
+              "path": "tmp-objdir.h",
+              "contentType": "file"
+            },
+            {
+              "name": "trace.c",
+              "path": "trace.c",
+              "contentType": "file"
+            },
+            {
+              "name": "trace.h",
+              "path": "trace.h",
+              "contentType": "file"
+            },
+            {
+              "name": "trace2.c",
+              "path": "trace2.c",
+              "contentType": "file"
+            },
+            {
+              "name": "trace2.h",
+              "path": "trace2.h",
+              "contentType": "file"
+            },
+            {
+              "name": "trailer.c",
+              "path": "trailer.c",
+              "contentType": "file"
+            },
+            {
+              "name": "trailer.h",
+              "path": "trailer.h",
+              "contentType": "file"
+            },
+            {
+              "name": "transport-helper.c",
+              "path": "transport-helper.c",
+              "contentType": "file"
+            },
+            {
+              "name": "transport-internal.h",
+              "path": "transport-internal.h",
+              "contentType": "file"
+            },
+            {
+              "name": "transport.c",
+              "path": "transport.c",
+              "contentType": "file"
+            },
+            {
+              "name": "transport.h",
+              "path": "transport.h",
+              "contentType": "file"
+            },
+            {
+              "name": "tree-diff.c",
+              "path": "tree-diff.c",
+              "contentType": "file"
+            },
+            {
+              "name": "tree-verify.c",
+              "path": "tree-verify.c",
+              "contentType": "file"
+            },
+            {
+              "name": "tree-verify.h",
+              "path": "tree-verify.h",
+              "contentType": "file"
+            },
+            {
+              "name": "tree-walk.c",
+              "path": "tree-walk.c",
+              "contentType": "file"
+            },
+            {
+              "name": "tree-walk.h",
+              "path": "tree-walk.h",
+              "contentType": "file"
+            },
+            {
+              "name": "tree.c",
+              "path": "tree.c",
+              "contentType": "file"
+            },
+            {
+              "name": "tree.h",
+              "path": "tree.h",
+              "contentType": "file"
+            },
+            {
+              "name": "unicode-width.h",
+              "path": "unicode-width.h",
+              "contentType": "file"
+            },
+            {
+              "name": "unimplemented.sh",
+              "path": "unimplemented.sh",
+              "contentType": "file"
+            },
+            {
+              "name": "unix-socket.c",
+              "path": "unix-socket.c",
+              "contentType": "file"
+            },
+            {
+              "name": "unix-socket.h",
+              "path": "unix-socket.h",
+              "contentType": "file"
+            },
+            {
+              "name": "unix-stream-server.c",
+              "path": "unix-stream-server.c",
+              "contentType": "file"
+            },
+            {
+              "name": "unix-stream-server.h",
+              "path": "unix-stream-server.h",
+              "contentType": "file"
+            },
+            {
+              "name": "unpack-trees.c",
+              "path": "unpack-trees.c",
+              "contentType": "file"
+            },
+            {
+              "name": "unpack-trees.h",
+              "path": "unpack-trees.h",
+              "contentType": "file"
+            },
+            {
+              "name": "upload-pack.c",
+              "path": "upload-pack.c",
+              "contentType": "file"
+            },
+            {
+              "name": "upload-pack.h",
+              "path": "upload-pack.h",
+              "contentType": "file"
+            },
+            {
+              "name": "url.c",
+              "path": "url.c",
+              "contentType": "file"
+            },
+            {
+              "name": "url.h",
+              "path": "url.h",
+              "contentType": "file"
+            },
+            {
+              "name": "urlmatch.c",
+              "path": "urlmatch.c",
+              "contentType": "file"
+            },
+            {
+              "name": "urlmatch.h",
+              "path": "urlmatch.h",
+              "contentType": "file"
+            },
+            {
+              "name": "usage.c",
+              "path": "usage.c",
+              "contentType": "file"
+            },
+            {
+              "name": "userdiff.c",
+              "path": "userdiff.c",
+              "contentType": "file"
+            },
+            {
+              "name": "userdiff.h",
+              "path": "userdiff.h",
+              "contentType": "file"
+            },
+            {
+              "name": "utf8.c",
+              "path": "utf8.c",
+              "contentType": "file"
+            },
+            {
+              "name": "utf8.h",
+              "path": "utf8.h",
+              "contentType": "file"
+            },
+            {
+              "name": "varint.c",
+              "path": "varint.c",
+              "contentType": "file"
+            },
+            {
+              "name": "varint.h",
+              "path": "varint.h",
+              "contentType": "file"
+            },
+            {
+              "name": "version-def.h.in",
+              "path": "version-def.h.in",
+              "contentType": "file"
+            },
+            {
+              "name": "version.c",
+              "path": "version.c",
+              "contentType": "file"
+            },
+            {
+              "name": "version.h",
+              "path": "version.h",
+              "contentType": "file"
+            },
+            {
+              "name": "versioncmp.c",
+              "path": "versioncmp.c",
+              "contentType": "file"
+            },
+            {
+              "name": "versioncmp.h",
+              "path": "versioncmp.h",
+              "contentType": "file"
+            },
+            {
+              "name": "walker.c",
+              "path": "walker.c",
+              "contentType": "file"
+            },
+            {
+              "name": "walker.h",
+              "path": "walker.h",
+              "contentType": "file"
+            },
+            {
+              "name": "wildmatch.c",
+              "path": "wildmatch.c",
+              "contentType": "file"
+            },
+            {
+              "name": "wildmatch.h",
+              "path": "wildmatch.h",
+              "contentType": "file"
+            },
+            {
+              "name": "worktree.c",
+              "path": "worktree.c",
+              "contentType": "file"
+            },
+            {
+              "name": "worktree.h",
+              "path": "worktree.h",
+              "contentType": "file"
+            },
+            {
+              "name": "wrapper.c",
+              "path": "wrapper.c",
+              "contentType": "file"
+            },
+            {
+              "name": "wrapper.h",
+              "path": "wrapper.h",
+              "contentType": "file"
+            },
+            {
+              "name": "write-or-die.c",
+              "path": "write-or-die.c",
+              "contentType": "file"
+            },
+            {
+              "name": "write-or-die.h",
+              "path": "write-or-die.h",
+              "contentType": "file"
+            },
+            {
+              "name": "ws.c",
+              "path": "ws.c",
+              "contentType": "file"
+            },
+            {
+              "name": "ws.h",
+              "path": "ws.h",
+              "contentType": "file"
+            },
+            {
+              "name": "wt-status.c",
+              "path": "wt-status.c",
+              "contentType": "file"
+            },
+            {
+              "name": "wt-status.h",
+              "path": "wt-status.h",
+              "contentType": "file"
+            },
+            {
+              "name": "xdiff-interface.c",
+              "path": "xdiff-interface.c",
+              "contentType": "file"
+            },
+            {
+              "name": "xdiff-interface.h",
+              "path": "xdiff-interface.h",
+              "contentType": "file"
+            }
+          ],
+          "totalCount": 564
+        }
+      },
+      "fileTreeProcessingTime": 0,
+      "foldersToFetch": [],
+      "allShortcutsEnabled": false,
+      "tree": {
+        "items": [],
+        "totalCount": 0,
+        "templateDirectorySuggestionUrl": null,
+        "readme": null,
+        "showBranchInfobar": false
+      },
+      "error": {
+        "httpStatus": 404,
+        "type": "httpError"
+      }
+    }
+  }
+}

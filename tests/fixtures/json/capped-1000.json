@@ -1,0 +1,5030 @@
+{
+  "meta": {
+    "title": "DefinitelyTyped/types at master · DefinitelyTyped/DefinitelyTyped"
+  },
+  "payload": {
+    "codeViewTreeRoute": {
+      "path": "types",
+      "refInfo": {
+        "name": "master",
+        "listCacheKey": "v0:1794787538.0",
+        "canEdit": false,
+        "refType": "branch",
+        "currentOid": "302dab5cd36dba67332a8fde616727f7936de115"
+      },
+      "tree": {
+        "items": [
+          {
+            "name": "11ty__eleventy-img",
+            "path": "types/11ty__eleventy-img",
+            "contentType": "directory"
+          },
+          {
+            "name": "11ty__eleventy-plugin-directory-output",
+            "path": "types/11ty__eleventy-plugin-directory-output",
+            "contentType": "directory"
+          },
+          {
+            "name": "11ty__eleventy-plugin-rss",
+            "path": "types/11ty__eleventy-plugin-rss",
+            "contentType": "directory"
+          },
+          {
+            "name": "1line-aa",
+            "path": "types/1line-aa",
+            "contentType": "directory"
+          },
+          {
+            "name": "3box",
+            "path": "types/3box",
+            "contentType": "directory"
+          },
+          {
+            "name": "a-big-triangle",
+            "path": "types/a-big-triangle",
+            "contentType": "directory"
+          },
+          {
+            "name": "a-star",
+            "path": "types/a-star",
+            "contentType": "directory"
+          },
+          {
+            "name": "a2hs.js",
+            "path": "types/a2hs.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "abbrev",
+            "path": "types/abbrev",
+            "contentType": "directory"
+          },
+          {
+            "name": "abs-svg-path",
+            "path": "types/abs-svg-path",
+            "contentType": "directory"
+          },
+          {
+            "name": "abs",
+            "path": "types/abs",
+            "contentType": "directory"
+          },
+          {
+            "name": "absinthe__socket",
+            "path": "types/absinthe__socket",
+            "contentType": "directory"
+          },
+          {
+            "name": "absolute-url",
+            "path": "types/absolute-url",
+            "contentType": "directory"
+          },
+          {
+            "name": "absolute",
+            "path": "types/absolute",
+            "contentType": "directory"
+          },
+          {
+            "name": "abstract-leveldown",
+            "path": "types/abstract-leveldown",
+            "contentType": "directory"
+          },
+          {
+            "name": "abstract-things",
+            "path": "types/abstract-things",
+            "contentType": "directory"
+          },
+          {
+            "name": "acc-wizard",
+            "path": "types/acc-wizard",
+            "contentType": "directory"
+          },
+          {
+            "name": "accedo__accedo-one",
+            "path": "types/accedo__accedo-one",
+            "contentType": "directory"
+          },
+          {
+            "name": "accept-language-parser",
+            "path": "types/accept-language-parser",
+            "contentType": "directory"
+          },
+          {
+            "name": "accepts",
+            "path": "types/accepts",
+            "contentType": "directory"
+          },
+          {
+            "name": "accounting",
+            "path": "types/accounting",
+            "contentType": "directory"
+          },
+          {
+            "name": "accumulator-hash",
+            "path": "types/accumulator-hash",
+            "contentType": "directory"
+          },
+          {
+            "name": "accurate-interval",
+            "path": "types/accurate-interval",
+            "contentType": "directory"
+          },
+          {
+            "name": "ace",
+            "path": "types/ace",
+            "contentType": "directory"
+          },
+          {
+            "name": "ackee-tracker",
+            "path": "types/ackee-tracker",
+            "contentType": "directory"
+          },
+          {
+            "name": "acl",
+            "path": "types/acl",
+            "contentType": "directory"
+          },
+          {
+            "name": "actioncable",
+            "path": "types/actioncable",
+            "contentType": "directory"
+          },
+          {
+            "name": "activedirectory2",
+            "path": "types/activedirectory2",
+            "contentType": "directory"
+          },
+          {
+            "name": "activestorage",
+            "path": "types/activestorage",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-access",
+            "path": "types/activex-access",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-adodb",
+            "path": "types/activex-adodb",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-adox",
+            "path": "types/activex-adox",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-dao",
+            "path": "types/activex-dao",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-diskquota",
+            "path": "types/activex-diskquota",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-excel",
+            "path": "types/activex-excel",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-faxcomexlib",
+            "path": "types/activex-faxcomexlib",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-infopath",
+            "path": "types/activex-infopath",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-interop",
+            "path": "types/activex-interop",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-iwshruntimelibrary",
+            "path": "types/activex-iwshruntimelibrary",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-libreoffice",
+            "path": "types/activex-libreoffice",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-msforms",
+            "path": "types/activex-msforms",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-mshtml",
+            "path": "types/activex-mshtml",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-msxml2",
+            "path": "types/activex-msxml2",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-office",
+            "path": "types/activex-office",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-opendssengine",
+            "path": "types/activex-opendssengine",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-outlook",
+            "path": "types/activex-outlook",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-powerpoint",
+            "path": "types/activex-powerpoint",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-scripting",
+            "path": "types/activex-scripting",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-shdocvw",
+            "path": "types/activex-shdocvw",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-shell",
+            "path": "types/activex-shell",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-stdole",
+            "path": "types/activex-stdole",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-vbide",
+            "path": "types/activex-vbide",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-wia",
+            "path": "types/activex-wia",
+            "contentType": "directory"
+          },
+          {
+            "name": "activex-word",
+            "path": "types/activex-word",
+            "contentType": "directory"
+          },
+          {
+            "name": "adal-angular",
+            "path": "types/adal-angular",
+            "contentType": "directory"
+          },
+          {
+            "name": "adblock-rs",
+            "path": "types/adblock-rs",
+            "contentType": "directory"
+          },
+          {
+            "name": "add-dom-event-listener",
+            "path": "types/add-dom-event-listener",
+            "contentType": "directory"
+          },
+          {
+            "name": "add-zero",
+            "path": "types/add-zero",
+            "contentType": "directory"
+          },
+          {
+            "name": "add",
+            "path": "types/add",
+            "contentType": "directory"
+          },
+          {
+            "name": "add2home",
+            "path": "types/add2home",
+            "contentType": "directory"
+          },
+          {
+            "name": "addons-linter",
+            "path": "types/addons-linter",
+            "contentType": "directory"
+          },
+          {
+            "name": "addressparser",
+            "path": "types/addressparser",
+            "contentType": "directory"
+          },
+          {
+            "name": "adeira__graphql-global-id",
+            "path": "types/adeira__graphql-global-id",
+            "contentType": "directory"
+          },
+          {
+            "name": "adeira__graphql-resolve-wrapper",
+            "path": "types/adeira__graphql-resolve-wrapper",
+            "contentType": "directory"
+          },
+          {
+            "name": "adeira__js",
+            "path": "types/adeira__js",
+            "contentType": "directory"
+          },
+          {
+            "name": "adeira__murmur-hash",
+            "path": "types/adeira__murmur-hash",
+            "contentType": "directory"
+          },
+          {
+            "name": "adeira__test-utils",
+            "path": "types/adeira__test-utils",
+            "contentType": "directory"
+          },
+          {
+            "name": "adj-noun",
+            "path": "types/adj-noun",
+            "contentType": "directory"
+          },
+          {
+            "name": "adlib",
+            "path": "types/adlib",
+            "contentType": "directory"
+          },
+          {
+            "name": "admin-check",
+            "path": "types/admin-check",
+            "contentType": "directory"
+          },
+          {
+            "name": "adobe__aio-lib-analytics",
+            "path": "types/adobe__aio-lib-analytics",
+            "contentType": "directory"
+          },
+          {
+            "name": "adobe__ccweb-add-on-sdk",
+            "path": "types/adobe__ccweb-add-on-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "adobe__es-modules-middleware",
+            "path": "types/adobe__es-modules-middleware",
+            "contentType": "directory"
+          },
+          {
+            "name": "aes-js",
+            "path": "types/aes-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "af-utils__react-virtual-headless",
+            "path": "types/af-utils__react-virtual-headless",
+            "contentType": "directory"
+          },
+          {
+            "name": "af-utils__react-virtual-list",
+            "path": "types/af-utils__react-virtual-list",
+            "contentType": "directory"
+          },
+          {
+            "name": "aframe",
+            "path": "types/aframe",
+            "contentType": "directory"
+          },
+          {
+            "name": "africastalking",
+            "path": "types/africastalking",
+            "contentType": "directory"
+          },
+          {
+            "name": "after-all-results",
+            "path": "types/after-all-results",
+            "contentType": "directory"
+          },
+          {
+            "name": "ag-auth",
+            "path": "types/ag-auth",
+            "contentType": "directory"
+          },
+          {
+            "name": "ag-channel",
+            "path": "types/ag-channel",
+            "contentType": "directory"
+          },
+          {
+            "name": "ag-request",
+            "path": "types/ag-request",
+            "contentType": "directory"
+          },
+          {
+            "name": "ag-simple-broker",
+            "path": "types/ag-simple-broker",
+            "contentType": "directory"
+          },
+          {
+            "name": "agadoo",
+            "path": "types/agadoo",
+            "contentType": "directory"
+          },
+          {
+            "name": "agiledigital__mule-preview",
+            "path": "types/agiledigital__mule-preview",
+            "contentType": "directory"
+          },
+          {
+            "name": "agnostic-http-error-handler",
+            "path": "types/agnostic-http-error-handler",
+            "contentType": "directory"
+          },
+          {
+            "name": "ahocorasick",
+            "path": "types/ahocorasick",
+            "contentType": "directory"
+          },
+          {
+            "name": "ahoy.js",
+            "path": "types/ahoy.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "airbnb-prop-types",
+            "path": "types/airbnb-prop-types",
+            "contentType": "directory"
+          },
+          {
+            "name": "airbnb__node-memwatch",
+            "path": "types/airbnb__node-memwatch",
+            "contentType": "directory"
+          },
+          {
+            "name": "ajv-async",
+            "path": "types/ajv-async",
+            "contentType": "directory"
+          },
+          {
+            "name": "ajv-bsontype",
+            "path": "types/ajv-bsontype",
+            "contentType": "directory"
+          },
+          {
+            "name": "ajv-merge-patch",
+            "path": "types/ajv-merge-patch",
+            "contentType": "directory"
+          },
+          {
+            "name": "ajv-pack",
+            "path": "types/ajv-pack",
+            "contentType": "directory"
+          },
+          {
+            "name": "akamai-edgeworkers",
+            "path": "types/akamai-edgeworkers",
+            "contentType": "directory"
+          },
+          {
+            "name": "akumina-core",
+            "path": "types/akumina-core",
+            "contentType": "directory"
+          },
+          {
+            "name": "alcides",
+            "path": "types/alcides",
+            "contentType": "directory"
+          },
+          {
+            "name": "ale-url-parser",
+            "path": "types/ale-url-parser",
+            "contentType": "directory"
+          },
+          {
+            "name": "alertify",
+            "path": "types/alertify",
+            "contentType": "directory"
+          },
+          {
+            "name": "alexa-voice-service",
+            "path": "types/alexa-voice-service",
+            "contentType": "directory"
+          },
+          {
+            "name": "algebra.js",
+            "path": "types/algebra.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "ali-app",
+            "path": "types/ali-app",
+            "contentType": "directory"
+          },
+          {
+            "name": "ali-oss",
+            "path": "types/ali-oss",
+            "contentType": "directory"
+          },
+          {
+            "name": "alicloud__log",
+            "path": "types/alicloud__log",
+            "contentType": "directory"
+          },
+          {
+            "name": "align-text",
+            "path": "types/align-text",
+            "contentType": "directory"
+          },
+          {
+            "name": "alipayjssdk",
+            "path": "types/alipayjssdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "alks-node",
+            "path": "types/alks-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "all-the-cities",
+            "path": "types/all-the-cities",
+            "contentType": "directory"
+          },
+          {
+            "name": "all-the-package-names",
+            "path": "types/all-the-package-names",
+            "contentType": "directory"
+          },
+          {
+            "name": "alloy",
+            "path": "types/alloy",
+            "contentType": "directory"
+          },
+          {
+            "name": "almost-equal",
+            "path": "types/almost-equal",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpha-bravo",
+            "path": "types/alpha-bravo",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpha-shape",
+            "path": "types/alpha-shape",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs",
+            "path": "types/alpinejs",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__anchor",
+            "path": "types/alpinejs__anchor",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__collapse",
+            "path": "types/alpinejs__collapse",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__focus",
+            "path": "types/alpinejs__focus",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__intersect",
+            "path": "types/alpinejs__intersect",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__mask",
+            "path": "types/alpinejs__mask",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__morph",
+            "path": "types/alpinejs__morph",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__persist",
+            "path": "types/alpinejs__persist",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__resize",
+            "path": "types/alpinejs__resize",
+            "contentType": "directory"
+          },
+          {
+            "name": "alpinejs__sort",
+            "path": "types/alpinejs__sort",
+            "contentType": "directory"
+          },
+          {
+            "name": "alt",
+            "path": "types/alt",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-arrival-range",
+            "path": "types/amap-js-api-arrival-range",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-autocomplete",
+            "path": "types/amap-js-api-autocomplete",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-city-search",
+            "path": "types/amap-js-api-city-search",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-control-bar",
+            "path": "types/amap-js-api-control-bar",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-district-search",
+            "path": "types/amap-js-api-district-search",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-driving",
+            "path": "types/amap-js-api-driving",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-geocoder",
+            "path": "types/amap-js-api-geocoder",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-geolocation",
+            "path": "types/amap-js-api-geolocation",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-heatmap",
+            "path": "types/amap-js-api-heatmap",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-indoor-map",
+            "path": "types/amap-js-api-indoor-map",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-line-search",
+            "path": "types/amap-js-api-line-search",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-map-type",
+            "path": "types/amap-js-api-map-type",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-map3d",
+            "path": "types/amap-js-api-map3d",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-overview",
+            "path": "types/amap-js-api-overview",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-place-search",
+            "path": "types/amap-js-api-place-search",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-riding",
+            "path": "types/amap-js-api-riding",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-scale",
+            "path": "types/amap-js-api-scale",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-station-search",
+            "path": "types/amap-js-api-station-search",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-tool-bar",
+            "path": "types/amap-js-api-tool-bar",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api-transfer",
+            "path": "types/amap-js-api-transfer",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-api",
+            "path": "types/amap-js-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "amap-js-sdk",
+            "path": "types/amap-js-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "amazon-cognito-auth-js",
+            "path": "types/amazon-cognito-auth-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "amazon-dax-client",
+            "path": "types/amazon-dax-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "amazon-product-api",
+            "path": "types/amazon-product-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "ambient-weather-api",
+            "path": "types/ambient-weather-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "amcharts",
+            "path": "types/amcharts",
+            "contentType": "directory"
+          },
+          {
+            "name": "amdefine",
+            "path": "types/amdefine",
+            "contentType": "directory"
+          },
+          {
+            "name": "americanexpress__react-seo",
+            "path": "types/americanexpress__react-seo",
+            "contentType": "directory"
+          },
+          {
+            "name": "amp-message",
+            "path": "types/amp-message",
+            "contentType": "directory"
+          },
+          {
+            "name": "amp",
+            "path": "types/amp",
+            "contentType": "directory"
+          },
+          {
+            "name": "amphtml-validator",
+            "path": "types/amphtml-validator",
+            "contentType": "directory"
+          },
+          {
+            "name": "amplifier",
+            "path": "types/amplifier",
+            "contentType": "directory"
+          },
+          {
+            "name": "amplify-deferred",
+            "path": "types/amplify-deferred",
+            "contentType": "directory"
+          },
+          {
+            "name": "amplify",
+            "path": "types/amplify",
+            "contentType": "directory"
+          },
+          {
+            "name": "amplitude-js",
+            "path": "types/amplitude-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "amqp-rpc",
+            "path": "types/amqp-rpc",
+            "contentType": "directory"
+          },
+          {
+            "name": "amqp",
+            "path": "types/amqp",
+            "contentType": "directory"
+          },
+          {
+            "name": "amqplib",
+            "path": "types/amqplib",
+            "contentType": "directory"
+          },
+          {
+            "name": "amzn__synthetics-playwright",
+            "path": "types/amzn__synthetics-playwright",
+            "contentType": "directory"
+          },
+          {
+            "name": "analog-clock",
+            "path": "types/analog-clock",
+            "contentType": "directory"
+          },
+          {
+            "name": "analytics-node",
+            "path": "types/analytics-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "anchor-js",
+            "path": "types/anchor-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "android-device-list",
+            "path": "types/android-device-list",
+            "contentType": "directory"
+          },
+          {
+            "name": "android-emulator-webrtc",
+            "path": "types/android-emulator-webrtc",
+            "contentType": "directory"
+          },
+          {
+            "name": "android-versions",
+            "path": "types/android-versions",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-agility",
+            "path": "types/angular-agility",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-animate",
+            "path": "types/angular-animate",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-aria",
+            "path": "types/angular-aria",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-block-ui",
+            "path": "types/angular-block-ui",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-bootstrap-calendar",
+            "path": "types/angular-bootstrap-calendar",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-bootstrap-lightbox",
+            "path": "types/angular-bootstrap-lightbox",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-breadcrumb",
+            "path": "types/angular-breadcrumb",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-clipboard",
+            "path": "types/angular-clipboard",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-cookie",
+            "path": "types/angular-cookie",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-cookies",
+            "path": "types/angular-cookies",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-deferred-bootstrap",
+            "path": "types/angular-deferred-bootstrap",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-desktop-notification",
+            "path": "types/angular-desktop-notification",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-dialog-service",
+            "path": "types/angular-dialog-service",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-environment",
+            "path": "types/angular-environment",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-es",
+            "path": "types/angular-es",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-feature-flags",
+            "path": "types/angular-feature-flags",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-file-saver",
+            "path": "types/angular-file-saver",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-file-upload",
+            "path": "types/angular-file-upload",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-formly",
+            "path": "types/angular-formly",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-fullscreen",
+            "path": "types/angular-fullscreen",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-gettext",
+            "path": "types/angular-gettext",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-google-analytics",
+            "path": "types/angular-google-analytics",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-gridster",
+            "path": "types/angular-gridster",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-growl-v2",
+            "path": "types/angular-growl-v2",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-hotkeys",
+            "path": "types/angular-hotkeys",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-http-auth",
+            "path": "types/angular-http-auth",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-httpi",
+            "path": "types/angular-httpi",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-idle",
+            "path": "types/angular-idle",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-jwt",
+            "path": "types/angular-jwt",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-load",
+            "path": "types/angular-load",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-loading-bar",
+            "path": "types/angular-loading-bar",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-local-storage",
+            "path": "types/angular-local-storage",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-localforage",
+            "path": "types/angular-localforage",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-locker",
+            "path": "types/angular-locker",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-material",
+            "path": "types/angular-material",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-media-queries",
+            "path": "types/angular-media-queries",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-meteor",
+            "path": "types/angular-meteor",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-mocks",
+            "path": "types/angular-mocks",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-modal",
+            "path": "types/angular-modal",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-notifications",
+            "path": "types/angular-notifications",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-notify",
+            "path": "types/angular-notify",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-oauth2",
+            "path": "types/angular-oauth2",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-odata-resources",
+            "path": "types/angular-odata-resources",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-pdfjs-viewer",
+            "path": "types/angular-pdfjs-viewer",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-permission",
+            "path": "types/angular-permission",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-promise-tracker",
+            "path": "types/angular-promise-tracker",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-q-extras",
+            "path": "types/angular-q-extras",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-q-spread",
+            "path": "types/angular-q-spread",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-resource",
+            "path": "types/angular-resource",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-route",
+            "path": "types/angular-route",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-sanitize",
+            "path": "types/angular-sanitize",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-scenario",
+            "path": "types/angular-scenario",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-scroll",
+            "path": "types/angular-scroll",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-signalr-hub",
+            "path": "types/angular-signalr-hub",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-spinner",
+            "path": "types/angular-spinner",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-storage",
+            "path": "types/angular-storage",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-strap",
+            "path": "types/angular-strap",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-toastr",
+            "path": "types/angular-toastr",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-toasty",
+            "path": "types/angular-toasty",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-tooltips",
+            "path": "types/angular-tooltips",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-translate",
+            "path": "types/angular-translate",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-ui-bootstrap",
+            "path": "types/angular-ui-bootstrap",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-ui-notification",
+            "path": "types/angular-ui-notification",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-ui-router",
+            "path": "types/angular-ui-router",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-ui-scroll",
+            "path": "types/angular-ui-scroll",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-ui-sortable",
+            "path": "types/angular-ui-sortable",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-ui-tree",
+            "path": "types/angular-ui-tree",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-websocket",
+            "path": "types/angular-websocket",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-wizard",
+            "path": "types/angular-wizard",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular-xeditable",
+            "path": "types/angular-xeditable",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular.throttle",
+            "path": "types/angular.throttle",
+            "contentType": "directory"
+          },
+          {
+            "name": "angular",
+            "path": "types/angular",
+            "contentType": "directory"
+          },
+          {
+            "name": "angularfire",
+            "path": "types/angularfire",
+            "contentType": "directory"
+          },
+          {
+            "name": "angularjs-dragula",
+            "path": "types/angularjs-dragula",
+            "contentType": "directory"
+          },
+          {
+            "name": "angularlocalstorage",
+            "path": "types/angularlocalstorage",
+            "contentType": "directory"
+          },
+          {
+            "name": "angulartics",
+            "path": "types/angulartics",
+            "contentType": "directory"
+          },
+          {
+            "name": "animals",
+            "path": "types/animals",
+            "contentType": "directory"
+          },
+          {
+            "name": "animated_gif",
+            "path": "types/animated_gif",
+            "contentType": "directory"
+          },
+          {
+            "name": "animation-frame",
+            "path": "types/animation-frame",
+            "contentType": "directory"
+          },
+          {
+            "name": "anime-quotes-api",
+            "path": "types/anime-quotes-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "ansi-align",
+            "path": "types/ansi-align",
+            "contentType": "directory"
+          },
+          {
+            "name": "ansi-diff-stream",
+            "path": "types/ansi-diff-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "ansi-escape-sequences",
+            "path": "types/ansi-escape-sequences",
+            "contentType": "directory"
+          },
+          {
+            "name": "ansi-html",
+            "path": "types/ansi-html",
+            "contentType": "directory"
+          },
+          {
+            "name": "ansi",
+            "path": "types/ansi",
+            "contentType": "directory"
+          },
+          {
+            "name": "ansicolors",
+            "path": "types/ansicolors",
+            "contentType": "directory"
+          },
+          {
+            "name": "antlr4-autosuggest",
+            "path": "types/antlr4-autosuggest",
+            "contentType": "directory"
+          },
+          {
+            "name": "any-base",
+            "path": "types/any-base",
+            "contentType": "directory"
+          },
+          {
+            "name": "any-db-transaction",
+            "path": "types/any-db-transaction",
+            "contentType": "directory"
+          },
+          {
+            "name": "any-db",
+            "path": "types/any-db",
+            "contentType": "directory"
+          },
+          {
+            "name": "anylogic-cloud-client",
+            "path": "types/anylogic-cloud-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "anyproxy",
+            "path": "types/anyproxy",
+            "contentType": "directory"
+          },
+          {
+            "name": "aos",
+            "path": "types/aos",
+            "contentType": "directory"
+          },
+          {
+            "name": "apca-w3",
+            "path": "types/apca-w3",
+            "contentType": "directory"
+          },
+          {
+            "name": "apex.js",
+            "path": "types/apex.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "api-error-handler",
+            "path": "types/api-error-handler",
+            "contentType": "directory"
+          },
+          {
+            "name": "apicache",
+            "path": "types/apicache",
+            "contentType": "directory"
+          },
+          {
+            "name": "apidoc",
+            "path": "types/apidoc",
+            "contentType": "directory"
+          },
+          {
+            "name": "apigee-access",
+            "path": "types/apigee-access",
+            "contentType": "directory"
+          },
+          {
+            "name": "apimocker",
+            "path": "types/apimocker",
+            "contentType": "directory"
+          },
+          {
+            "name": "apollo-upload-client",
+            "path": "types/apollo-upload-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "apostrophe",
+            "path": "types/apostrophe",
+            "contentType": "directory"
+          },
+          {
+            "name": "app-module-path",
+            "path": "types/app-module-path",
+            "contentType": "directory"
+          },
+          {
+            "name": "app-root-dir",
+            "path": "types/app-root-dir",
+            "contentType": "directory"
+          },
+          {
+            "name": "appcache-webpack-plugin",
+            "path": "types/appcache-webpack-plugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "appdmg",
+            "path": "types/appdmg",
+            "contentType": "directory"
+          },
+          {
+            "name": "appdynamics",
+            "path": "types/appdynamics",
+            "contentType": "directory"
+          },
+          {
+            "name": "append-query",
+            "path": "types/append-query",
+            "contentType": "directory"
+          },
+          {
+            "name": "appframework",
+            "path": "types/appframework",
+            "contentType": "directory"
+          },
+          {
+            "name": "appgeist__ensure-dir",
+            "path": "types/appgeist__ensure-dir",
+            "contentType": "directory"
+          },
+          {
+            "name": "apple-mapkit-js-browser",
+            "path": "types/apple-mapkit-js-browser",
+            "contentType": "directory"
+          },
+          {
+            "name": "apple-mapkit",
+            "path": "types/apple-mapkit",
+            "contentType": "directory"
+          },
+          {
+            "name": "apple-music-api",
+            "path": "types/apple-music-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "apple-signin-api",
+            "path": "types/apple-signin-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "applepayjs",
+            "path": "types/applepayjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "applest-atem",
+            "path": "types/applest-atem",
+            "contentType": "directory"
+          },
+          {
+            "name": "appletvjs",
+            "path": "types/appletvjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "approximate-number",
+            "path": "types/approximate-number",
+            "contentType": "directory"
+          },
+          {
+            "name": "apptimize__apptimize-web-sdk",
+            "path": "types/apptimize__apptimize-web-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "aqb",
+            "path": "types/aqb",
+            "contentType": "directory"
+          },
+          {
+            "name": "arangodb",
+            "path": "types/arangodb",
+            "contentType": "directory"
+          },
+          {
+            "name": "arbiter",
+            "path": "types/arbiter",
+            "contentType": "directory"
+          },
+          {
+            "name": "arc4",
+            "path": "types/arc4",
+            "contentType": "directory"
+          },
+          {
+            "name": "arcgis-rest-api",
+            "path": "types/arcgis-rest-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "arcgis-to-geojson-utils",
+            "path": "types/arcgis-to-geojson-utils",
+            "contentType": "directory"
+          },
+          {
+            "name": "architect",
+            "path": "types/architect",
+            "contentType": "directory"
+          },
+          {
+            "name": "architect__sandbox",
+            "path": "types/architect__sandbox",
+            "contentType": "directory"
+          },
+          {
+            "name": "architect__utils",
+            "path": "types/architect__utils",
+            "contentType": "directory"
+          },
+          {
+            "name": "archiver",
+            "path": "types/archiver",
+            "contentType": "directory"
+          },
+          {
+            "name": "archy",
+            "path": "types/archy",
+            "contentType": "directory"
+          },
+          {
+            "name": "arconnect",
+            "path": "types/arconnect",
+            "contentType": "directory"
+          },
+          {
+            "name": "are-we-there-yet",
+            "path": "types/are-we-there-yet",
+            "contentType": "directory"
+          },
+          {
+            "name": "are.na",
+            "path": "types/are.na",
+            "contentType": "directory"
+          },
+          {
+            "name": "argon2-browser",
+            "path": "types/argon2-browser",
+            "contentType": "directory"
+          },
+          {
+            "name": "argparse",
+            "path": "types/argparse",
+            "contentType": "directory"
+          },
+          {
+            "name": "args",
+            "path": "types/args",
+            "contentType": "directory"
+          },
+          {
+            "name": "argv",
+            "path": "types/argv",
+            "contentType": "directory"
+          },
+          {
+            "name": "ari-client",
+            "path": "types/ari-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "aria-query",
+            "path": "types/aria-query",
+            "contentType": "directory"
+          },
+          {
+            "name": "arr-diff",
+            "path": "types/arr-diff",
+            "contentType": "directory"
+          },
+          {
+            "name": "arr-union",
+            "path": "types/arr-union",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-binarysearch.closest",
+            "path": "types/array-binarysearch.closest",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-bounds",
+            "path": "types/array-bounds",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-find-index",
+            "path": "types/array-find-index",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-foreach",
+            "path": "types/array-foreach",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-initial",
+            "path": "types/array-initial",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-normalize",
+            "path": "types/array-normalize",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-polar",
+            "path": "types/array-polar",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-rearrange",
+            "path": "types/array-rearrange",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-same",
+            "path": "types/array-same",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-sort",
+            "path": "types/array-sort",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-to-sentence",
+            "path": "types/array-to-sentence",
+            "contentType": "directory"
+          },
+          {
+            "name": "array-unique",
+            "path": "types/array-unique",
+            "contentType": "directory"
+          },
+          {
+            "name": "array.from",
+            "path": "types/array.from",
+            "contentType": "directory"
+          },
+          {
+            "name": "array.prototype.every",
+            "path": "types/array.prototype.every",
+            "contentType": "directory"
+          },
+          {
+            "name": "array.prototype.find",
+            "path": "types/array.prototype.find",
+            "contentType": "directory"
+          },
+          {
+            "name": "array.prototype.flat",
+            "path": "types/array.prototype.flat",
+            "contentType": "directory"
+          },
+          {
+            "name": "array.prototype.flatmap",
+            "path": "types/array.prototype.flatmap",
+            "contentType": "directory"
+          },
+          {
+            "name": "arrive",
+            "path": "types/arrive",
+            "contentType": "directory"
+          },
+          {
+            "name": "asana",
+            "path": "types/asana",
+            "contentType": "directory"
+          },
+          {
+            "name": "asap",
+            "path": "types/asap",
+            "contentType": "directory"
+          },
+          {
+            "name": "ascii-art",
+            "path": "types/ascii-art",
+            "contentType": "directory"
+          },
+          {
+            "name": "ascii-cats",
+            "path": "types/ascii-cats",
+            "contentType": "directory"
+          },
+          {
+            "name": "ascii2mathml",
+            "path": "types/ascii2mathml",
+            "contentType": "directory"
+          },
+          {
+            "name": "asciichart",
+            "path": "types/asciichart",
+            "contentType": "directory"
+          },
+          {
+            "name": "asciify",
+            "path": "types/asciify",
+            "contentType": "directory"
+          },
+          {
+            "name": "ase-utils",
+            "path": "types/ase-utils",
+            "contentType": "directory"
+          },
+          {
+            "name": "asenv",
+            "path": "types/asenv",
+            "contentType": "directory"
+          },
+          {
+            "name": "asn1",
+            "path": "types/asn1",
+            "contentType": "directory"
+          },
+          {
+            "name": "aspect-fit",
+            "path": "types/aspect-fit",
+            "contentType": "directory"
+          },
+          {
+            "name": "aspnet-identity-pw",
+            "path": "types/aspnet-identity-pw",
+            "contentType": "directory"
+          },
+          {
+            "name": "assert-equal-jsx",
+            "path": "types/assert-equal-jsx",
+            "contentType": "directory"
+          },
+          {
+            "name": "assert-plus",
+            "path": "types/assert-plus",
+            "contentType": "directory"
+          },
+          {
+            "name": "assert",
+            "path": "types/assert",
+            "contentType": "directory"
+          },
+          {
+            "name": "assertrc",
+            "path": "types/assertrc",
+            "contentType": "directory"
+          },
+          {
+            "name": "assertsharp",
+            "path": "types/assertsharp",
+            "contentType": "directory"
+          },
+          {
+            "name": "assets-webpack-plugin",
+            "path": "types/assets-webpack-plugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "asterisk-manager",
+            "path": "types/asterisk-manager",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-alpine",
+            "path": "types/async-alpine",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-busboy",
+            "path": "types/async-busboy",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-cache",
+            "path": "types/async-cache",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-csv",
+            "path": "types/async-csv",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-eventemitter",
+            "path": "types/async-eventemitter",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-exit-hook",
+            "path": "types/async-exit-hook",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-iterable-stream",
+            "path": "types/async-iterable-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-lock",
+            "path": "types/async-lock",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-polling",
+            "path": "types/async-polling",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-rerun",
+            "path": "types/async-rerun",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-retry",
+            "path": "types/async-retry",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-stream-emitter",
+            "path": "types/async-stream-emitter",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-stream-generator",
+            "path": "types/async-stream-generator",
+            "contentType": "directory"
+          },
+          {
+            "name": "async-writer",
+            "path": "types/async-writer",
+            "contentType": "directory"
+          },
+          {
+            "name": "async.nexttick",
+            "path": "types/async.nexttick",
+            "contentType": "directory"
+          },
+          {
+            "name": "async",
+            "path": "types/async",
+            "contentType": "directory"
+          },
+          {
+            "name": "at-least-node",
+            "path": "types/at-least-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "athenajs",
+            "path": "types/athenajs",
+            "contentType": "directory"
+          },
+          {
+            "name": "atlaskit__layer",
+            "path": "types/atlaskit__layer",
+            "contentType": "directory"
+          },
+          {
+            "name": "atlaskit__single-select",
+            "path": "types/atlaskit__single-select",
+            "contentType": "directory"
+          },
+          {
+            "name": "atlassian-connect-js",
+            "path": "types/atlassian-connect-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "atlassian-crowd-client",
+            "path": "types/atlassian-crowd-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "atna-audit",
+            "path": "types/atna-audit",
+            "contentType": "directory"
+          },
+          {
+            "name": "atob-lite",
+            "path": "types/atob-lite",
+            "contentType": "directory"
+          },
+          {
+            "name": "atob",
+            "path": "types/atob",
+            "contentType": "directory"
+          },
+          {
+            "name": "atom-keymap",
+            "path": "types/atom-keymap",
+            "contentType": "directory"
+          },
+          {
+            "name": "atom-mocha-test-runner",
+            "path": "types/atom-mocha-test-runner",
+            "contentType": "directory"
+          },
+          {
+            "name": "atom",
+            "path": "types/atom",
+            "contentType": "directory"
+          },
+          {
+            "name": "atom__watcher",
+            "path": "types/atom__watcher",
+            "contentType": "directory"
+          },
+          {
+            "name": "atomic-sleep",
+            "path": "types/atomic-sleep",
+            "contentType": "directory"
+          },
+          {
+            "name": "atpl",
+            "path": "types/atpl",
+            "contentType": "directory"
+          },
+          {
+            "name": "atvlegacycontentkit",
+            "path": "types/atvlegacycontentkit",
+            "contentType": "directory"
+          },
+          {
+            "name": "audio-context",
+            "path": "types/audio-context",
+            "contentType": "directory"
+          },
+          {
+            "name": "audio-play",
+            "path": "types/audio-play",
+            "contentType": "directory"
+          },
+          {
+            "name": "audiobuffer-to-wav",
+            "path": "types/audiobuffer-to-wav",
+            "contentType": "directory"
+          },
+          {
+            "name": "audiosprite",
+            "path": "types/audiosprite",
+            "contentType": "directory"
+          },
+          {
+            "name": "auth-header",
+            "path": "types/auth-header",
+            "contentType": "directory"
+          },
+          {
+            "name": "auth0-js",
+            "path": "types/auth0-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "auth0-lock",
+            "path": "types/auth0-lock",
+            "contentType": "directory"
+          },
+          {
+            "name": "auth0.widget",
+            "path": "types/auth0.widget",
+            "contentType": "directory"
+          },
+          {
+            "name": "auth0",
+            "path": "types/auth0",
+            "contentType": "directory"
+          },
+          {
+            "name": "authenticator",
+            "path": "types/authenticator",
+            "contentType": "directory"
+          },
+          {
+            "name": "authorizenet",
+            "path": "types/authorizenet",
+            "contentType": "directory"
+          },
+          {
+            "name": "auto-launch",
+            "path": "types/auto-launch",
+            "contentType": "directory"
+          },
+          {
+            "name": "auto-sni",
+            "path": "types/auto-sni",
+            "contentType": "directory"
+          },
+          {
+            "name": "autobahn",
+            "path": "types/autobahn",
+            "contentType": "directory"
+          },
+          {
+            "name": "autocannon",
+            "path": "types/autocannon",
+            "contentType": "directory"
+          },
+          {
+            "name": "autokanji",
+            "path": "types/autokanji",
+            "contentType": "directory"
+          },
+          {
+            "name": "autoprefixer-core",
+            "path": "types/autoprefixer-core",
+            "contentType": "directory"
+          },
+          {
+            "name": "autosize",
+            "path": "types/autosize",
+            "contentType": "directory"
+          },
+          {
+            "name": "autosuggest-highlight",
+            "path": "types/autosuggest-highlight",
+            "contentType": "directory"
+          },
+          {
+            "name": "autosuggest-trie",
+            "path": "types/autosuggest-trie",
+            "contentType": "directory"
+          },
+          {
+            "name": "av",
+            "path": "types/av",
+            "contentType": "directory"
+          },
+          {
+            "name": "avocat",
+            "path": "types/avocat",
+            "contentType": "directory"
+          },
+          {
+            "name": "await-promises",
+            "path": "types/await-promises",
+            "contentType": "directory"
+          },
+          {
+            "name": "await-timeout",
+            "path": "types/await-timeout",
+            "contentType": "directory"
+          },
+          {
+            "name": "awesome-notifications",
+            "path": "types/awesome-notifications",
+            "contentType": "directory"
+          },
+          {
+            "name": "awesomplete",
+            "path": "types/awesomplete",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-api-gateway-client",
+            "path": "types/aws-api-gateway-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-cloudfront-function",
+            "path": "types/aws-cloudfront-function",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-greengrass-core-sdk",
+            "path": "types/aws-greengrass-core-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-iot-device-sdk",
+            "path": "types/aws-iot-device-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-kcl",
+            "path": "types/aws-kcl",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-lambda-fastify",
+            "path": "types/aws-lambda-fastify",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-lambda-http-server",
+            "path": "types/aws-lambda-http-server",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-lambda",
+            "path": "types/aws-lambda",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-param-store",
+            "path": "types/aws-param-store",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-regions",
+            "path": "types/aws-regions",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-sdk2-types",
+            "path": "types/aws-sdk2-types",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-serverless-express",
+            "path": "types/aws-serverless-express",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws-synthetics-puppeteer",
+            "path": "types/aws-synthetics-puppeteer",
+            "contentType": "directory"
+          },
+          {
+            "name": "aws4",
+            "path": "types/aws4",
+            "contentType": "directory"
+          },
+          {
+            "name": "axe-webdriverjs",
+            "path": "types/axe-webdriverjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "axel",
+            "path": "types/axel",
+            "contentType": "directory"
+          },
+          {
+            "name": "axios-cancel",
+            "path": "types/axios-cancel",
+            "contentType": "directory"
+          },
+          {
+            "name": "axios-concurrency",
+            "path": "types/axios-concurrency",
+            "contentType": "directory"
+          },
+          {
+            "name": "axios-curlirize",
+            "path": "types/axios-curlirize",
+            "contentType": "directory"
+          },
+          {
+            "name": "axios-token-interceptor",
+            "path": "types/axios-token-interceptor",
+            "contentType": "directory"
+          },
+          {
+            "name": "axon",
+            "path": "types/axon",
+            "contentType": "directory"
+          },
+          {
+            "name": "azdata",
+            "path": "types/azdata",
+            "contentType": "directory"
+          },
+          {
+            "name": "azure-function-log-intercept",
+            "path": "types/azure-function-log-intercept",
+            "contentType": "directory"
+          },
+          {
+            "name": "azure-mobile-services-client",
+            "path": "types/azure-mobile-services-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "azure-sb",
+            "path": "types/azure-sb",
+            "contentType": "directory"
+          },
+          {
+            "name": "b-spline",
+            "path": "types/b-spline",
+            "contentType": "directory"
+          },
+          {
+            "name": "b2a",
+            "path": "types/b2a",
+            "contentType": "directory"
+          },
+          {
+            "name": "b64-lite",
+            "path": "types/b64-lite",
+            "contentType": "directory"
+          },
+          {
+            "name": "b_",
+            "path": "types/b_",
+            "contentType": "directory"
+          },
+          {
+            "name": "babar",
+            "path": "types/babar",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-code-frame",
+            "path": "types/babel-code-frame",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-core",
+            "path": "types/babel-core",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-generator",
+            "path": "types/babel-generator",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-plugin-macros",
+            "path": "types/babel-plugin-macros",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-plugin-react-docgen",
+            "path": "types/babel-plugin-react-docgen",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-plugin-react-html-attrs",
+            "path": "types/babel-plugin-react-html-attrs",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-plugin-react-pug",
+            "path": "types/babel-plugin-react-pug",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-plugin-syntax-jsx",
+            "path": "types/babel-plugin-syntax-jsx",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-template",
+            "path": "types/babel-template",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-traverse",
+            "path": "types/babel-traverse",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel-types",
+            "path": "types/babel-types",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__code-frame",
+            "path": "types/babel__code-frame",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__core",
+            "path": "types/babel__core",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__generator",
+            "path": "types/babel__generator",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__helper-module-imports",
+            "path": "types/babel__helper-module-imports",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__helper-plugin-utils",
+            "path": "types/babel__helper-plugin-utils",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__helper-validator-identifier",
+            "path": "types/babel__helper-validator-identifier",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__plugin-transform-runtime",
+            "path": "types/babel__plugin-transform-runtime",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__preset-env",
+            "path": "types/babel__preset-env",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__register",
+            "path": "types/babel__register",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__standalone",
+            "path": "types/babel__standalone",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__template",
+            "path": "types/babel__template",
+            "contentType": "directory"
+          },
+          {
+            "name": "babel__traverse",
+            "path": "types/babel__traverse",
+            "contentType": "directory"
+          },
+          {
+            "name": "babelify",
+            "path": "types/babelify",
+            "contentType": "directory"
+          },
+          {
+            "name": "babylon-walk",
+            "path": "types/babylon-walk",
+            "contentType": "directory"
+          },
+          {
+            "name": "babylon",
+            "path": "types/babylon",
+            "contentType": "directory"
+          },
+          {
+            "name": "backblaze-b2",
+            "path": "types/backblaze-b2",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone-associations",
+            "path": "types/backbone-associations",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone-fetch-cache",
+            "path": "types/backbone-fetch-cache",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone-relational",
+            "path": "types/backbone-relational",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone.layoutmanager",
+            "path": "types/backbone.layoutmanager",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone.localstorage",
+            "path": "types/backbone.localstorage",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone.marionette",
+            "path": "types/backbone.marionette",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone.paginator",
+            "path": "types/backbone.paginator",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone.radio",
+            "path": "types/backbone.radio",
+            "contentType": "directory"
+          },
+          {
+            "name": "backbone",
+            "path": "types/backbone",
+            "contentType": "directory"
+          },
+          {
+            "name": "backgrid",
+            "path": "types/backgrid",
+            "contentType": "directory"
+          },
+          {
+            "name": "backo2",
+            "path": "types/backo2",
+            "contentType": "directory"
+          },
+          {
+            "name": "backoff",
+            "path": "types/backoff",
+            "contentType": "directory"
+          },
+          {
+            "name": "backstopjs",
+            "path": "types/backstopjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "badwords",
+            "path": "types/badwords",
+            "contentType": "directory"
+          },
+          {
+            "name": "bagpipes",
+            "path": "types/bagpipes",
+            "contentType": "directory"
+          },
+          {
+            "name": "baidu-aip-sdk",
+            "path": "types/baidu-aip-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "baidu-app",
+            "path": "types/baidu-app",
+            "contentType": "directory"
+          },
+          {
+            "name": "baidumap-web-sdk",
+            "path": "types/baidumap-web-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "bakong-khqr",
+            "path": "types/bakong-khqr",
+            "contentType": "directory"
+          },
+          {
+            "name": "bandagedbd__bdapi",
+            "path": "types/bandagedbd__bdapi",
+            "contentType": "directory"
+          },
+          {
+            "name": "barbellweights",
+            "path": "types/barbellweights",
+            "contentType": "directory"
+          },
+          {
+            "name": "barco-eventmaster",
+            "path": "types/barco-eventmaster",
+            "contentType": "directory"
+          },
+          {
+            "name": "barcode",
+            "path": "types/barcode",
+            "contentType": "directory"
+          },
+          {
+            "name": "bardjs",
+            "path": "types/bardjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "baretest",
+            "path": "types/baretest",
+            "contentType": "directory"
+          },
+          {
+            "name": "base-64",
+            "path": "types/base-64",
+            "contentType": "directory"
+          },
+          {
+            "name": "base16",
+            "path": "types/base16",
+            "contentType": "directory"
+          },
+          {
+            "name": "base32-encoding",
+            "path": "types/base32-encoding",
+            "contentType": "directory"
+          },
+          {
+            "name": "base45",
+            "path": "types/base45",
+            "contentType": "directory"
+          },
+          {
+            "name": "base58-random",
+            "path": "types/base58-random",
+            "contentType": "directory"
+          },
+          {
+            "name": "base58",
+            "path": "types/base58",
+            "contentType": "directory"
+          },
+          {
+            "name": "base62-random",
+            "path": "types/base62-random",
+            "contentType": "directory"
+          },
+          {
+            "name": "base64-async",
+            "path": "types/base64-async",
+            "contentType": "directory"
+          },
+          {
+            "name": "base64-emoji",
+            "path": "types/base64-emoji",
+            "contentType": "directory"
+          },
+          {
+            "name": "base64-stream",
+            "path": "types/base64-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "base64-url",
+            "path": "types/base64-url",
+            "contentType": "directory"
+          },
+          {
+            "name": "base64id",
+            "path": "types/base64id",
+            "contentType": "directory"
+          },
+          {
+            "name": "base64topdf",
+            "path": "types/base64topdf",
+            "contentType": "directory"
+          },
+          {
+            "name": "base64util",
+            "path": "types/base64util",
+            "contentType": "directory"
+          },
+          {
+            "name": "bases",
+            "path": "types/bases",
+            "contentType": "directory"
+          },
+          {
+            "name": "bash-glob",
+            "path": "types/bash-glob",
+            "contentType": "directory"
+          },
+          {
+            "name": "basic-auth",
+            "path": "types/basic-auth",
+            "contentType": "directory"
+          },
+          {
+            "name": "basicauth-middleware",
+            "path": "types/basicauth-middleware",
+            "contentType": "directory"
+          },
+          {
+            "name": "basiclightbox",
+            "path": "types/basiclightbox",
+            "contentType": "directory"
+          },
+          {
+            "name": "basicscroll",
+            "path": "types/basicscroll",
+            "contentType": "directory"
+          },
+          {
+            "name": "basil.js",
+            "path": "types/basil.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "batch-stream",
+            "path": "types/batch-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "battery-level",
+            "path": "types/battery-level",
+            "contentType": "directory"
+          },
+          {
+            "name": "bayes-classifier",
+            "path": "types/bayes-classifier",
+            "contentType": "directory"
+          },
+          {
+            "name": "bazinga-translator",
+            "path": "types/bazinga-translator",
+            "contentType": "directory"
+          },
+          {
+            "name": "bbcode-to-react",
+            "path": "types/bbcode-to-react",
+            "contentType": "directory"
+          },
+          {
+            "name": "bchaddrjs",
+            "path": "types/bchaddrjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "bcrypt",
+            "path": "types/bcrypt",
+            "contentType": "directory"
+          },
+          {
+            "name": "bcswipe",
+            "path": "types/bcswipe",
+            "contentType": "directory"
+          },
+          {
+            "name": "bdfjs",
+            "path": "types/bdfjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "beanstalkd-worker",
+            "path": "types/beanstalkd-worker",
+            "contentType": "directory"
+          },
+          {
+            "name": "beanstalkd",
+            "path": "types/beanstalkd",
+            "contentType": "directory"
+          },
+          {
+            "name": "bearcat-es6",
+            "path": "types/bearcat-es6",
+            "contentType": "directory"
+          },
+          {
+            "name": "beats",
+            "path": "types/beats",
+            "contentType": "directory"
+          },
+          {
+            "name": "beautify",
+            "path": "types/beautify",
+            "contentType": "directory"
+          },
+          {
+            "name": "begin__data",
+            "path": "types/begin__data",
+            "contentType": "directory"
+          },
+          {
+            "name": "behavior3",
+            "path": "types/behavior3",
+            "contentType": "directory"
+          },
+          {
+            "name": "belter",
+            "path": "types/belter",
+            "contentType": "directory"
+          },
+          {
+            "name": "bem-classname",
+            "path": "types/bem-classname",
+            "contentType": "directory"
+          },
+          {
+            "name": "bemmer",
+            "path": "types/bemmer",
+            "contentType": "directory"
+          },
+          {
+            "name": "benchmark",
+            "path": "types/benchmark",
+            "contentType": "directory"
+          },
+          {
+            "name": "bencode",
+            "path": "types/bencode",
+            "contentType": "directory"
+          },
+          {
+            "name": "bent",
+            "path": "types/bent",
+            "contentType": "directory"
+          },
+          {
+            "name": "bero",
+            "path": "types/bero",
+            "contentType": "directory"
+          },
+          {
+            "name": "bessel",
+            "path": "types/bessel",
+            "contentType": "directory"
+          },
+          {
+            "name": "better-bem",
+            "path": "types/better-bem",
+            "contentType": "directory"
+          },
+          {
+            "name": "better-curry",
+            "path": "types/better-curry",
+            "contentType": "directory"
+          },
+          {
+            "name": "better-queue",
+            "path": "types/better-queue",
+            "contentType": "directory"
+          },
+          {
+            "name": "better-sqlite3",
+            "path": "types/better-sqlite3",
+            "contentType": "directory"
+          },
+          {
+            "name": "beyonk__gdpr-cookie-consent-banner",
+            "path": "types/beyonk__gdpr-cookie-consent-banner",
+            "contentType": "directory"
+          },
+          {
+            "name": "bezier-js",
+            "path": "types/bezier-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "bgiframe",
+            "path": "types/bgiframe",
+            "contentType": "directory"
+          },
+          {
+            "name": "bible-reference-formatter",
+            "path": "types/bible-reference-formatter",
+            "contentType": "directory"
+          },
+          {
+            "name": "bicubic-interpolate",
+            "path": "types/bicubic-interpolate",
+            "contentType": "directory"
+          },
+          {
+            "name": "bidi-css-js",
+            "path": "types/bidi-css-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "bidirectional-map",
+            "path": "types/bidirectional-map",
+            "contentType": "directory"
+          },
+          {
+            "name": "big-json",
+            "path": "types/big-json",
+            "contentType": "directory"
+          },
+          {
+            "name": "big-rat",
+            "path": "types/big-rat",
+            "contentType": "directory"
+          },
+          {
+            "name": "big-sparse-array",
+            "path": "types/big-sparse-array",
+            "contentType": "directory"
+          },
+          {
+            "name": "big.js",
+            "path": "types/big.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "bigbite__wp-cypress",
+            "path": "types/bigbite__wp-cypress",
+            "contentType": "directory"
+          },
+          {
+            "name": "bigbluebutton-js",
+            "path": "types/bigbluebutton-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "bigi",
+            "path": "types/bigi",
+            "contentType": "directory"
+          },
+          {
+            "name": "bigint",
+            "path": "types/bigint",
+            "contentType": "directory"
+          },
+          {
+            "name": "bignum",
+            "path": "types/bignum",
+            "contentType": "directory"
+          },
+          {
+            "name": "bigscreen",
+            "path": "types/bigscreen",
+            "contentType": "directory"
+          },
+          {
+            "name": "biguintbe",
+            "path": "types/biguintbe",
+            "contentType": "directory"
+          },
+          {
+            "name": "biguintle",
+            "path": "types/biguintle",
+            "contentType": "directory"
+          },
+          {
+            "name": "bin-pack",
+            "path": "types/bin-pack",
+            "contentType": "directory"
+          },
+          {
+            "name": "binary-file",
+            "path": "types/binary-file",
+            "contentType": "directory"
+          },
+          {
+            "name": "binary-parse-stream",
+            "path": "types/binary-parse-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "binary-split",
+            "path": "types/binary-split",
+            "contentType": "directory"
+          },
+          {
+            "name": "binary-xml",
+            "path": "types/binary-xml",
+            "contentType": "directory"
+          },
+          {
+            "name": "bind-args",
+            "path": "types/bind-args",
+            "contentType": "directory"
+          },
+          {
+            "name": "bind-ponyfill",
+            "path": "types/bind-ponyfill",
+            "contentType": "directory"
+          },
+          {
+            "name": "bindings",
+            "path": "types/bindings",
+            "contentType": "directory"
+          },
+          {
+            "name": "bintrees",
+            "path": "types/bintrees",
+            "contentType": "directory"
+          },
+          {
+            "name": "bip32-path",
+            "path": "types/bip32-path",
+            "contentType": "directory"
+          },
+          {
+            "name": "bip38",
+            "path": "types/bip38",
+            "contentType": "directory"
+          },
+          {
+            "name": "bip38grs",
+            "path": "types/bip38grs",
+            "contentType": "directory"
+          },
+          {
+            "name": "bit-array",
+            "path": "types/bit-array",
+            "contentType": "directory"
+          },
+          {
+            "name": "bit-twiddle",
+            "path": "types/bit-twiddle",
+            "contentType": "directory"
+          },
+          {
+            "name": "bitauth",
+            "path": "types/bitauth",
+            "contentType": "directory"
+          },
+          {
+            "name": "bitcoin-computer-bitcore",
+            "path": "types/bitcoin-computer-bitcore",
+            "contentType": "directory"
+          },
+          {
+            "name": "bitcoin-computer__lib",
+            "path": "types/bitcoin-computer__lib",
+            "contentType": "directory"
+          },
+          {
+            "name": "bitcore-lib-cash",
+            "path": "types/bitcore-lib-cash",
+            "contentType": "directory"
+          },
+          {
+            "name": "bitcore-lib",
+            "path": "types/bitcore-lib",
+            "contentType": "directory"
+          },
+          {
+            "name": "bitfield-rle",
+            "path": "types/bitfield-rle",
+            "contentType": "directory"
+          },
+          {
+            "name": "bittorrent-protocol",
+            "path": "types/bittorrent-protocol",
+            "contentType": "directory"
+          },
+          {
+            "name": "bitwise-xor",
+            "path": "types/bitwise-xor",
+            "contentType": "directory"
+          },
+          {
+            "name": "black-engine",
+            "path": "types/black-engine",
+            "contentType": "directory"
+          },
+          {
+            "name": "blacklist",
+            "path": "types/blacklist",
+            "contentType": "directory"
+          },
+          {
+            "name": "blake2",
+            "path": "types/blake2",
+            "contentType": "directory"
+          },
+          {
+            "name": "blake2b-wasm",
+            "path": "types/blake2b-wasm",
+            "contentType": "directory"
+          },
+          {
+            "name": "blake2b",
+            "path": "types/blake2b",
+            "contentType": "directory"
+          },
+          {
+            "name": "blazor__javascript-interop",
+            "path": "types/blazor__javascript-interop",
+            "contentType": "directory"
+          },
+          {
+            "name": "blazy",
+            "path": "types/blazy",
+            "contentType": "directory"
+          },
+          {
+            "name": "bleno",
+            "path": "types/bleno",
+            "contentType": "directory"
+          },
+          {
+            "name": "blessed",
+            "path": "types/blessed",
+            "contentType": "directory"
+          },
+          {
+            "name": "blip-sdk",
+            "path": "types/blip-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "blissfuljs",
+            "path": "types/blissfuljs",
+            "contentType": "directory"
+          },
+          {
+            "name": "blob-stream",
+            "path": "types/blob-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "blob-to-buffer",
+            "path": "types/blob-to-buffer",
+            "contentType": "directory"
+          },
+          {
+            "name": "blobshape",
+            "path": "types/blobshape",
+            "contentType": "directory"
+          },
+          {
+            "name": "block-stream2",
+            "path": "types/block-stream2",
+            "contentType": "directory"
+          },
+          {
+            "name": "blocked-at",
+            "path": "types/blocked-at",
+            "contentType": "directory"
+          },
+          {
+            "name": "blocked",
+            "path": "types/blocked",
+            "contentType": "directory"
+          },
+          {
+            "name": "blockies",
+            "path": "types/blockies",
+            "contentType": "directory"
+          },
+          {
+            "name": "blocks",
+            "path": "types/blocks",
+            "contentType": "directory"
+          },
+          {
+            "name": "bloem",
+            "path": "types/bloem",
+            "contentType": "directory"
+          },
+          {
+            "name": "bloom-filter",
+            "path": "types/bloom-filter",
+            "contentType": "directory"
+          },
+          {
+            "name": "bloomfilter",
+            "path": "types/bloomfilter",
+            "contentType": "directory"
+          },
+          {
+            "name": "blue-tape",
+            "path": "types/blue-tape",
+            "contentType": "directory"
+          },
+          {
+            "name": "bluebird-global",
+            "path": "types/bluebird-global",
+            "contentType": "directory"
+          },
+          {
+            "name": "bluebird-retry",
+            "path": "types/bluebird-retry",
+            "contentType": "directory"
+          },
+          {
+            "name": "bluebird",
+            "path": "types/bluebird",
+            "contentType": "directory"
+          },
+          {
+            "name": "blueimp-load-image",
+            "path": "types/blueimp-load-image",
+            "contentType": "directory"
+          },
+          {
+            "name": "blueimp-md5",
+            "path": "types/blueimp-md5",
+            "contentType": "directory"
+          },
+          {
+            "name": "bmapgl-browser",
+            "path": "types/bmapgl-browser",
+            "contentType": "directory"
+          },
+          {
+            "name": "bmp-js",
+            "path": "types/bmp-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "bn.js",
+            "path": "types/bn.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "body-parser-xml",
+            "path": "types/body-parser-xml",
+            "contentType": "directory"
+          },
+          {
+            "name": "body-parser",
+            "path": "types/body-parser",
+            "contentType": "directory"
+          },
+          {
+            "name": "body-scroll-lock",
+            "path": "types/body-scroll-lock",
+            "contentType": "directory"
+          },
+          {
+            "name": "body",
+            "path": "types/body",
+            "contentType": "directory"
+          },
+          {
+            "name": "bogon",
+            "path": "types/bogon",
+            "contentType": "directory"
+          },
+          {
+            "name": "bonjour",
+            "path": "types/bonjour",
+            "contentType": "directory"
+          },
+          {
+            "name": "boolbase",
+            "path": "types/boolbase",
+            "contentType": "directory"
+          },
+          {
+            "name": "boolean-to-signed",
+            "path": "types/boolean-to-signed",
+            "contentType": "directory"
+          },
+          {
+            "name": "boolify-string",
+            "path": "types/boolify-string",
+            "contentType": "directory"
+          },
+          {
+            "name": "boom",
+            "path": "types/boom",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootbox",
+            "path": "types/bootbox",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootpag",
+            "path": "types/bootpag",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-3-typeahead",
+            "path": "types/bootstrap-3-typeahead",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-colorpicker",
+            "path": "types/bootstrap-colorpicker",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-datepicker",
+            "path": "types/bootstrap-datepicker",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-fileinput",
+            "path": "types/bootstrap-fileinput",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-filestyle",
+            "path": "types/bootstrap-filestyle",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-growl-ifightcrime",
+            "path": "types/bootstrap-growl-ifightcrime",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-icons-react",
+            "path": "types/bootstrap-icons-react",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-maxlength",
+            "path": "types/bootstrap-maxlength",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-menu",
+            "path": "types/bootstrap-menu",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-multiselect",
+            "path": "types/bootstrap-multiselect",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-notify",
+            "path": "types/bootstrap-notify",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-select",
+            "path": "types/bootstrap-select",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-slider",
+            "path": "types/bootstrap-slider",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-switch",
+            "path": "types/bootstrap-switch",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-toggle",
+            "path": "types/bootstrap-toggle",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-touchspin",
+            "path": "types/bootstrap-touchspin",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-treeview",
+            "path": "types/bootstrap-treeview",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap-validator",
+            "path": "types/bootstrap-validator",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap.paginator",
+            "path": "types/bootstrap.paginator",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap.timepicker",
+            "path": "types/bootstrap.timepicker",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap.v3.datetimepicker",
+            "path": "types/bootstrap.v3.datetimepicker",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap",
+            "path": "types/bootstrap",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap3-dialog",
+            "path": "types/bootstrap3-dialog",
+            "contentType": "directory"
+          },
+          {
+            "name": "bootstrap4-toggle",
+            "path": "types/bootstrap4-toggle",
+            "contentType": "directory"
+          },
+          {
+            "name": "bounce.js",
+            "path": "types/bounce.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "bounds.js",
+            "path": "types/bounds.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "box-intersect",
+            "path": "types/box-intersect",
+            "contentType": "directory"
+          },
+          {
+            "name": "box2d",
+            "path": "types/box2d",
+            "contentType": "directory"
+          },
+          {
+            "name": "bpmn-moddle",
+            "path": "types/bpmn-moddle",
+            "contentType": "directory"
+          },
+          {
+            "name": "brace-expansion",
+            "path": "types/brace-expansion",
+            "contentType": "directory"
+          },
+          {
+            "name": "braces",
+            "path": "types/braces",
+            "contentType": "directory"
+          },
+          {
+            "name": "brainhubeu__react-carousel",
+            "path": "types/brainhubeu__react-carousel",
+            "contentType": "directory"
+          },
+          {
+            "name": "braintree-web-drop-in",
+            "path": "types/braintree-web-drop-in",
+            "contentType": "directory"
+          },
+          {
+            "name": "braintree-web",
+            "path": "types/braintree-web",
+            "contentType": "directory"
+          },
+          {
+            "name": "braintree",
+            "path": "types/braintree",
+            "contentType": "directory"
+          },
+          {
+            "name": "bramus__pagination-sequence",
+            "path": "types/bramus__pagination-sequence",
+            "contentType": "directory"
+          },
+          {
+            "name": "branca",
+            "path": "types/branca",
+            "contentType": "directory"
+          },
+          {
+            "name": "branch-sdk",
+            "path": "types/branch-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "branchy",
+            "path": "types/branchy",
+            "contentType": "directory"
+          },
+          {
+            "name": "breejs__later",
+            "path": "types/breejs__later",
+            "contentType": "directory"
+          },
+          {
+            "name": "breeze",
+            "path": "types/breeze",
+            "contentType": "directory"
+          },
+          {
+            "name": "bresenham",
+            "path": "types/bresenham",
+            "contentType": "directory"
+          },
+          {
+            "name": "bricks.js",
+            "path": "types/bricks.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "bristol-sentry",
+            "path": "types/bristol-sentry",
+            "contentType": "directory"
+          },
+          {
+            "name": "bristol",
+            "path": "types/bristol",
+            "contentType": "directory"
+          },
+          {
+            "name": "brittle",
+            "path": "types/brittle",
+            "contentType": "directory"
+          },
+          {
+            "name": "bro-fs",
+            "path": "types/bro-fs",
+            "contentType": "directory"
+          },
+          {
+            "name": "broccoli-funnel",
+            "path": "types/broccoli-funnel",
+            "contentType": "directory"
+          },
+          {
+            "name": "broccoli-merge-trees",
+            "path": "types/broccoli-merge-trees",
+            "contentType": "directory"
+          },
+          {
+            "name": "broken-link-checker",
+            "path": "types/broken-link-checker",
+            "contentType": "directory"
+          },
+          {
+            "name": "brorand",
+            "path": "types/brorand",
+            "contentType": "directory"
+          },
+          {
+            "name": "brotli-webpack-plugin",
+            "path": "types/brotli-webpack-plugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "brotli",
+            "path": "types/brotli",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-fingerprint",
+            "path": "types/browser-fingerprint",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-harness",
+            "path": "types/browser-harness",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-lang",
+            "path": "types/browser-lang",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-or-node",
+            "path": "types/browser-or-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-pack",
+            "path": "types/browser-pack",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-report",
+            "path": "types/browser-report",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-resolve",
+            "path": "types/browser-resolve",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-sync-webpack-plugin",
+            "path": "types/browser-sync-webpack-plugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-sync",
+            "path": "types/browser-sync",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-update",
+            "path": "types/browser-update",
+            "contentType": "directory"
+          },
+          {
+            "name": "browser-util-inspect",
+            "path": "types/browser-util-inspect",
+            "contentType": "directory"
+          },
+          {
+            "name": "browserify-cipher",
+            "path": "types/browserify-cipher",
+            "contentType": "directory"
+          },
+          {
+            "name": "browserify",
+            "path": "types/browserify",
+            "contentType": "directory"
+          },
+          {
+            "name": "browserslist-useragent",
+            "path": "types/browserslist-useragent",
+            "contentType": "directory"
+          },
+          {
+            "name": "bser",
+            "path": "types/bser",
+            "contentType": "directory"
+          },
+          {
+            "name": "btoa-lite",
+            "path": "types/btoa-lite",
+            "contentType": "directory"
+          },
+          {
+            "name": "btoa",
+            "path": "types/btoa",
+            "contentType": "directory"
+          },
+          {
+            "name": "buble",
+            "path": "types/buble",
+            "contentType": "directory"
+          },
+          {
+            "name": "bucks",
+            "path": "types/bucks",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-builder",
+            "path": "types/buffer-builder",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-compare",
+            "path": "types/buffer-compare",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-equal",
+            "path": "types/buffer-equal",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-from",
+            "path": "types/buffer-from",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-json-encoding",
+            "path": "types/buffer-json-encoding",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-json",
+            "path": "types/buffer-json",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-more-ints",
+            "path": "types/buffer-more-ints",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-reader",
+            "path": "types/buffer-reader",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-split",
+            "path": "types/buffer-split",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-to-stream",
+            "path": "types/buffer-to-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffer-xor",
+            "path": "types/buffer-xor",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffercursor",
+            "path": "types/buffercursor",
+            "contentType": "directory"
+          },
+          {
+            "name": "bufferhelper",
+            "path": "types/bufferhelper",
+            "contentType": "directory"
+          },
+          {
+            "name": "buffers",
+            "path": "types/buffers",
+            "contentType": "directory"
+          },
+          {
+            "name": "bufferstream",
+            "path": "types/bufferstream",
+            "contentType": "directory"
+          },
+          {
+            "name": "build-output-script",
+            "path": "types/build-output-script",
+            "contentType": "directory"
+          },
+          {
+            "name": "bull-arena",
+            "path": "types/bull-arena",
+            "contentType": "directory"
+          },
+          {
+            "name": "bullbone",
+            "path": "types/bullbone",
+            "contentType": "directory"
+          },
+          {
+            "name": "bumblebee-hotword",
+            "path": "types/bumblebee-hotword",
+            "contentType": "directory"
+          },
+          {
+            "name": "bump-regex",
+            "path": "types/bump-regex",
+            "contentType": "directory"
+          },
+          {
+            "name": "bun",
+            "path": "types/bun",
+            "contentType": "directory"
+          },
+          {
+            "name": "bundle-id",
+            "path": "types/bundle-id",
+            "contentType": "directory"
+          },
+          {
+            "name": "bundle-name",
+            "path": "types/bundle-name",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunnymq",
+            "path": "types/bunnymq",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan-blackhole",
+            "path": "types/bunyan-blackhole",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan-config",
+            "path": "types/bunyan-config",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan-format",
+            "path": "types/bunyan-format",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan-logentries",
+            "path": "types/bunyan-logentries",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan-prettystream",
+            "path": "types/bunyan-prettystream",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan-syslog",
+            "path": "types/bunyan-syslog",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan-winston-adapter",
+            "path": "types/bunyan-winston-adapter",
+            "contentType": "directory"
+          },
+          {
+            "name": "bunyan",
+            "path": "types/bunyan",
+            "contentType": "directory"
+          },
+          {
+            "name": "busboy",
+            "path": "types/busboy",
+            "contentType": "directory"
+          },
+          {
+            "name": "business-rules-engine",
+            "path": "types/business-rules-engine",
+            "contentType": "directory"
+          },
+          {
+            "name": "byline",
+            "path": "types/byline",
+            "contentType": "directory"
+          },
+          {
+            "name": "byte-range",
+            "path": "types/byte-range",
+            "contentType": "directory"
+          },
+          {
+            "name": "byte-size",
+            "path": "types/byte-size",
+            "contentType": "directory"
+          },
+          {
+            "name": "bytebuffer",
+            "path": "types/bytebuffer",
+            "contentType": "directory"
+          },
+          {
+            "name": "bytes",
+            "path": "types/bytes",
+            "contentType": "directory"
+          },
+          {
+            "name": "bytewise",
+            "path": "types/bytewise",
+            "contentType": "directory"
+          },
+          {
+            "name": "c-struct",
+            "path": "types/c-struct",
+            "contentType": "directory"
+          },
+          {
+            "name": "c3",
+            "path": "types/c3",
+            "contentType": "directory"
+          },
+          {
+            "name": "cabarc",
+            "path": "types/cabarc",
+            "contentType": "directory"
+          },
+          {
+            "name": "cacache",
+            "path": "types/cacache",
+            "contentType": "directory"
+          },
+          {
+            "name": "cache-manager-fs-hash",
+            "path": "types/cache-manager-fs-hash",
+            "contentType": "directory"
+          },
+          {
+            "name": "cache-manager-ioredis",
+            "path": "types/cache-manager-ioredis",
+            "contentType": "directory"
+          },
+          {
+            "name": "cache-manager-memcached-store",
+            "path": "types/cache-manager-memcached-store",
+            "contentType": "directory"
+          },
+          {
+            "name": "cached-path-relative",
+            "path": "types/cached-path-relative",
+            "contentType": "directory"
+          },
+          {
+            "name": "cached",
+            "path": "types/cached",
+            "contentType": "directory"
+          },
+          {
+            "name": "cadesplugin",
+            "path": "types/cadesplugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "cadviewer",
+            "path": "types/cadviewer",
+            "contentType": "directory"
+          },
+          {
+            "name": "calc-percent",
+            "path": "types/calc-percent",
+            "contentType": "directory"
+          },
+          {
+            "name": "calendar",
+            "path": "types/calendar",
+            "contentType": "directory"
+          },
+          {
+            "name": "calidation",
+            "path": "types/calidation",
+            "contentType": "directory"
+          },
+          {
+            "name": "call-bind",
+            "path": "types/call-bind",
+            "contentType": "directory"
+          },
+          {
+            "name": "callback-to-async-iterator",
+            "path": "types/callback-to-async-iterator",
+            "contentType": "directory"
+          },
+          {
+            "name": "caller",
+            "path": "types/caller",
+            "contentType": "directory"
+          },
+          {
+            "name": "callsite",
+            "path": "types/callsite",
+            "contentType": "directory"
+          },
+          {
+            "name": "calq",
+            "path": "types/calq",
+            "contentType": "directory"
+          },
+          {
+            "name": "camelcase-css",
+            "path": "types/camelcase-css",
+            "contentType": "directory"
+          },
+          {
+            "name": "camelcase-keys-deep",
+            "path": "types/camelcase-keys-deep",
+            "contentType": "directory"
+          },
+          {
+            "name": "camelize",
+            "path": "types/camelize",
+            "contentType": "directory"
+          },
+          {
+            "name": "camo",
+            "path": "types/camo",
+            "contentType": "directory"
+          },
+          {
+            "name": "camouflage-rewrite",
+            "path": "types/camouflage-rewrite",
+            "contentType": "directory"
+          },
+          {
+            "name": "camunda-external-task-client-js",
+            "path": "types/camunda-external-task-client-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "can-autoplay",
+            "path": "types/can-autoplay",
+            "contentType": "directory"
+          },
+          {
+            "name": "cancan",
+            "path": "types/cancan",
+            "contentType": "directory"
+          },
+          {
+            "name": "caniuse-lite",
+            "path": "types/caniuse-lite",
+            "contentType": "directory"
+          },
+          {
+            "name": "cannon",
+            "path": "types/cannon",
+            "contentType": "directory"
+          },
+          {
+            "name": "canvas-confetti",
+            "path": "types/canvas-confetti",
+            "contentType": "directory"
+          },
+          {
+            "name": "canvas-fit",
+            "path": "types/canvas-fit",
+            "contentType": "directory"
+          },
+          {
+            "name": "canvas-gauges",
+            "path": "types/canvas-gauges",
+            "contentType": "directory"
+          },
+          {
+            "name": "canvas-multiline-text",
+            "path": "types/canvas-multiline-text",
+            "contentType": "directory"
+          },
+          {
+            "name": "canvas-size",
+            "path": "types/canvas-size",
+            "contentType": "directory"
+          },
+          {
+            "name": "canvasjs",
+            "path": "types/canvasjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "capitalize",
+            "path": "types/capitalize",
+            "contentType": "directory"
+          },
+          {
+            "name": "capture-console",
+            "path": "types/capture-console",
+            "contentType": "directory"
+          },
+          {
+            "name": "car-names",
+            "path": "types/car-names",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbon-components-react",
+            "path": "types/carbon-components-react",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbon-components",
+            "path": "types/carbon-components",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbon__colors",
+            "path": "types/carbon__colors",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbon__elements",
+            "path": "types/carbon__elements",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbon__layout",
+            "path": "types/carbon__layout",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbon__themes",
+            "path": "types/carbon__themes",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbon__type",
+            "path": "types/carbon__type",
+            "contentType": "directory"
+          },
+          {
+            "name": "carbone",
+            "path": "types/carbone",
+            "contentType": "directory"
+          },
+          {
+            "name": "cardinal",
+            "path": "types/cardinal",
+            "contentType": "directory"
+          },
+          {
+            "name": "carlo",
+            "path": "types/carlo",
+            "contentType": "directory"
+          },
+          {
+            "name": "case-sensitive-paths-webpack-plugin",
+            "path": "types/case-sensitive-paths-webpack-plugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "caseless",
+            "path": "types/caseless",
+            "contentType": "directory"
+          },
+          {
+            "name": "cashaddrjs",
+            "path": "types/cashaddrjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "casperjs",
+            "path": "types/casperjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "cassandra-store",
+            "path": "types/cassandra-store",
+            "contentType": "directory"
+          },
+          {
+            "name": "cassanknex",
+            "path": "types/cassanknex",
+            "contentType": "directory"
+          },
+          {
+            "name": "castv2",
+            "path": "types/castv2",
+            "contentType": "directory"
+          },
+          {
+            "name": "catbox",
+            "path": "types/catbox",
+            "contentType": "directory"
+          },
+          {
+            "name": "catchpoint-playwright",
+            "path": "types/catchpoint-playwright",
+            "contentType": "directory"
+          },
+          {
+            "name": "caverphone",
+            "path": "types/caverphone",
+            "contentType": "directory"
+          },
+          {
+            "name": "cavy",
+            "path": "types/cavy",
+            "contentType": "directory"
+          },
+          {
+            "name": "cbor-js",
+            "path": "types/cbor-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "ccap",
+            "path": "types/ccap",
+            "contentType": "directory"
+          },
+          {
+            "name": "center-align",
+            "path": "types/center-align",
+            "contentType": "directory"
+          },
+          {
+            "name": "centra",
+            "path": "types/centra",
+            "contentType": "directory"
+          },
+          {
+            "name": "cerner__terra-functional-testing",
+            "path": "types/cerner__terra-functional-testing",
+            "contentType": "directory"
+          },
+          {
+            "name": "certstream",
+            "path": "types/certstream",
+            "contentType": "directory"
+          },
+          {
+            "name": "cesium-china__cesium-map",
+            "path": "types/cesium-china__cesium-map",
+            "contentType": "directory"
+          },
+          {
+            "name": "cfenv",
+            "path": "types/cfenv",
+            "contentType": "directory"
+          },
+          {
+            "name": "cfn-response-promise",
+            "path": "types/cfn-response-promise",
+            "contentType": "directory"
+          },
+          {
+            "name": "cfn-response",
+            "path": "types/cfn-response",
+            "contentType": "directory"
+          },
+          {
+            "name": "chacha20-universal",
+            "path": "types/chacha20-universal",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-almost",
+            "path": "types/chai-almost",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-arrays",
+            "path": "types/chai-arrays",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-as-promised",
+            "path": "types/chai-as-promised",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-datetime",
+            "path": "types/chai-datetime",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-dom",
+            "path": "types/chai-dom",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-enzyme",
+            "path": "types/chai-enzyme",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-fs",
+            "path": "types/chai-fs",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-fuzzy",
+            "path": "types/chai-fuzzy",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-html",
+            "path": "types/chai-html",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-jest-snapshot",
+            "path": "types/chai-jest-snapshot",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-jquery",
+            "path": "types/chai-jquery",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-json-pattern",
+            "path": "types/chai-json-pattern",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-json-schema",
+            "path": "types/chai-json-schema",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-jwt",
+            "path": "types/chai-jwt",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-like",
+            "path": "types/chai-like",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-match-pattern",
+            "path": "types/chai-match-pattern",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-moment",
+            "path": "types/chai-moment",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-oequal",
+            "path": "types/chai-oequal",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-roughly",
+            "path": "types/chai-roughly",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-snapshot-matcher",
+            "path": "types/chai-snapshot-matcher",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-sorted",
+            "path": "types/chai-sorted",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-spies",
+            "path": "types/chai-spies",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-string",
+            "path": "types/chai-string",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-style",
+            "path": "types/chai-style",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-subset-in-order",
+            "path": "types/chai-subset-in-order",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-subset",
+            "path": "types/chai-subset",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-things",
+            "path": "types/chai-things",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-uuid",
+            "path": "types/chai-uuid",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai-xml",
+            "path": "types/chai-xml",
+            "contentType": "directory"
+          },
+          {
+            "name": "chai",
+            "path": "types/chai",
+            "contentType": "directory"
+          },
+          {
+            "name": "chalk-animation",
+            "path": "types/chalk-animation",
+            "contentType": "directory"
+          },
+          {
+            "name": "chamaeleonidae__chmln",
+            "path": "types/chamaeleonidae__chmln",
+            "contentType": "directory"
+          },
+          {
+            "name": "chance",
+            "path": "types/chance",
+            "contentType": "directory"
+          },
+          {
+            "name": "change-case-object",
+            "path": "types/change-case-object",
+            "contentType": "directory"
+          },
+          {
+            "name": "change-emitter",
+            "path": "types/change-emitter",
+            "contentType": "directory"
+          },
+          {
+            "name": "changelog-filename-regex",
+            "path": "types/changelog-filename-regex",
+            "contentType": "directory"
+          },
+          {
+            "name": "channel-io",
+            "path": "types/channel-io",
+            "contentType": "directory"
+          },
+          {
+            "name": "charcodes",
+            "path": "types/charcodes",
+            "contentType": "directory"
+          },
+          {
+            "name": "charm",
+            "path": "types/charm",
+            "contentType": "directory"
+          },
+          {
+            "name": "charset-detector",
+            "path": "types/charset-detector",
+            "contentType": "directory"
+          },
+          {
+            "name": "charset",
+            "path": "types/charset",
+            "contentType": "directory"
+          },
+          {
+            "name": "chartjs-color-string",
+            "path": "types/chartjs-color-string",
+            "contentType": "directory"
+          },
+          {
+            "name": "chartjs-plugin-colorschemes",
+            "path": "types/chartjs-plugin-colorschemes",
+            "contentType": "directory"
+          },
+          {
+            "name": "chartjs-plugin-crosshair",
+            "path": "types/chartjs-plugin-crosshair",
+            "contentType": "directory"
+          },
+          {
+            "name": "chartjs-plugin-doughnutlabel-rebourne",
+            "path": "types/chartjs-plugin-doughnutlabel-rebourne",
+            "contentType": "directory"
+          },
+          {
+            "name": "chartjs-plugin-trendline",
+            "path": "types/chartjs-plugin-trendline",
+            "contentType": "directory"
+          },
+          {
+            "name": "chartmogul-node",
+            "path": "types/chartmogul-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "chayns",
+            "path": "types/chayns",
+            "contentType": "directory"
+          },
+          {
+            "name": "chec__commerce.js",
+            "path": "types/chec__commerce.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "check-error",
+            "path": "types/check-error",
+            "contentType": "directory"
+          },
+          {
+            "name": "check-sum",
+            "path": "types/check-sum",
+            "contentType": "directory"
+          },
+          {
+            "name": "check-types",
+            "path": "types/check-types",
+            "contentType": "directory"
+          },
+          {
+            "name": "checkstyle-formatter",
+            "path": "types/checkstyle-formatter",
+            "contentType": "directory"
+          },
+          {
+            "name": "checksum",
+            "path": "types/checksum",
+            "contentType": "directory"
+          },
+          {
+            "name": "cheerio-tableparser",
+            "path": "types/cheerio-tableparser",
+            "contentType": "directory"
+          },
+          {
+            "name": "cheet.js",
+            "path": "types/cheet.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "chenfengyuan__datepicker",
+            "path": "types/chenfengyuan__datepicker",
+            "contentType": "directory"
+          },
+          {
+            "name": "chenyfan__cache-db",
+            "path": "types/chenyfan__cache-db",
+            "contentType": "directory"
+          },
+          {
+            "name": "chessboardjs",
+            "path": "types/chessboardjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "child-process-promise",
+            "path": "types/child-process-promise",
+            "contentType": "directory"
+          },
+          {
+            "name": "chillout",
+            "path": "types/chillout",
+            "contentType": "directory"
+          },
+          {
+            "name": "chivox_h5sdk",
+            "path": "types/chivox_h5sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "chloride",
+            "path": "types/chloride",
+            "contentType": "directory"
+          },
+          {
+            "name": "chmodr",
+            "path": "types/chmodr",
+            "contentType": "directory"
+          },
+          {
+            "name": "chocolatechipjs",
+            "path": "types/chocolatechipjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "chosen-js",
+            "path": "types/chosen-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "chroma-js",
+            "path": "types/chroma-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "chrome-apps",
+            "path": "types/chrome-apps",
+            "contentType": "directory"
+          },
+          {
+            "name": "chrome-har-capturer",
+            "path": "types/chrome-har-capturer",
+            "contentType": "directory"
+          },
+          {
+            "name": "chrome-location",
+            "path": "types/chrome-location",
+            "contentType": "directory"
+          },
+          {
+            "name": "chrome-remote-interface",
+            "path": "types/chrome-remote-interface",
+            "contentType": "directory"
+          },
+          {
+            "name": "chrome",
+            "path": "types/chrome",
+            "contentType": "directory"
+          },
+          {
+            "name": "chromecast-api",
+            "path": "types/chromecast-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "chromecast-caf-receiver",
+            "path": "types/chromecast-caf-receiver",
+            "contentType": "directory"
+          },
+          {
+            "name": "chromecast-caf-sender",
+            "path": "types/chromecast-caf-sender",
+            "contentType": "directory"
+          },
+          {
+            "name": "chromedriver",
+            "path": "types/chromedriver",
+            "contentType": "directory"
+          },
+          {
+            "name": "chui",
+            "path": "types/chui",
+            "contentType": "directory"
+          },
+          {
+            "name": "chunk-text",
+            "path": "types/chunk-text",
+            "contentType": "directory"
+          },
+          {
+            "name": "chunk",
+            "path": "types/chunk",
+            "contentType": "directory"
+          },
+          {
+            "name": "cidr-matcher",
+            "path": "types/cidr-matcher",
+            "contentType": "directory"
+          },
+          {
+            "name": "cie-rgb-color-converter",
+            "path": "types/cie-rgb-color-converter",
+            "contentType": "directory"
+          },
+          {
+            "name": "cipher-base",
+            "path": "types/cipher-base",
+            "contentType": "directory"
+          },
+          {
+            "name": "circle-to-polygon",
+            "path": "types/circle-to-polygon",
+            "contentType": "directory"
+          },
+          {
+            "name": "circomlibjs",
+            "path": "types/circomlibjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "circuit-breaker-js",
+            "path": "types/circuit-breaker-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "circular-dependency-plugin",
+            "path": "types/circular-dependency-plugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "cjson",
+            "path": "types/cjson",
+            "contentType": "directory"
+          },
+          {
+            "name": "ckeditor4",
+            "path": "types/ckeditor4",
+            "contentType": "directory"
+          },
+          {
+            "name": "clamav.js",
+            "path": "types/clamav.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "clamp-js-main",
+            "path": "types/clamp-js-main",
+            "contentType": "directory"
+          },
+          {
+            "name": "clamp-js",
+            "path": "types/clamp-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "clamp",
+            "path": "types/clamp",
+            "contentType": "directory"
+          },
+          {
+            "name": "clamscan",
+            "path": "types/clamscan",
+            "contentType": "directory"
+          },
+          {
+            "name": "clarinet",
+            "path": "types/clarinet",
+            "contentType": "directory"
+          },
+          {
+            "name": "cldr",
+            "path": "types/cldr",
+            "contentType": "directory"
+          },
+          {
+            "name": "cldrjs",
+            "path": "types/cldrjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "clean-css",
+            "path": "types/clean-css",
+            "contentType": "directory"
+          },
+          {
+            "name": "clean-git-ref",
+            "path": "types/clean-git-ref",
+            "contentType": "directory"
+          },
+          {
+            "name": "clean-regexp",
+            "path": "types/clean-regexp",
+            "contentType": "directory"
+          },
+          {
+            "name": "clear",
+            "path": "types/clear",
+            "contentType": "directory"
+          },
+          {
+            "name": "clearbladejs-node",
+            "path": "types/clearbladejs-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "clearbladejs-server",
+            "path": "types/clearbladejs-server",
+            "contentType": "directory"
+          },
+          {
+            "name": "cleasby-vigfusson-dictionary",
+            "path": "types/cleasby-vigfusson-dictionary",
+            "contentType": "directory"
+          },
+          {
+            "name": "cleave.js",
+            "path": "types/cleave.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "clerk.io",
+            "path": "types/clerk.io",
+            "contentType": "directory"
+          },
+          {
+            "name": "clevertap-web-sdk",
+            "path": "types/clevertap-web-sdk",
+            "contentType": "directory"
+          },
+          {
+            "name": "clevertap",
+            "path": "types/clevertap",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli-box",
+            "path": "types/cli-box",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli-color",
+            "path": "types/cli-color",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli-interact",
+            "path": "types/cli-interact",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli-progress",
+            "path": "types/cli-progress",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli-spinner",
+            "path": "types/cli-spinner",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli-table",
+            "path": "types/cli-table",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli-table2",
+            "path": "types/cli-table2",
+            "contentType": "directory"
+          },
+          {
+            "name": "cli",
+            "path": "types/cli",
+            "contentType": "directory"
+          },
+          {
+            "name": "client-sessions",
+            "path": "types/client-sessions",
+            "contentType": "directory"
+          },
+          {
+            "name": "clientjs",
+            "path": "types/clientjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "cliff",
+            "path": "types/cliff",
+            "contentType": "directory"
+          },
+          {
+            "name": "clipper-lib",
+            "path": "types/clipper-lib",
+            "contentType": "directory"
+          },
+          {
+            "name": "clmtrackr",
+            "path": "types/clmtrackr",
+            "contentType": "directory"
+          },
+          {
+            "name": "clndr",
+            "path": "types/clndr",
+            "contentType": "directory"
+          },
+          {
+            "name": "clockpicker",
+            "path": "types/clockpicker",
+            "contentType": "directory"
+          },
+          {
+            "name": "clone-deep",
+            "path": "types/clone-deep",
+            "contentType": "directory"
+          },
+          {
+            "name": "clone-stats",
+            "path": "types/clone-stats",
+            "contentType": "directory"
+          },
+          {
+            "name": "clone",
+            "path": "types/clone",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloneable-readable",
+            "path": "types/cloneable-readable",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloner",
+            "path": "types/cloner",
+            "contentType": "directory"
+          },
+          {
+            "name": "closure-compiler",
+            "path": "types/closure-compiler",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloud-env",
+            "path": "types/cloud-env",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloudflare-apps",
+            "path": "types/cloudflare-apps",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloudflare-turnstile",
+            "path": "types/cloudflare-turnstile",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloudfour__simple-svg-placeholder",
+            "path": "types/cloudfour__simple-svg-placeholder",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloudinary-uploadwidget-browser",
+            "path": "types/cloudinary-uploadwidget-browser",
+            "contentType": "directory"
+          },
+          {
+            "name": "cloudmersive-virus-api-client",
+            "path": "types/cloudmersive-virus-api-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "clovelced-plugin-audiomanagement",
+            "path": "types/clovelced-plugin-audiomanagement",
+            "contentType": "directory"
+          },
+          {
+            "name": "clover-format",
+            "path": "types/clover-format",
+            "contentType": "directory"
+          },
+          {
+            "name": "clownface",
+            "path": "types/clownface",
+            "contentType": "directory"
+          },
+          {
+            "name": "cls-hooked",
+            "path": "types/cls-hooked",
+            "contentType": "directory"
+          },
+          {
+            "name": "clui",
+            "path": "types/clui",
+            "contentType": "directory"
+          },
+          {
+            "name": "cluster-hub",
+            "path": "types/cluster-hub",
+            "contentType": "directory"
+          },
+          {
+            "name": "clusterize.js-paging",
+            "path": "types/clusterize.js-paging",
+            "contentType": "directory"
+          },
+          {
+            "name": "clusterize.js",
+            "path": "types/clusterize.js",
+            "contentType": "directory"
+          },
+          {
+            "name": "cmd-shim",
+            "path": "types/cmd-shim",
+            "contentType": "directory"
+          },
+          {
+            "name": "co-body",
+            "path": "types/co-body",
+            "contentType": "directory"
+          },
+          {
+            "name": "co-views",
+            "path": "types/co-views",
+            "contentType": "directory"
+          },
+          {
+            "name": "co",
+            "path": "types/co",
+            "contentType": "directory"
+          },
+          {
+            "name": "code",
+            "path": "types/code",
+            "contentType": "directory"
+          },
+          {
+            "name": "codecs",
+            "path": "types/codecs",
+            "contentType": "directory"
+          },
+          {
+            "name": "codeflask",
+            "path": "types/codeflask",
+            "contentType": "directory"
+          },
+          {
+            "name": "codemirror",
+            "path": "types/codemirror",
+            "contentType": "directory"
+          },
+          {
+            "name": "codependency",
+            "path": "types/codependency",
+            "contentType": "directory"
+          },
+          {
+            "name": "coffeeify",
+            "path": "types/coffeeify",
+            "contentType": "directory"
+          },
+          {
+            "name": "coffeescript",
+            "path": "types/coffeescript",
+            "contentType": "directory"
+          },
+          {
+            "name": "coinbase-commerce-node",
+            "path": "types/coinbase-commerce-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "coinbase",
+            "path": "types/coinbase",
+            "contentType": "directory"
+          },
+          {
+            "name": "coingecko-api",
+            "path": "types/coingecko-api",
+            "contentType": "directory"
+          },
+          {
+            "name": "coinify__currency",
+            "path": "types/coinify__currency",
+            "contentType": "directory"
+          },
+          {
+            "name": "coinlist",
+            "path": "types/coinlist",
+            "contentType": "directory"
+          },
+          {
+            "name": "coinstring",
+            "path": "types/coinstring",
+            "contentType": "directory"
+          },
+          {
+            "name": "colab",
+            "path": "types/colab",
+            "contentType": "directory"
+          },
+          {
+            "name": "collections",
+            "path": "types/collections",
+            "contentType": "directory"
+          },
+          {
+            "name": "collectionsjs",
+            "path": "types/collectionsjs",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-check",
+            "path": "types/color-check",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-diff",
+            "path": "types/color-diff",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-hash",
+            "path": "types/color-hash",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-name",
+            "path": "types/color-name",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-namer",
+            "path": "types/color-namer",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-rgba",
+            "path": "types/color-rgba",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-support",
+            "path": "types/color-support",
+            "contentType": "directory"
+          },
+          {
+            "name": "color-thief-node",
+            "path": "types/color-thief-node",
+            "contentType": "directory"
+          },
+          {
+            "name": "color",
+            "path": "types/color",
+            "contentType": "directory"
+          },
+          {
+            "name": "colorguard",
+            "path": "types/colorguard",
+            "contentType": "directory"
+          },
+          {
+            "name": "colormap",
+            "path": "types/colormap",
+            "contentType": "directory"
+          },
+          {
+            "name": "colornames",
+            "path": "types/colornames",
+            "contentType": "directory"
+          },
+          {
+            "name": "colorthief",
+            "path": "types/colorthief",
+            "contentType": "directory"
+          },
+          {
+            "name": "colresizable",
+            "path": "types/colresizable",
+            "contentType": "directory"
+          },
+          {
+            "name": "columnify",
+            "path": "types/columnify",
+            "contentType": "directory"
+          },
+          {
+            "name": "com.darktalker.cordova.screenshot",
+            "path": "types/com.darktalker.cordova.screenshot",
+            "contentType": "directory"
+          },
+          {
+            "name": "com.wikitude.phonegap.wikitudeplugin",
+            "path": "types/com.wikitude.phonegap.wikitudeplugin",
+            "contentType": "directory"
+          },
+          {
+            "name": "combinations",
+            "path": "types/combinations",
+            "contentType": "directory"
+          },
+          {
+            "name": "combine-reducers",
+            "path": "types/combine-reducers",
+            "contentType": "directory"
+          },
+          {
+            "name": "combine-source-map",
+            "path": "types/combine-source-map",
+            "contentType": "directory"
+          },
+          {
+            "name": "combined-stream",
+            "path": "types/combined-stream",
+            "contentType": "directory"
+          },
+          {
+            "name": "combokeys",
+            "path": "types/combokeys",
+            "contentType": "directory"
+          },
+          {
+            "name": "comma-number",
+            "path": "types/comma-number",
+            "contentType": "directory"
+          },
+          {
+            "name": "command-exists-promise",
+            "path": "types/command-exists-promise",
+            "contentType": "directory"
+          },
+          {
+            "name": "command-exists",
+            "path": "types/command-exists",
+            "contentType": "directory"
+          },
+          {
+            "name": "command-line-args",
+            "path": "types/command-line-args",
+            "contentType": "directory"
+          },
+          {
+            "name": "command-line-commands",
+            "path": "types/command-line-commands",
+            "contentType": "directory"
+          },
+          {
+            "name": "command-line-usage",
+            "path": "types/command-line-usage",
+            "contentType": "directory"
+          },
+          {
+            "name": "command-shell-lib",
+            "path": "types/command-shell-lib",
+            "contentType": "directory"
+          },
+          {
+            "name": "commander-remaining-args",
+            "path": "types/commander-remaining-args",
+            "contentType": "directory"
+          },
+          {
+            "name": "commangular",
+            "path": "types/commangular",
+            "contentType": "directory"
+          },
+          {
+            "name": "commercetools__enzyme-extensions",
+            "path": "types/commercetools__enzyme-extensions",
+            "contentType": "directory"
+          },
+          {
+            "name": "common-ancestor-path",
+            "path": "types/common-ancestor-path",
+            "contentType": "directory"
+          },
+          {
+            "name": "common-errors",
+            "path": "types/common-errors",
+            "contentType": "directory"
+          },
+          {
+            "name": "common-prefix",
+            "path": "types/common-prefix",
+            "contentType": "directory"
+          }
+        ],
+        "totalCount": 8582,
+        "templateDirectorySuggestionUrl": null,
+        "readme": null,
+        "showBranchInfobar": false
+      },
+      "userNameDisplayConfiguration": "handle",
+      "treeExpanded": true,
+      "symbolsExpanded": false,
+      "copilotSWEAgentEnabled": false,
+      "copilotAccessAllowed": false
+    }
+  }
+}

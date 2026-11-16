@@ -36,16 +36,50 @@ Network is mocked with `vi.stubGlobal('fetch', ...)`. The extension runtime is `
 
 ## 3. Fixtures
 
+Sources are listed in `tests/fixtures/manifest.json`, and `tests/fixtures/README.md` describes each
+fixture.
+
 - `tests/fixtures/html/`:
-  - `root.html`, `folder.html`, `folder-slash-ref.html`, `empty-repo.html`
-  - `root-logged-in.html`, captured in Phase 1
-  - `root-stripped.html`, the same page with primary hooks removed, to exercise fallbacks
-- `tests/fixtures/json/`: recorded tree JSON responses, matching the cases in §2.
-- **Capture.** `scripts/capture-fixture.ts` fetches a public page logged out and strips `<script>`
-  bodies, except the code-view embedded JSON, which is kept only if a test needs it. It also strips
-  `octolytics`/analytics meta, avatars and nonces, then pretty-prints the result. Logged-in fixtures
-  come from a dedicated test account. They are reviewed by hand to remove all personal data before
-  commit.
+  - `root.html` (`git/git` root layout, with a submodule and a file symlink) and `folder.html`
+    (`git/git` `contrib`, with the parent-directory row). Phase 0.
+  - `root-logged-in.html`, `folder-logged-in.html`: the same pages signed in (T-GNR-012). They
+    are captured from a browser with `--from-file`, with the identity replaced by `fixture-user`.
+  - `pnpm fixtures:report` compares selector matches across all HTML fixtures and flags
+    signed-in/out differences.
+  - Still to add, in the ticket that first needs them:
+    - `folder-slash-ref.html` and `empty-repo.html` (T-GNR-103)
+    - `root-stripped.html`, the same page with primary hooks removed, to exercise fallbacks
+      (T-GNR-102)
+- `tests/fixtures/json/`: one recorded tree JSON response per case in §2:
+  - `root` (directory, file, submodule, `symlink_file`)
+  - `nested`
+  - `capped-1000`
+  - `simplified-chain`
+  - `submodule`
+  - `symlink-directory`
+  - `slash-ref`
+  - `not-found-404`
+- **Capture.** `pnpm fixtures:capture [names...]` runs `scripts/capture-fixture.ts`. It fetches
+  pages logged out, with a generic User-Agent and no credentials, then sanitizes them with
+  `scripts/lib/sanitize.ts`:
+  - **Removed:** every script except the code-view embedded JSON; every `<link>`, `<style>` and
+    non-allowlisted `<meta>`; nonce, integrity, analytics, hydro, HMAC and CSRF attributes;
+    authenticity tokens.
+  - **Redacted:** tokens inside the JSON.
+  - **Blanked:** avatar URLs, in HTML and JSON alike.
+- **Provenance.** Each fixture gets a `.md` sidecar recording the source URL, date, status, ref,
+  commit and SHA-256. The fixture and its sidecar are rewritten only when the content changes, so
+  re-capturing an unchanged page is byte-identical.
+- **Drift check.** `pnpm fixtures:check` compares the fixtures with live GitHub and exits 1 on drift.
+- **Logged-in fixtures.** These are reviewed by hand, and the real login is replaced with
+  `fixture-user`, before commit.
+- **Loader.** `tests/helpers/fixture.ts`:
+  - `loadHtmlFixture(name)` swaps the test `document` and sets `location` to the source URL.
+  - `useHtmlFixture(name)` sets up the per-test hooks.
+  - `loadJsonFixture(name)` reads a JSON fixture.
+  - `resetDocument()` restores an empty page.
+- **Prettier.** Fixtures are excluded from Prettier, because reformatting would change their golden
+  bytes.
 - **Golden discipline.** Fixtures change only on purpose, in a commit that says which GitHub change
   they track. A failing fixture test is a signal about GitHub, not something to update casually.
 

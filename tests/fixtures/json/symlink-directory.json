@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "title": "linux/scripts/dtc/include-prefixes at master · torvalds/linux"
+  },
+  "payload": {
+    "codeViewTreeRoute": {
+      "path": "scripts/dtc/include-prefixes",
+      "refInfo": {
+        "name": "master",
+        "listCacheKey": "v0:1794782305.0",
+        "canEdit": false,
+        "refType": "branch",
+        "currentOid": "aebb7274476403040d582c61478df8f4a7bf9cd3"
+      },
+      "tree": {
+        "items": [
+          {
+            "name": "arc",
+            "path": "scripts/dtc/include-prefixes/arc",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "arm",
+            "path": "scripts/dtc/include-prefixes/arm",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "arm64",
+            "path": "scripts/dtc/include-prefixes/arm64",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "dt-bindings",
+            "path": "scripts/dtc/include-prefixes/dt-bindings",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "microblaze",
+            "path": "scripts/dtc/include-prefixes/microblaze",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "mips",
+            "path": "scripts/dtc/include-prefixes/mips",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "nios2",
+            "path": "scripts/dtc/include-prefixes/nios2",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "openrisc",
+            "path": "scripts/dtc/include-prefixes/openrisc",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "powerpc",
+            "path": "scripts/dtc/include-prefixes/powerpc",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "riscv",
+            "path": "scripts/dtc/include-prefixes/riscv",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "sh",
+            "path": "scripts/dtc/include-prefixes/sh",
+            "contentType": "symlink_directory"
+          },
+          {
+            "name": "xtensa",
+            "path": "scripts/dtc/include-prefixes/xtensa",
+            "contentType": "symlink_directory"
+          }
+        ],
+        "totalCount": 12,
+        "templateDirectorySuggestionUrl": null,
+        "readme": null,
+        "showBranchInfobar": false
+      },
+      "userNameDisplayConfiguration": null,
+      "treeExpanded": true,
+      "symbolsExpanded": false,
+      "copilotSWEAgentEnabled": false,
+      "copilotAccessAllowed": false
+    }
+  }
+}

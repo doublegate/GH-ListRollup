@@ -71,13 +71,18 @@ Rules:
   `payload.*.tree.items` array rather than hard-coding `codeViewTreeRoute`, because the key has
   differed between page types. It validates each item and maps `contentType` as follows:
 
-  | `contentType`  | `kind`      |
-  | -------------- | ----------- |
-  | `directory`    | `dir`       |
-  | `file`         | `file`      |
-  | `submodule`    | `submodule` |
-  | `symlink_file` | `symlink`   |
-  | anything else  | `unknown`   |
+  | `contentType`       | `kind`      |
+  | ------------------- | ----------- |
+  | `directory`         | `dir`       |
+  | `file`              | `file`      |
+  | `submodule`         | `submodule` |
+  | `symlink_file`      | `symlink`   |
+  | `symlink_directory` | `symlink`   |
+  | anything else       | `unknown`   |
+
+  `symlink_directory` was found while recording fixtures on 2026-11-16
+  (`ref-docs/research-update-2026-11-16-content-types.md`). Fixtures for every row are in
+  `tests/fixtures/json/`.
 
   It drops malformed items and counts them for `debug.logging`. If no items array is found, it throws
   `SchemaError`.

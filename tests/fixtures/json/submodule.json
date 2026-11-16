@@ -1,0 +1,271 @@
+{
+  "meta": {
+    "title": "rust/src/tools at main · rust-lang/rust"
+  },
+  "payload": {
+    "codeViewTreeRoute": {
+      "path": "src/tools",
+      "refInfo": {
+        "name": "main",
+        "listCacheKey": "v0:1794507575.0",
+        "canEdit": false,
+        "refType": "branch",
+        "currentOid": "5fb8a16f5f8244f9fbfe696487a9da223168a6c7"
+      },
+      "tree": {
+        "items": [
+          {
+            "name": "build-manifest",
+            "path": "src/tools/build-manifest",
+            "contentType": "directory"
+          },
+          {
+            "name": "bump-stage0",
+            "path": "src/tools/bump-stage0",
+            "contentType": "directory"
+          },
+          {
+            "name": "cargo",
+            "path": "src/tools/cargo",
+            "contentType": "submodule",
+            "submoduleUrl": "/rust-lang/cargo/tree/ede6cefea9731cb595942338824c2f9a610b8189",
+            "submoduleDisplayName": "cargo @ ede6cef"
+          },
+          {
+            "name": "cargotest",
+            "path": "src/tools/cargotest",
+            "contentType": "directory"
+          },
+          {
+            "name": "clippy",
+            "path": "src/tools/clippy",
+            "contentType": "directory"
+          },
+          {
+            "name": "collect-license-metadata",
+            "path": "src/tools/collect-license-metadata",
+            "contentType": "directory"
+          },
+          {
+            "name": "compiletest",
+            "path": "src/tools/compiletest",
+            "contentType": "directory"
+          },
+          {
+            "name": "coverage-dump",
+            "path": "src/tools/coverage-dump",
+            "contentType": "directory"
+          },
+          {
+            "name": "enzyme",
+            "path": "src/tools/enzyme",
+            "contentType": "submodule",
+            "submoduleUrl": "/rust-lang/enzyme/tree/9cff5a8afebc22748bb36c135dfe5a09dd1047f3",
+            "submoduleDisplayName": "enzyme @ 9cff5a8"
+          },
+          {
+            "name": "error_index_generator",
+            "path": "src/tools/error_index_generator",
+            "contentType": "directory"
+          },
+          {
+            "name": "features-status-dump",
+            "path": "src/tools/features-status-dump",
+            "contentType": "directory"
+          },
+          {
+            "name": "generate-copyright",
+            "path": "src/tools/generate-copyright",
+            "contentType": "directory"
+          },
+          {
+            "name": "generate-windows-sys",
+            "path": "src/tools/generate-windows-sys",
+            "contentType": "directory"
+          },
+          {
+            "name": "html-checker",
+            "path": "src/tools/html-checker",
+            "contentType": "directory"
+          },
+          {
+            "name": "jsondocck",
+            "path": "src/tools/jsondocck",
+            "contentType": "directory"
+          },
+          {
+            "name": "jsondoclint",
+            "path": "src/tools/jsondoclint",
+            "contentType": "directory"
+          },
+          {
+            "name": "libcxx-version",
+            "path": "src/tools/libcxx-version",
+            "contentType": "directory"
+          },
+          {
+            "name": "linkchecker",
+            "path": "src/tools/linkchecker",
+            "contentType": "directory"
+          },
+          {
+            "name": "lint-docs",
+            "path": "src/tools/lint-docs",
+            "contentType": "directory"
+          },
+          {
+            "name": "lld-wrapper",
+            "path": "src/tools/lld-wrapper",
+            "contentType": "directory"
+          },
+          {
+            "name": "llvm-bitcode-linker",
+            "path": "src/tools/llvm-bitcode-linker",
+            "contentType": "directory"
+          },
+          {
+            "name": "miri",
+            "path": "src/tools/miri",
+            "contentType": "directory"
+          },
+          {
+            "name": "miropt-test-tools",
+            "path": "src/tools/miropt-test-tools",
+            "contentType": "directory"
+          },
+          {
+            "name": "nix-dev-shell",
+            "path": "src/tools/nix-dev-shell",
+            "contentType": "directory"
+          },
+          {
+            "name": "opt-dist",
+            "path": "src/tools/opt-dist",
+            "contentType": "directory"
+          },
+          {
+            "name": "remote-test-client",
+            "path": "src/tools/remote-test-client",
+            "contentType": "directory"
+          },
+          {
+            "name": "remote-test-server",
+            "path": "src/tools/remote-test-server",
+            "contentType": "directory"
+          },
+          {
+            "name": "replace-version-placeholder",
+            "path": "src/tools/replace-version-placeholder",
+            "contentType": "directory"
+          },
+          {
+            "name": "run-make-support",
+            "path": "src/tools/run-make-support",
+            "contentType": "directory"
+          },
+          {
+            "name": "rust-analyzer",
+            "path": "src/tools/rust-analyzer",
+            "contentType": "directory"
+          },
+          {
+            "name": "rust-installer",
+            "path": "src/tools/rust-installer",
+            "contentType": "directory"
+          },
+          {
+            "name": "rustbook",
+            "path": "src/tools/rustbook",
+            "contentType": "directory"
+          },
+          {
+            "name": "rustc-perf",
+            "path": "src/tools/rustc-perf",
+            "contentType": "submodule",
+            "submoduleUrl": "/rust-lang/rustc-perf/tree/15d95905429e577d5a710b17c49e04b4451c263b",
+            "submoduleDisplayName": "rustc-perf @ 15d9590"
+          },
+          {
+            "name": "rustdoc-gui-test",
+            "path": "src/tools/rustdoc-gui-test",
+            "contentType": "directory"
+          },
+          {
+            "name": "rustdoc-js",
+            "path": "src/tools/rustdoc-js",
+            "contentType": "directory"
+          },
+          {
+            "name": "rustdoc-themes",
+            "path": "src/tools/rustdoc-themes",
+            "contentType": "directory"
+          },
+          {
+            "name": "rustdoc",
+            "path": "src/tools/rustdoc",
+            "contentType": "directory"
+          },
+          {
+            "name": "rustfmt",
+            "path": "src/tools/rustfmt",
+            "contentType": "directory"
+          },
+          {
+            "name": "test-float-parse",
+            "path": "src/tools/test-float-parse",
+            "contentType": "directory"
+          },
+          {
+            "name": "tidy",
+            "path": "src/tools/tidy",
+            "contentType": "directory"
+          },
+          {
+            "name": "tier-check",
+            "path": "src/tools/tier-check",
+            "contentType": "directory"
+          },
+          {
+            "name": "unicode-table-generator",
+            "path": "src/tools/unicode-table-generator",
+            "contentType": "directory"
+          },
+          {
+            "name": "unstable-book-gen",
+            "path": "src/tools/unstable-book-gen",
+            "contentType": "directory"
+          },
+          {
+            "name": "wasm-component-ld",
+            "path": "src/tools/wasm-component-ld",
+            "contentType": "directory"
+          },
+          {
+            "name": "x",
+            "path": "src/tools/x",
+            "contentType": "directory"
+          },
+          {
+            "name": "cherry-pick.sh",
+            "path": "src/tools/cherry-pick.sh",
+            "contentType": "file"
+          },
+          {
+            "name": "publish_toolstate.py",
+            "path": "src/tools/publish_toolstate.py",
+            "contentType": "file"
+          }
+        ],
+        "totalCount": 47,
+        "templateDirectorySuggestionUrl": null,
+        "readme": null,
+        "showBranchInfobar": false
+      },
+      "userNameDisplayConfiguration": "handle",
+      "treeExpanded": true,
+      "symbolsExpanded": false,
+      "copilotSWEAgentEnabled": false,
+      "copilotAccessAllowed": false
+    }
+  }
+}

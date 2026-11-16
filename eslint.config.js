@@ -41,6 +41,11 @@ export default tseslint.config(
     },
   },
   {
+    // Dev tooling (fixture capture) runs in Node, not in the extension.
+    files: ['scripts/**/*.ts'],
+    languageOptions: { globals: { ...globals.node } },
+  },
+  {
     files: ['eslint.config.js'],
     ...tseslint.configs.disableTypeChecked,
   },
