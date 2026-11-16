@@ -1,0 +1,14 @@
+.output/
+.wxt/
+coverage/
+pnpm-lock.yaml
+ref-docs/
+LICENSE-APACHE
+tests/fixtures/html/
+tests/fixtures/json/
+
+# Antigravity reviewer: template-managed files, kept in sync with the template (the workflow
+# omits only the first-install bootstrap steps). Its selftest parses the workflow; reformatting
+# breaks it and makes future syncs noisy.
+.github/workflows/antigravity-review.yml
+.github/AGY-REVIEWER.md

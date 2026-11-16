@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Versions are pinned exactly for reproducible AMO builds; group updates monthly
+  # so they arrive as one reviewable PR per ecosystem.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    versioning-strategy: increase
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        patterns: ['*']
+    ignore:
+      # typescript-eslint 8.72 requires typescript <6.1.0 (docs/build-and-tooling.md).
+      - dependency-name: typescript
+        versions: ['>=6.1.0']
+    commit-message:
+      prefix: 'chore(deps)'
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: 'ci(deps)'
