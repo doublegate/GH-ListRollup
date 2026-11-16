@@ -11,8 +11,8 @@ GitHub fixtures exist for later phases.
 
 - [x] `pnpm check` passes locally (2026-11-15).
 - [x] CI workflow green on GitHub (2026-11-15).
-- [ ] Skeleton verified manually in Chrome and Firefox (log lines on root, folder and after soft
-      navigation).
+- [x] Skeleton verified in Chrome and Firefox: log lines on root, folder and after soft navigation
+      (2026-11-16, T-GNR-004).
 - [ ] Fixtures for both layouts committed (Sprint 2).
 
 ## Scope

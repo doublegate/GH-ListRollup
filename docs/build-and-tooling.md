@@ -63,8 +63,22 @@ Imports use the `@/` alias for `src/`. WXT APIs are imported explicitly from the
 - **Firefox:** open `about:debugging#/runtime/this-firefox`, choose "Load Temporary Add-on" and select
   `.output/firefox-mv3/manifest.json`. Alternatively run `pnpm dev:firefox`.
 
-The Phase 0 skeleton logs `[gnr] page repo-root <owner> <repo>` (or `repo-tree` / `other`) to the
-page console on load and after each soft navigation.
+The Phase 0 skeleton logs `[gnr] page <kind> [<owner>/<repo>] path=<path>` to the page console on
+load and after each soft navigation, for example
+`[gnr] page repo-tree wxt-dev/wxt path=/wxt-dev/wxt/tree/main/packages`.
+
+**Verify Firefox behaviour on a production build.** `pnpm dev:firefox` registers the content script
+dynamically. On 2026-11-16 its hot reload left a tab running the old script, even after F5
+(T-GNR-004). For real checks, run:
+
+```sh
+pnpm build:firefox
+pnpm exec web-ext run --source-dir .output/firefox-mv3 --start-url https://github.com/<owner>/<repo>
+```
+
+`web-ext run` fully reloads the extension whenever `.output/firefox-mv3` changes, so running
+`pnpm build:firefox` again triggers a reload. Firefox re-injects content scripts into already-open
+tabs on reload; Chrome does not.
 
 ## 4. CI
 

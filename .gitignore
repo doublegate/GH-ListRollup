@@ -48,3 +48,8 @@ Thumbs.db
 
 # Generation logs from artwork tooling
 agy-*.log
+
+# Raw research captures: kept locally, never published (GitHub pages, response headers,
+# GitHub's own JS bundles). Only the README describing them is tracked.
+ref-docs/raw/**
+!ref-docs/raw/README.md
