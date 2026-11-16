@@ -28,6 +28,17 @@ export function fixtureUrl(name: string, kind: 'html' | 'json' = 'html'): string
   return entry.url;
 }
 
+/** Every fixture in the manifest, for completeness checks. */
+export function manifestEntries(): readonly ManifestEntry[] {
+  return manifest;
+}
+
+/** The absolute path of a fixture file, after checking the manifest lists it. */
+export function fixturePath(name: string, kind: 'html' | 'json'): string {
+  fixtureUrl(name, kind); // throws the descriptive manifest error for an unknown name
+  return join(FIXTURES, kind, `${name}.${kind}`);
+}
+
 interface HappyDomWindow {
   happyDOM?: { setURL(url: string): void };
 }
@@ -53,17 +64,17 @@ function replaceDocumentElement(html: string): void {
  * so for example `location.pathname` is `/git/git/tree/master/contrib` for `folder`.
  */
 export function loadHtmlFixture(name: string, options: { url?: string } = {}): Document {
-  // Resolve the URL first so an unknown name gets the manifest's descriptive error, not ENOENT.
-  const url = options.url ?? fixtureUrl(name, 'html');
-  const html = readFileSync(join(FIXTURES, 'html', `${name}.html`), 'utf8');
-  setLocation(url);
+  // Validate the name first (also when `url` is given), so an unknown name gets the manifest's
+  // descriptive error, not ENOENT (agy reviews, PR #3).
+  const html = readFileSync(fixturePath(name, 'html'), 'utf8');
+  setLocation(options.url ?? fixtureUrl(name, 'html'));
   replaceDocumentElement(html);
   return document;
 }
 
 /** Reads a JSON fixture (a recorded tree JSON response body). */
 export function loadJsonFixture<T = unknown>(name: string): T {
-  return JSON.parse(readFileSync(join(FIXTURES, 'json', `${name}.json`), 'utf8')) as T;
+  return JSON.parse(readFileSync(fixturePath(name, 'json'), 'utf8')) as T;
 }
 
 /** Restores an empty document at `about:blank`. */

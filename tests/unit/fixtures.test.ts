@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -6,11 +7,15 @@ import {
   PLACEHOLDER_EMAIL,
   PLACEHOLDER_ID,
   PLACEHOLDER_LOGIN,
+  sanitizeGitHubHtml,
+  sanitizeTreeJson,
 } from '../../scripts/lib/sanitize.ts';
 import {
+  fixturePath,
   fixtureUrl,
   loadHtmlFixture,
   loadJsonFixture,
+  manifestEntries,
   resetDocument,
   useHtmlFixture,
 } from '../helpers/fixture';
@@ -118,7 +123,9 @@ describe('JSON fixtures (T-GNR-013 cases)', () => {
       'File not found',
     );
   });
+});
 
+describe('all fixtures', () => {
   it('no fixture contains an unredacted token or avatar URL', () => {
     for (const kind of ['html', 'json']) {
       const dir = join(import.meta.dirname, '..', 'fixtures', kind);
@@ -130,6 +137,33 @@ describe('JSON fixtures (T-GNR-013 cases)', () => {
         expect(text, file).not.toMatch(/jwt=eyJ/);
         expect(text, file).not.toMatch(/data-channel=/);
         expect(text, file).not.toMatch(/[A-Za-z0-9+/_-]{16,}={0,2}--[0-9a-f]{40,}/);
+      }
+    }
+  });
+
+  // agy review, PR #3: catch a hand-edited fixture or a sanitizer change that was not reprocessed,
+  // during `pnpm test` rather than only in the manual fixtures:check / --reprocess --check runs.
+  it.each(manifestEntries().map((e) => [`${e.kind}/${e.name}`, e] as const))(
+    '%s exists, matches its sidecar SHA-256, and is a fixed point of the sanitizer',
+    async (_label, entry) => {
+      const path = fixturePath(entry.name, entry.kind);
+      const content = readFileSync(path, 'utf8');
+      const md = readFileSync(path.replace(/\.(html|json)$/, '.md'), 'utf8');
+      const sha = createHash('sha256').update(content).digest('hex');
+      expect(md).toContain(`\`${sha}\``);
+      const again =
+        entry.kind === 'html'
+          ? await sanitizeGitHubHtml(content, { sourceUrl: entry.url, name: entry.name })
+          : sanitizeTreeJson(content);
+      expect(again === content, `${entry.kind}/${entry.name} changes when re-sanitized`).toBe(true);
+    },
+  );
+
+  it('every fixture file is listed in the manifest', () => {
+    for (const kind of ['html', 'json'] as const) {
+      const dir = join(import.meta.dirname, '..', 'fixtures', kind);
+      for (const file of readdirSync(dir).filter((f) => f.endsWith(`.${kind}`))) {
+        expect(() => fixturePath(file.slice(0, -kind.length - 1), kind), file).not.toThrow();
       }
     }
   });

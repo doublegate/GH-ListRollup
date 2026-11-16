@@ -292,8 +292,16 @@ async function main(): Promise<void> {
   if (values['from-file'] !== undefined) {
     const name =
       values.name ?? fail('--from-file requires --name (a manifest entry with loggedIn: true)');
-    const login =
-      values.login ?? fail('--from-file requires --login (the signed-in user to replace)');
+    // Every identifier is required and must be non-empty (agy reviews, PR #3): `??` alone let
+    // `--login ""` through, which builds an empty-match regex, and an omitted identifier is
+    // neither replaced nor checked for. `gh api user` gives login, id and node_id.
+    const nonEmpty = (flag: string, v: string | undefined): string =>
+      v !== undefined && v.trim() !== ''
+        ? v.trim()
+        : fail(`--from-file requires a non-empty --${flag}`);
+    const login = nonEmpty('login', values.login);
+    const nodeId = nonEmpty('node-id', values['node-id']);
+    const email = nonEmpty('email', values.email);
     const spec = (await loadManifest()).find(
       (s) => s.name === name && s.kind === 'html' && s.loggedIn,
     );
@@ -308,8 +316,8 @@ async function main(): Promise<void> {
     const identity: Identity = {
       login,
       id,
-      ...(values['node-id'] !== undefined ? { nodeId: values['node-id'] } : {}),
-      ...(values.email !== undefined ? { email: values.email } : {}),
+      nodeId,
+      email,
     };
     // --check is honoured here too: compare only, write nothing, exit 1 on drift.
     const result = await captureFromFile(spec, values['from-file'], identity, values.check);
@@ -319,6 +327,14 @@ async function main(): Promise<void> {
       process.exit(1);
     }
     return;
+  }
+
+  // Validate --kind up front, and refuse combinations that would silently ignore it (agy review,
+  // PR #3): an unknown kind used to filter everything out, and --kind was ignored with --url.
+  if (values.kind !== undefined) {
+    if (values.kind !== 'html' && values.kind !== 'json') fail('--kind must be html or json');
+    if (values.url !== undefined) fail('--kind does not apply to --url; use --json for JSON');
+    if (values.json) fail('--json and --kind are mutually exclusive');
   }
 
   let specs: FixtureSpec[];
