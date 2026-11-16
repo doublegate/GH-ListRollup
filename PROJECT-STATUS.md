@@ -43,7 +43,7 @@ Next is Phase 1 Sprint 1: the selectors module and page model.
 | Unit tests          | 53 passing                      | `pnpm test`, 2026-11-16                    |
 | Lint / typecheck    | clean, zero warnings            | `pnpm lint`, `pnpm typecheck`, 2026-11-15  |
 | `web-ext lint`      | 0 errors, 0 warnings, 0 notices | `pnpm lint:firefox`, 2026-11-15            |
-| Content script size | 4.64 kB                         | `pnpm build` output, 2026-11-15            |
+| Content script size | 4.72 kB                         | `pnpm build` output, 2026-11-16            |
 | CI                  | Green on first push             | GitHub Actions run 43806484751, 2026-11-15 |
 
 ## Known issues

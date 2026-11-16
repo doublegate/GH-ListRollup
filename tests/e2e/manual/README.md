@@ -25,5 +25,8 @@ cp <repo>/tests/e2e/manual/*.mjs .
 node t-gnr-004.mjs <repo>/.output/chrome-mv3
 ```
 
-The scripts are excluded from ESLint (`eslint.config.js`) because they import `playwright`, which is
-not installed in the project.
+`t-gnr-004.mjs` exits 1 if steps 1-6 differ from the expected `[gnr]` output (steps 7-8 are
+recorded only, because of the harness limit above), and exits 2 without a built extension path.
+
+ESLint lints the scripts without type information (`eslint.config.js`), because they import
+`playwright`, which is not installed in the project.

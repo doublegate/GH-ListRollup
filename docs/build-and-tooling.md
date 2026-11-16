@@ -1,6 +1,6 @@
 # Build and Tooling
 
-**Status:** Current as of 2026-11-15 (Phase 0 skeleton)
+**Status:** Current as of 2026-11-16 (Phase 0 complete)
 **Sources:** `ref-docs/wxt-framework.md`, `ref-docs/testing-extensions.md`, `docs/adr/0001-wxt-typescript.md`
 
 ## 1. Toolchain (pinned)
@@ -122,9 +122,9 @@ workspace template. Operations guide: `.github/AGY-REVIEWER.md`; project rules:
   template, then re-apply that omission.
 
 To run the secret scan locally, give gitleaks an **absolute path**:
-`gitleaks git "$PWD" --redact`. On this workstation the `gitleaks` command is a wrapper that changes
-into its own install directory first, so `gitleaks dir .` scans the wrapper's files, not the
-project.
+`gitleaks git "$PWD" --redact`. Some installs ship `gitleaks` as a wrapper script that changes into
+its own install directory first; with a relative path such as `gitleaks dir .`, that scans the
+wrapper's files, not the project.
 
 ### Dependency overrides and audit exceptions
 
