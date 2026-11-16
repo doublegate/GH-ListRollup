@@ -90,7 +90,8 @@ export const SELECTORS = {
   /** The current folder's name, after the breadcrumb. Folder pages only. */
   breadcrumbFilename: {
     primary: '[data-testid="breadcrumbs-filename"] h1',
-    fallbacks: ['h1#file-name-id'],
+    // The header breadcrumb's heading, then the sticky breadcrumb's own copy (agy review, #14).
+    fallbacks: ['h1#file-name-id', 'h1#sticky-file-name-id'],
   },
   /** The latest-commit bar's details. Its parent's parent is the bar's inner row. */
   commitDetails: {

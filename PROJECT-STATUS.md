@@ -14,7 +14,7 @@ is implemented yet. **Phase 0 is complete:**
 - Signed-in markup turned out identical for every selector the extension uses.
 
 Phase 1 Sprint 1 is complete: the selectors module, the selector probe, the DOM-backed page model
-and the header-line locator, verified against 13 HTML fixtures. Next is Phase 1 Sprint 2, the
+and the header-line locator, verified against the 9 HTML fixtures. Next is Phase 1 Sprint 2, the
 collapse controller.
 
 ## Phases

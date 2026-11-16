@@ -242,4 +242,16 @@ describe('readListingPage', () => {
       path: 'contrib/completion',
     });
   });
+
+  it('reads the path from the sticky breadcrumb alone (agy, #14)', () => {
+    const doc = loadHtmlFixture('folder-deep');
+    doc.getElementById('repos-header-breadcrumb')?.remove();
+    doc.getElementById('file-name-id')?.remove();
+    for (const el of doc.querySelectorAll('[data-testid^="breadcrumbs"]'))
+      el.removeAttribute('data-testid');
+    expect(readListingPage(new URL(fixtureUrl('folder-deep')), doc)).toMatchObject({
+      ref: 'master',
+      path: 'contrib/completion',
+    });
+  });
 });
