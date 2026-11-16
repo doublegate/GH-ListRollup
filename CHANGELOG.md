@@ -41,7 +41,8 @@ All notable user-visible changes to this project are documented here. The format
     folder clicks). The listing is pre-hidden until its toggle is in place, bounded by a 4-second
     watchdog.
   - Never hidden without a toggle: if the commit bar disappears, the extension updates or reloads,
-    or the re-render budget runs out, the files are shown again.
+    the re-render budget runs out, an internal error occurs, or a navigation bypasses the click and
+    back/forward pre-hide (GitHub's keyboard shortcuts), the files are shown again.
   - Verified live on github.com in Chrome and Firefox, including 20 consecutive navigations and the
     light, dark and high-contrast themes.
 - GitHub page reading (Phase 1 Sprint 1), no visible change yet:
