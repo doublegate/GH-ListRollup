@@ -47,6 +47,8 @@ Implemented in `src/github/selectors.ts` (T-GNR-101), which the table must match
 | Name link                          | `.react-directory-filename-cell a`                                                                                                                        | `.react-directory-truncate a`                                                                                                                                                                                               |
 | Header line (latest-commit bar)    | `[data-testid="latest-commit-details"]`; the inner row is the child of its nearest `.border` ancestor (Primer's utility class) that contains it           | `h2[data-testid="screen-reader-heading"]`, then `h2.sr-only`, with the text "Latest commit"; its parent is the same inner row                                                                                               |
 | "View all files" row               | `tr[data-testid="view-all-files-row"]`                                                                                                                    | --                                                                                                                                                                                                                          |
+| Link (navigation pre-hide)         | `a[href]`, used with `closest()` from a click target                                                                                                      | --                                                                                                                                                                                                                          |
+| The extension's own toggle         | `[data-gnr="toggle"]`                                                                                                                                     | --                                                                                                                                                                                                                          |
 
 ### 2.1 The header line
 
@@ -209,7 +211,11 @@ scripts run only on full loads.
    no-header and non-listing exits. The no-listing exit **keeps** it mid-navigation: the old listing
    is gone and the new one not yet rendered, so nothing visible is hidden. It observes the code-view
    app for the arrival, because clearing pending there flashed the new listing for a frame. A
-   per-navigation watchdog (4 seconds; only the latest navigation's acts) always ends it. If no
+   per-navigation watchdog (4 seconds; only the latest navigation's acts) always ends it. Only an
+   apply on the navigation's **destination** ends it early; an apply on the outgoing page, a
+   re-render before the URL changes, does not. The cold-load watchdog never ends a navigation's
+   pre-hide: a folder click about 4 s after load lost its pre-hide to that timer, which flashed the
+   new listing for a frame. If no
    toggle is installed for the listing actually shown, the watchdog also removes the collapsed
    marker. An aborted navigation leaves the old URL, and its toggle keeps working.
 
@@ -218,7 +224,9 @@ scripts run only on full loads.
    with `class=""`, which dropped a class there and flashed the listing for one frame. A marker on
    `<html>` hides any container until the next apply puts the toggle back. Every path that ends with
    no toggle removes the marker: the no-header and non-listing exits, budget exhaustion, the
-   navigation watchdog and teardown.
+   navigation watchdog, teardown, an exception inside `apply()` (the toggle counts as installed only
+   once it is in the DOM), and a no-listing exit that is not part of a click or `popstate`
+   navigation, such as a keyboard-shortcut navigation or React unmounting the listing.
 
    **The first signals arrive before the new listing renders** (observed live,
    `ref-docs/research-update-2026-11-16-phase1-fixtures.md` §6). So after a navigation, `apply()`

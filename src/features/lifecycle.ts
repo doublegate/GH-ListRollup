@@ -18,8 +18,7 @@ import {
   type ApplyOutcome,
   CollapseController,
   WATCHDOG_MS,
-  clearPending,
-  isPending,
+  listingPath,
   setPending,
 } from './collapse';
 
@@ -46,8 +45,7 @@ export function startLifecycle(
   if (listingShaped) {
     setPending(doc);
     ctx.setTimeout(() => {
-      if (isPending(doc)) {
-        clearPending(doc);
+      if (controller.endInitialPreHide()) {
         log.debug('watchdog: no toggle within 4 s, showing GitHub’s listing');
       }
     }, WATCHDOG_MS);
@@ -91,7 +89,12 @@ export function startLifecycle(
       const target = link.getAttribute('target');
       if (target && target !== '_self') return;
       if (link.hasAttribute('download')) return;
-      controller.navigationStarting(new URL(link.href, doc.location.href));
+      const destination = new URL(link.href, doc.location.href);
+      // A link to the page already shown (an in-page anchor, a reload of the same listing) is no
+      // navigation to a different listing (agy, #16). Not checked for popstate, where location is
+      // already the destination.
+      if (listingPath(destination.pathname) === listingPath(doc.location.pathname)) return;
+      controller.navigationStarting(destination);
     },
     { capture: true },
   );

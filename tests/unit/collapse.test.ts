@@ -195,7 +195,7 @@ describe('lifecycle (T-GNR-106)', () => {
     const doc = loadHtmlFixture('root');
     setPending(doc);
     const controller = new CollapseController(ctx, doc);
-    const spy = vi.spyOn(doc.documentElement, 'toggleAttribute').mockImplementation(() => {
+    const spy = vi.spyOn(doc.documentElement, 'setAttribute').mockImplementation(() => {
       throw new Error('boom');
     });
     expect(controller.apply(new URL(fixtureUrl('root')))).toBe('error');
@@ -586,6 +586,29 @@ describe('no flash (maintainer live check on #16)', () => {
       expect(isPending(doc)).toBe(false);
     });
 
+    it('the cold-load watchdog does not end a navigation pre-hide armed after it (live flash)', () => {
+      vi.useFakeTimers();
+      const doc = loadHtmlFixture('root');
+      const life = startLifecycle(ctx, doc); // arms the cold-load watchdog for t = 4 s
+      life.apply();
+      vi.advanceTimersByTime(3500);
+      clickLink(doc, '/git/git/tree/master/contrib'); // a folder click just before 4 s
+      expect(isPending(doc)).toBe(true);
+      vi.advanceTimersByTime(600); // the cold-load watchdog fires
+      expect(isPending(doc)).toBe(true); // still hiding: it belongs to the navigation now
+      vi.advanceTimersByTime(WATCHDOG_MS); // the navigation's own watchdog ends it
+      expect(isPending(doc)).toBe(false);
+    });
+
+    it('an apply on the OUTGOING page does not end the navigation pre-hide', () => {
+      const { doc, life } = start();
+      clickLink(doc, '/git/git/tree/master/contrib');
+      expect(isPending(doc)).toBe(true);
+      // A re-render of the old page before the URL changes (measured live on #16).
+      expect(life.apply()).toBe('applied');
+      expect(isPending(doc)).toBe(true);
+    });
+
     it('a successful apply on the new listing clears the navigation pre-hide', () => {
       const { doc, life } = start();
       clickLink(doc, '/git/git/tree/master/contrib');
@@ -595,5 +618,79 @@ describe('no flash (maintainer live check on #16)', () => {
       expect(isPending(folder)).toBe(false);
       expect(collapsed(folder)).toBe(true);
     });
+  });
+});
+
+describe('review findings on #16, round 4', () => {
+  it('an exception after a collapse shows the files again (agy, blocking)', () => {
+    const { doc, controller } = applied('root');
+    expect(collapsed(doc)).toBe(true);
+    const spy = vi.spyOn(doc.documentElement, 'setAttribute').mockImplementation(() => {
+      throw new Error('boom');
+    });
+    // The next apply throws partway (React re-rendered the header away first).
+    toggle(doc).remove();
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('error');
+    spy.mockRestore();
+    expect(collapsed(doc)).toBe(false);
+    expect(toggles(doc).length).toBe(0);
+  });
+
+  it('a toggle-insertion failure does not mark the listing as installed (agy, blocking)', () => {
+    vi.useFakeTimers();
+    const doc = loadHtmlFixture('root');
+    const life = startLifecycle(ctx, doc);
+    const header = findHeaderLine(doc)?.insertionPoint;
+    const spy = vi.spyOn(header as Element, 'prepend').mockImplementation(() => {
+      throw new Error('boom');
+    });
+    expect(life.apply()).toBe('error');
+    spy.mockRestore();
+    expect(life.controller.current?.installed).toBe(false);
+    expect(collapsed(doc)).toBe(false);
+  });
+
+  it('outside a click/popstate navigation, a no-listing exit removes the marker (agy, blocking)', () => {
+    const { doc, controller } = applied('root');
+    expect(collapsed(doc)).toBe(true);
+    // A keyboard-shortcut navigation (g c) or a React unmount: no pre-hide was armed.
+    listing(doc).remove();
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-listing');
+    expect(collapsed(doc)).toBe(false);
+    expect(controller.current?.installed).toBe(false);
+  });
+
+  it('with the meta fallback gate, the no-listing exit observes the body (Codex)', async () => {
+    const doc = loadHtmlFixture('root');
+    query('codeView', doc)?.element.removeAttribute('app-name'); // the gate falls back to <meta>
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    const outcomes: string[] = [];
+    const controller = new CollapseController(ctx, doc, () => {
+      outcomes.push(controller.apply(new URL(fixtureUrl('root'))));
+    });
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-listing');
+    parent?.appendChild(held); // the listing arrives, no navigation signal follows
+    await Promise.resolve();
+    await nextFrame();
+    expect(outcomes).toContain('applied');
+    expect(toggles(doc).length).toBe(1);
+  });
+
+  it('a link differing only by a trailing slash or owner case is the same listing (agy)', () => {
+    const { controller } = applied('root');
+    expect(controller.navigationStarting(new URL('https://github.com/git/git/'))).toBe(false);
+    expect(controller.navigationStarting(new URL('https://github.com/Git/GIT'))).toBe(false);
+    expect(
+      controller.navigationStarting(new URL('https://github.com/git/git/tree/master/contrib')),
+    ).toBe(true);
+  });
+
+  it('teardown removes the id the extension gave the listing container (agy nit)', () => {
+    const { doc } = applied('root');
+    expect(listing(doc).id).toBe('gnr-listing');
+    ctx.notifyInvalidated();
+    expect(listing(doc).hasAttribute('id')).toBe(false);
   });
 });

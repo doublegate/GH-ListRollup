@@ -1,4 +1,4 @@
-// Flash probe (maintainer live check on #16): samples every animation frame in the page and counts
+// Flash probe (maintainer live check on #16; the 4-second watchdog race is exercised on navigation 1): samples every animation frame in the page and counts
 // "flash" frames, where a listing is visible while no toggle says it is expanded. Covers a cold load
 // and five rounds of (expand, folder click) and (expand, Back), the cases the maintainer saw flash.
 //
@@ -51,6 +51,11 @@ try {
     await page.evaluate(() => {
       window.__phase = 'folder-click';
     });
+    // Navigation 1 lands just before the cold-load watchdog (4 s from navigation start): that race
+    // cleared the navigation's pre-hide and flashed the new listing until it was fixed (#16). The
+    // window is ~120 ms, so this probe hits it only sometimes (1 of 3 runs on the pre-fix build); the
+    // deterministic guard is the unit test "the cold-load watchdog does not end a navigation ...".
+    if (i === 1) await page.waitForFunction(() => performance.now() > 3940);
     await page.click('[data-gnr="toggle"]'); // expand (legit visible from here)
     await page.locator('a[href="/wxt-dev/wxt/tree/main/packages"]:visible').first().click();
     await page.waitForURL('**/tree/main/packages');
