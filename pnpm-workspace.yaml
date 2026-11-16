@@ -1,0 +1,16 @@
+# pnpm settings (pnpm 10+ reads these here, not from package.json).
+
+overrides:
+  # GHSA-g3hv-75wg-m249 (moderate): minimatch >=7 <11.0.1 is vulnerable to ReDoS via
+  # globparts amplification. Only @typescript-eslint/typescript-estree (lint tooling)
+  # pulled a vulnerable 10.x; force the patched line. Remove once typescript-eslint
+  # depends on minimatch >=11.0.1 directly.
+  'minimatch@>=7.0.0 <11.0.1': 11.0.8
+
+auditConfig:
+  ignoreGhsas:
+    # GHSA-gcqx-w48m-w2h4 (low): deepmerge <=4.3.1 prototype poisoning; no patched release
+    # exists. Reached only via web-ext > addons-linter, which merges its own linter config
+    # while linting our build output at dev/CI time. No attacker-controlled input reaches it
+    # and it is not part of the shipped extension. Re-check when web-ext updates.
+    - GHSA-gcqx-w48m-w2h4

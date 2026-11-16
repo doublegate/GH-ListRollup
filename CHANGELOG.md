@@ -21,6 +21,15 @@ All notable user-visible changes to this project are documented here. The format
   - `SECURITY.md`, `PRIVACY.md`, `CODE_OF_CONDUCT.md`
   - issue template configuration and `CODEOWNERS`
   - Dependabot configuration, with grouped monthly updates
+- CI: `pnpm audit` step, and a gitleaks job that scans the full git history (pinned binary,
+  checksum-verified).
+
+### Security
+
+- Forced `minimatch` to 11.0.8 through a pnpm override, fixing GHSA-g3hv-75wg-m249 (moderate) in
+  the lint tooling.
+- Reviewed and documented GHSA-gcqx-w48m-w2h4 (deepmerge, low). No fix exists, and the package is
+  used only at lint time, never in the shipped extension.
 
 ### Changed
 

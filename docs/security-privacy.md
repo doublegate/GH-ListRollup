@@ -44,7 +44,9 @@ names, and README content. They cannot run code in the extension's contexts.
 7. **Least privilege in the page.** Content scripts run in the ISOLATED world. Nothing is injected into
    the page's MAIN world; no page globals are read or patched.
 8. **Dependencies.** Runtime dependencies are kept near zero (WXT's runtime helpers only). `pnpm audit`
-   runs in CI; lockfile committed; GitHub Actions pinned by version.
+   runs in CI and fails on any advisory not reviewed in `pnpm-workspace.yaml`
+   (`docs/build-and-tooling.md` §4). The lockfile is committed, and GitHub Actions are pinned by
+   version. gitleaks scans the full history on every push and PR.
 
 ## 3. Privacy statement (for store listings)
 
@@ -67,4 +69,5 @@ data collected; single purpose "collapse and expand the file listing on GitHub r
 - [ ] Token never appears in logs: run the E2E suite with `debug.logging` on and grep the output for
       the test token.
 - [ ] Hostile-name fixture tests pass (names with `<img onerror>`, `..`, `%2F`, RTL override, 255-char names).
-- [ ] `pnpm audit --prod` is clean.
+- [ ] `pnpm audit` is clean, or every ignored GHSA in `pnpm-workspace.yaml` has been re-checked and
+      still has no fix.
