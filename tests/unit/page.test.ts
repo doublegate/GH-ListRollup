@@ -58,8 +58,11 @@ describe('pageKey', () => {
     expect(key('https://github.com/o/r#readme')).toBe(key('https://github.com/o/r'));
   });
 
-  it('distinguishes path and query changes', () => {
+  it('distinguishes path changes', () => {
     expect(key('https://github.com/o/r/tree/main/src')).not.toBe(key('https://github.com/o/r'));
-    expect(key('https://github.com/o/r?tab=x')).not.toBe(key('https://github.com/o/r'));
+  });
+
+  it('ignores the query: README tabs (?tab=...-ov-file) are the same listing (#11)', () => {
+    expect(key('https://github.com/o/r?tab=readme-ov-file')).toBe(key('https://github.com/o/r'));
   });
 });

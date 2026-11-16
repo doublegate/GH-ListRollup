@@ -294,9 +294,8 @@ async function main(): Promise<void> {
   if (values.kind !== undefined) {
     if (values.kind !== 'html' && values.kind !== 'json') fail('--kind must be html or json');
     if (values.url !== undefined) fail('--kind does not apply to --url; use --json for JSON');
-    if (values.json) fail('--json and --kind are mutually exclusive');
     if (values.reprocess) fail('--kind does not apply to --reprocess (signed-in HTML only)');
-    if (values['from-file'] !== undefined) fail('--kind does not apply to --from-file (HTML only)');
+    if (fromFile) fail('--kind does not apply to --from-file (HTML only)');
   }
 
   if (values.reprocess) {
@@ -320,6 +319,7 @@ async function main(): Promise<void> {
     return;
   }
 
+  // Kept explicit (not `fromFile`) so TypeScript narrows values['from-file'] to string below.
   if (values['from-file'] !== undefined) {
     const name =
       values.name ?? fail('--from-file requires --name (a manifest entry with loggedIn: true)');

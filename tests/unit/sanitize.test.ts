@@ -492,3 +492,113 @@ describe('bootstrap review findings (#8)', () => {
     expect(JSON.parse(sanitizeTreeJson(raw))).toEqual(JSON.parse(raw));
   });
 });
+
+describe('replaceIdentity placeholder collisions (#11)', () => {
+  // Real logins only: GitHub allows letters, digits and hyphens, so a login can never equal
+  // PLACEHOLDER_NODE_ID (`FIXTURE_NODE_ID`). `fixture-user` is valid and maps to itself.
+  it.each(['example', 'invalid', 'fixture', 'user', 'node', 'id', 'fixture-user'])(
+    'a login of %s does not rewrite the placeholders inserted for other fields',
+    (login) => {
+      const identity = {
+        login,
+        id: 4242421,
+        nodeId: 'U_kgDOAAAA',
+        email: 'someone@mail.example',
+      };
+      // Neutral keys: the login is replaced everywhere, keys included, by design.
+      const out = replaceIdentity(
+        `{"a":"${login}","b":"someone@mail.example","c":"U_kgDOAAAA","d":4242421}`,
+        identity,
+      );
+      expect(out).toBe(
+        `{"a":"${PLACEHOLDER_LOGIN}","b":"${PLACEHOLDER_EMAIL}","c":"${PLACEHOLDER_NODE_ID}","d":${PLACEHOLDER_ID}}`,
+      );
+    },
+  );
+});
+
+describe('sanitizers end to end: placeholder collisions (#12)', () => {
+  // redactSecrets writes PLACEHOLDER_EMAIL before replaceIdentity runs, and sanitizeGitHubHtml runs
+  // replaceIdentity twice (payload JSON, then the serialized page), so masking inside one call of
+  // replaceIdentity was not enough on its own.
+  const identity = { login: 'example', id: 4242421 };
+
+  it('sanitizeTreeJson keeps PLACEHOLDER_EMAIL intact for a login of example', () => {
+    const out = sanitizeTreeJson(
+      '{"payload":{"userEmail":"someone@mail.example","login":"example"}}',
+      {
+        identity,
+      },
+    );
+    const parsed = JSON.parse(out) as { payload: { userEmail: string; login: string } };
+    expect(parsed.payload.userEmail).toBe(PLACEHOLDER_EMAIL);
+    expect(parsed.payload.login).toBe(PLACEHOLDER_LOGIN);
+  });
+
+  it('sanitizeGitHubHtml keeps PLACEHOLDER_EMAIL intact for a login of example', async () => {
+    const out = await sanitizeGitHubHtml(
+      page('', embedded({ payload: { userEmail: 'someone@mail.example', login: 'example' } })),
+      { ...opts, identity },
+    );
+    expect(out).toContain(PLACEHOLDER_EMAIL);
+    expect(out).not.toContain('fixture-user@fixture-user');
+  });
+});
+
+describe('replaceIdentity: identity values that contain placeholder text (#12, round 2)', () => {
+  // The round-1 fix pre-masked placeholders without boundaries, which split identity values that
+  // contain placeholder text before their own pass ran; one case leaked the email domain while
+  // passing the leftovers check.
+  it.each([
+    [
+      'login inside its own email',
+      { login: 'fixture-user', email: 'fixture-user@mail.example' },
+      'fixture-user@mail.example',
+    ],
+    [
+      'placeholder inside an email local part',
+      { login: 'someone', email: 'someone+fixture-user@company.com' },
+      'someone+fixture-user@company.com',
+    ],
+    [
+      'email built from a colliding login',
+      { login: 'example', email: 'example@mail.example' },
+      'example@mail.example',
+    ],
+  ])('%s is replaced whole', (_label, identity, email) => {
+    const out = replaceIdentity(`"userEmail":"${email}"`, identity);
+    expect(out).toBe(`"userEmail":"${PLACEHOLDER_EMAIL}"`);
+    expect(identityLeftovers(out, identity)).toEqual([]);
+  });
+
+  it('a login that extends the login placeholder is replaced whole', () => {
+    const identity = { login: 'fixture-user-dev' };
+    expect(replaceIdentity('"login":"fixture-user-dev"', identity)).toBe(
+      `"login":"${PLACEHOLDER_LOGIN}"`,
+    );
+  });
+
+  it('an id that extends the id placeholder is replaced whole', () => {
+    const identity = { login: 'someone', id: 10000019 };
+    expect(replaceIdentity('"id":10000019', identity)).toBe(`"id":${PLACEHOLDER_ID}`);
+  });
+
+  it('existing placeholders survive every colliding login', () => {
+    for (const login of ['example', 'invalid', 'fixture', 'user', 'fixture-user']) {
+      const text = `"a":"${PLACEHOLDER_EMAIL}","b":"${PLACEHOLDER_NODE_ID}","c":${PLACEHOLDER_ID}`;
+      expect(replaceIdentity(text, { login }), login).toBe(text);
+    }
+  });
+});
+
+describe('identityLeftovers ignores placeholders without hiding real values (#12)', () => {
+  it('does not flag a login that occurs only inside PLACEHOLDER_EMAIL', () => {
+    expect(identityLeftovers(`"e":"${PLACEHOLDER_EMAIL}"`, { login: 'example' })).toEqual([]);
+  });
+
+  it('still flags an unreplaced login that extends the login placeholder', () => {
+    expect(identityLeftovers('"login":"fixture-user-dev"', { login: 'fixture-user-dev' })).toEqual([
+      'fixture-user-dev',
+    ]);
+  });
+});

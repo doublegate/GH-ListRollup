@@ -70,10 +70,11 @@ export function detectPage(url: URL): PageInfo {
 }
 
 /**
- * Identifies a page for navigation de-duplication: origin, path and query, without the fragment.
- * An in-page anchor (`#readme`) changes `location.href` and fires `popstate`, but is not a new page
- * (bootstrap review, #8).
+ * Identifies a listing for navigation de-duplication: origin and path only. An in-page anchor
+ * (`#readme`, bootstrap review #8) and a README tab switch (`?tab=license-ov-file`, #11) change
+ * `location.href` but show the same listing. Matches the pathname-only reset rule in
+ * `docs/dom-integration.md` §4.
  */
 export function pageKey(url: URL): string {
-  return `${url.origin}${url.pathname}${url.search}`;
+  return `${url.origin}${url.pathname}`;
 }
