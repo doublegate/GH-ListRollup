@@ -4,7 +4,8 @@
 **Status:** Concept, approved for research and bootstrap
 
 **Name:** the working title was GH-Nested-Rollup. The public repository and the product are named
-**GH-ListRollup** (`doublegate/GH-ListRollup`), and the local working folder keeps its original name.
+**GH-ListRollup** (`doublegate/GH-ListRollup`). The local folder was renamed to match on 2026-11-15:
+`~/Code/OSS_Public-Projects/GH-ListRollup`.
 
 ## Original request (verbatim)
 
