@@ -28,6 +28,8 @@ All notable user-visible changes to this project are documented here. The format
     pages and tree JSON, detect drift, and compare selector matches.
   - Four HTML fixtures (root and folder layouts, signed in and out) and eight tree-JSON fixtures.
   - A Vitest fixture loader (`tests/helpers/fixture.ts`).
+  - Fixtures are minimized to factual structure: no site chrome, READMEs or other rendered
+    markdown, or icon artwork.
 
 ### Security
 

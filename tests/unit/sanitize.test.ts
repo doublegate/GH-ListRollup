@@ -161,6 +161,68 @@ describe('redactSecrets', () => {
   });
 });
 
+describe('minimization (third-party and GitHub-authored content)', () => {
+  const pageHtml = page(
+    '<meta name="route-controller" content="files">',
+    '<header class="site">Global nav, Product, Solutions</header>' +
+      '<react-app app-name="code-view"><div id="StickyHeader"><header data-x="keep">Breadcrumb</header></div>' +
+      '<div data-testid="directory-content"><table><tbody><tr class="react-directory-row"><td>' +
+      '<svg class="octicon octicon-file-directory-fill" viewBox="0 0 16 16"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5Z"></path></svg>' +
+      '<a aria-label="src, (Directory)" href="/o/r/tree/main/src">src</a></td></tr></tbody></table></div>' +
+      '<article class="markdown-body"><h1>Third-party README</h1></article></react-app>' +
+      '<footer>Terms Privacy</footer>' +
+      embedded({
+        payload: {
+          overview: { overviewFiles: [{ richText: '<h1>README</h1>', displayName: 'README.md' }] },
+        },
+      }),
+  );
+
+  it('removes the site header and footer but keeps headers inside the code view', async () => {
+    const out = await sanitizeGitHubHtml(pageHtml, opts);
+    expect(out).not.toContain('Global nav');
+    expect(out).not.toContain('Terms Privacy');
+    expect(out).toContain('Breadcrumb');
+  });
+
+  it('removes rendered markdown (READMEs) in HTML and in the embedded JSON', async () => {
+    const out = await sanitizeGitHubHtml(pageHtml, opts);
+    expect(out).not.toContain('Third-party README');
+    expect(out).not.toContain('<h1>README</h1>');
+    expect(out).toContain('"displayName":"README.md"');
+  });
+
+  it('removes the signed-in command palette', async () => {
+    const out = await sanitizeGitHubHtml(
+      page(
+        '',
+        '<dialog-helper><dialog id="command-palette-pjax-container"><command-palette>Jump to</command-palette></dialog></dialog-helper><div data-testid="directory-content"></div>',
+      ),
+      opts,
+    );
+    expect(out).not.toMatch(/command-palette|dialog-helper|Jump to/);
+    expect(out).toContain('directory-content');
+  });
+
+  it('keeps icon elements and classes but drops path drawings', async () => {
+    const out = await sanitizeGitHubHtml(pageHtml, opts);
+    expect(out).toContain('octicon-file-directory-fill');
+    expect(out).not.toContain('M1.75 1A1.75');
+    expect(out).toContain('aria-label="src, (Directory)"');
+  });
+
+  it('is idempotent: sanitizing a sanitized page changes nothing', async () => {
+    const once = await sanitizeGitHubHtml(pageHtml, opts);
+    expect(await sanitizeGitHubHtml(once, opts)).toBe(once);
+  });
+
+  it('blanks richText in tree JSON', () => {
+    expect(sanitizeTreeJson('{"overviewFiles":[{"richText":"<p>x</p>","tabName":"README"}]}')).toBe(
+      '{\n  "overviewFiles": [\n    {\n      "richText": "",\n      "tabName": "README"\n    }\n  ]\n}\n',
+    );
+  });
+});
+
 describe('volatile values', () => {
   it('renumbers UUIDs in first-appearance order, keeping references consistent', () => {
     const a =

@@ -50,6 +50,20 @@ const SECRET_KEY = /token|csrf|hmac|nonce|secret|password/i;
 const AVATAR_KEY = /avatar/i;
 
 /**
+ * JSON keys holding rendered markdown, such as a repository's README as HTML. This is third-party
+ * prose the tests never need; blanking it keeps committed fixtures to structure and file names
+ * (fixture minimization, 2026-11-16).
+ */
+const RENDERED_MARKDOWN_KEY = /^richText$/;
+
+/**
+ * Elements removed to keep HTML fixtures minimal: GitHub's site chrome and rendered markdown. Only
+ * `header` elements outside the code-view app are removed; the folder page's breadcrumb lives in
+ * one inside it.
+ */
+const MINIMIZE_SELECTORS = ['footer', 'article.markdown-body'];
+
+/**
  * JSON keys whose numeric values change between requests without any content change: server
  * timings and live social counters. Zeroed so re-captures stay byte-identical.
  */
@@ -145,7 +159,7 @@ export function redactSecrets(value: unknown): unknown {
   if (value !== null && typeof value === 'object') {
     const out: Record<string, unknown> = {};
     for (const [key, child] of Object.entries(value)) {
-      if (AVATAR_KEY.test(key) && typeof child === 'string') {
+      if ((AVATAR_KEY.test(key) || RENDERED_MARKDOWN_KEY.test(key)) && typeof child === 'string') {
         out[key] = '';
       } else if (EMAIL_KEY.test(key) && typeof child === 'string') {
         out[key] = PLACEHOLDER_EMAIL;
@@ -207,7 +221,9 @@ export async function sanitizeGitHubHtml(
   const window = new Window({ url: options.sourceUrl });
   try {
     // DOMParser never executes scripts; verified against happy-dom 21 (see T-GNR-011 notes).
-    const doc = new window.DOMParser().parseFromString(html, 'text/html');
+    // trimEnd: the HTML parser moves text after </html> into <body>, so a trailing newline would
+    // grow by one on every pass and break idempotence (re-processing committed fixtures).
+    const doc = new window.DOMParser().parseFromString(html.trimEnd(), 'text/html');
 
     for (const script of doc.querySelectorAll('script')) {
       if (!script.matches(KEPT_SCRIPT_SELECTOR)) {
@@ -219,6 +235,19 @@ export async function sanitizeGitHubHtml(
     }
 
     for (const el of doc.querySelectorAll('link, style, noscript')) el.remove();
+
+    // Minimization: GitHub's site header and footer, and rendered markdown (READMEs), are not
+    // needed by any test and are GitHub-authored or third-party content.
+    for (const el of doc.querySelectorAll('header')) {
+      if (!el.closest('react-app')) el.remove();
+    }
+    for (const el of doc.querySelectorAll(MINIMIZE_SELECTORS.join(', '))) el.remove();
+    // The command palette is server-rendered only for signed-in users (about 37 KB of GitHub UI).
+    for (const el of doc.querySelectorAll('command-palette')) {
+      (el.closest('dialog-helper') ?? el).remove();
+    }
+    // Icon elements and classes stay (tests and selectors use them); the path drawings go.
+    for (const path of doc.querySelectorAll('svg path')) path.removeAttribute('d');
 
     for (const meta of doc.querySelectorAll('meta')) {
       const name = meta.getAttribute('name');

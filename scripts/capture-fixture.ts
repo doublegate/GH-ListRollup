@@ -16,6 +16,7 @@
  *   pnpm fixtures:capture --kind json        # one kind only
  *   pnpm fixtures:capture --url <github url> --name <name> [--json]   # ad hoc
  *   pnpm fixtures:capture --check            # fetch and compare, write nothing; exit 1 on drift
+ *   pnpm fixtures:capture --reprocess        # re-sanitize committed signed-in fixtures in place
  */
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -211,8 +212,30 @@ async function main(): Promise<void> {
       'user-id': { type: 'string' },
       'node-id': { type: 'string' },
       email: { type: 'string' },
+      reprocess: { type: 'boolean', default: false },
     },
   });
+
+  if (values.reprocess) {
+    // Re-run the current sanitizer over committed signed-in fixtures, which cannot be re-fetched
+    // (the raw browser captures are deleted after review). Sanitizing is idempotent, so an
+    // unchanged sanitizer leaves the files byte-identical.
+    let specs = (await loadManifest()).filter((s) => s.kind === 'html' && s.loggedIn);
+    if (positionals.length > 0) specs = specs.filter((s) => positionals.includes(s.name));
+    if (specs.length === 0) fail('no logged-in html fixtures matched');
+    let drift = 0;
+    for (const spec of specs) {
+      const current = await readFile(join(FIXTURES, 'html', `${spec.name}.html`), 'utf8');
+      const content = await sanitizeGitHubHtml(current, { sourceUrl: spec.url, name: spec.name });
+      const result = await store(spec, content, 200, values.check);
+      if (result === 'drift') drift++;
+      console.info(
+        `${result.padEnd(9)} ${relative(ROOT, join(FIXTURES, 'html', `${spec.name}.html`))}`,
+      );
+    }
+    if (values.check && drift > 0) process.exit(1);
+    return;
+  }
 
   if (values['from-file'] !== undefined) {
     const name =

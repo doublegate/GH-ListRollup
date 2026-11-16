@@ -92,6 +92,14 @@ given `location`, and resets it between tests.
   `symlink_directory` content type (`ref-docs/research-update-2026-11-16-content-types.md`).
 - **T-GNR-014.** `tests/helpers/fixture.ts`. happy-dom's `document.replaceChild` rejects swapping
   the root element, so the loader removes the old root and then appends the new one.
+- **Licensing review (before merge).** Fixtures are minimized so that only factual structure is
+  committed:
+  - **Removed:** the site header and footer, the command palette, READMEs and other rendered
+    markdown, and Octicon path data.
+  - **Result:** 1.6 MB down to 1.1 MB. Signed-in and signed-out pages are now within about 10 KB of
+    each other, and no selector differs.
+  - **Reprocessing:** sanitizing is idempotent, and `--reprocess` refreshes the signed-in fixtures
+    from their committed copies.
 
 ## Sprint review checklist
 

@@ -3,8 +3,8 @@
 - **Source:** <https://github.com/microsoft/vscode/tree/main/src/vs>
 - **Captured:** 2026-11-16 (logged out, by `scripts/capture-fixture.ts`)
 - **HTTP status:** 200
-- **Content:** ref `main` at commit `8bb5b3475bf7aad192f93100ceed84bfd4ffdd3c`
-- **SHA-256 of `nested.json`:** `1982709381b2b69ad8edd1f8dd9526265560a151bd89c891be5b4f4e46466c4c`
+- **Content:** ref `main` at commit `6659689e6b03ec062f5b7bcea9850b4c59045807`
+- **SHA-256 of `nested.json`:** `dae436f5d07fce13207a8c3c2991b5aad0d0a4416a230cf1e75e308a259d8ac9`
 
 Nested folder: directories followed by files.
 

@@ -60,6 +60,9 @@ them:
    - Grep for the login, the email and the names of your own repositories.
 4. Delete the saved raw file. It contains live session tokens.
 
+When the sanitizer changes, refresh the signed-in fixtures from their committed copies with
+`pnpm fixtures:capture --reprocess`. No browser is needed.
+
 Sanitizing is done by `scripts/lib/sanitize.ts`, with tests in `tests/unit/sanitize.test.ts`:
 
 - Scripts are removed, except the inert code-view JSON.
@@ -74,6 +77,16 @@ Sanitizing is done by `scripts/lib/sanitize.ts`, with tests in `tests/unit/sanit
 - Volatile values are normalized: random UUID element ids, server timings and star, fork and
   watcher counts.
 - For signed-in captures, the account's login, id, node id and email are replaced throughout.
+- **Minimization.** Fixtures keep only what tests use: the page structure, the code-view app, the
+  listing and the embedded tree data. Removed:
+  - GitHub's site header and footer, and the signed-in command palette
+  - rendered markdown (README articles, and `richText` in JSON), which is third-party prose
+  - Octicon path drawings (the `<svg>` elements and classes stay)
+
+  This keeps committed fixtures to factual structure, such as element names, test ids and file
+  names, in line with the rule that fixtures be freely licensable. Sanitizing is idempotent, so
+  `pnpm fixtures:capture --reprocess` re-applies the current rules to the committed signed-in
+  fixtures without a new browser capture.
 
 `tests/unit/fixtures.test.ts` checks every committed fixture for leftover tokens, nonces and
 avatar URLs.

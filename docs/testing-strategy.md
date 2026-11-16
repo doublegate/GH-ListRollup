@@ -67,6 +67,9 @@ fixture.
     authenticity tokens.
   - **Redacted:** tokens inside the JSON.
   - **Blanked:** avatar URLs, in HTML and JSON alike.
+  - **Minimized:** site header and footer, command palette, rendered markdown and icon path data
+    are removed, leaving only factual structure. Fixtures must stay freely licensable (module 20).
+    `--reprocess` re-applies these rules to the committed signed-in fixtures.
 - **Provenance.** Each fixture gets a `.md` sidecar recording the source URL, date, status, ref,
   commit and SHA-256. The fixture and its sidecar are rewritten only when the content changes, so
   re-capturing an unchanged page is byte-identical.
