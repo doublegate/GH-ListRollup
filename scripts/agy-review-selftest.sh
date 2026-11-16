@@ -62,7 +62,7 @@ log() { :; }
 # absence-reads-as-agreement failure the markers were adopted to prevent.
 for guard in "service-error guard" "oauth guard" "ours-comment filter" "duration parser" \
              "numeric env validation" "diff-size scaling" "truncation helpers" \
-             "diff-limit classifier" "script capture filter"; do
+             "diff-limit classifier" "script capture filter" "error cap validation"; do
   blk="$(extract_block "$guard")"
   [ -n "$blk" ] || { echo "FAIL: SELFTEST-EXTRACT block '$guard' is missing or empty" >&2; exit 1; }
   printf '%s\n' "$blk" | bash -n - 2>/dev/null \
@@ -481,12 +481,16 @@ check "normalize_numeric_env turns a leading-zero 080000 into 80000" "80000" "$_
 # Whitespace-tolerant (agy review, GH-ListRollup PR #6): not coupled to the exact indentation.
 check "the archive <details> wrapper is guarded on a non-empty archive" "2" \
   "$(grep -cE '^[[:space:]]*if \[ -s "\$archived_file" \]; then[[:space:]]*$' "$SCRIPT_DIR/agy-review.sh")"
-# A non-numeric AGY_ERROR_MAX_BYTES silently disabled the backend-error guard (same PR).
-check "AGY_ERROR_MAX_BYTES is normalized" "1" \
-  "$(grep -c '^normalize_numeric_env AGY_ERROR_MAX_BYTES ' "$SCRIPT_DIR/agy-review.sh")"
-# ...and 0 is refused too, which would equally disable the guard (agy review, GH-ListRollup PR #7).
-check "AGY_ERROR_MAX_BYTES=0 falls back to the default" "1" \
-  "$(grep -c '^\[ "\$AGY_ERROR_MAX_BYTES" -gt 0 \] ||' "$SCRIPT_DIR/agy-review.sh")"
+# AGY_ERROR_MAX_BYTES: run the real validation with bad values, not a grep for its shape
+# (agy review, GH-ListRollup PR #7). A non-numeric value or 0 would disable the backend-error
+# guard; both must fall back to the default, and a leading-zero value must parse as decimal.
+for _cap in "0:2000" "abc:2000" "5MB:2000" ":2000" "080:80" "4096:4096"; do
+  AGY_ERROR_MAX_BYTES="${_cap%%:*}"; agy_validate_error_cap
+  check "AGY_ERROR_MAX_BYTES='${_cap%%:*}' validates to ${_cap#*:}" "${_cap#*:}" "$AGY_ERROR_MAX_BYTES"
+done
+check "the script calls the error cap validation" "1" \
+  "$(grep -c '^agy_validate_error_cap$' "$SCRIPT_DIR/agy-review.sh")"
+AGY_ERROR_MAX_BYTES=2000
 
 check "a lowercase error (agy under unbuffer) is caught" "MATCH" \
   "$(se 'error: Eligibility check failed: PERMISSION_DENIED (code 403): Request had insufficient authentication scopes.. Please log out (/logout) and log back in (/login).')"
