@@ -7,7 +7,7 @@ ticket 04). They are stable: cite them in branches, commits and PRs.
 ## Status
 
 - **Current phase:** Phase 0, Foundation.
-- **Current sprint:** Sprint 1, Skeleton and CI. Its code tickets are done; CI awaits a GitHub remote.
+- **Current sprint:** Sprint 1, Skeleton and CI. Its code tickets and CI are done; the manual browser check (T-GNR-004) remains.
 - **Last updated:** 2026-11-15.
 
 ## Phases

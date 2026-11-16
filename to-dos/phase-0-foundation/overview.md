@@ -10,7 +10,7 @@ GitHub fixtures exist for later phases.
 ## Exit criteria
 
 - [x] `pnpm check` passes locally (2026-11-15).
-- [ ] CI workflow green on GitHub.
+- [x] CI workflow green on GitHub (2026-11-15).
 - [ ] Skeleton verified manually in Chrome and Firefox (log lines on root, folder and after soft
       navigation).
 - [ ] Fixtures for both layouts committed (Sprint 2).

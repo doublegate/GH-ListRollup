@@ -81,7 +81,7 @@ Ubuntu with Node 26. Actions are pinned, and the job uploads both builds as arti
 **Acceptance criteria:**
 
 - [x] Workflow file present and its YAML is valid.
-- [ ] Green on the first push to the GitHub remote (needs a repository; not created yet).
+- [x] Green on the first push to `doublegate/GH-ListRollup` (run 43806484751, 2026-11-15).
 
 **Dependencies:** T-GNR-002 | **Reference:** `docs/build-and-tooling.md` §4 | **Complexity:** S
 

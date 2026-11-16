@@ -11,14 +11,14 @@ is implemented yet. The next step is the manual load check of the skeleton in bo
 
 ## Phases
 
-| Phase                     | Status                                                                         |
-| ------------------------- | ------------------------------------------------------------------------------ |
-| 0 Foundation              | In progress: Sprint 1 code done; manual browser check and CI on GitHub pending |
-| 1 Listing collapse        | Planned                                                                        |
-| 2 Inline tree             | Planned                                                                        |
-| 3 Settings and resilience | Planned (stub-level tickets)                                                   |
-| 4 Testing and hardening   | Planned (stub-level tickets)                                                   |
-| 5 Release                 | Planned (stub-level tickets)                                                   |
+| Phase                     | Status                                                               |
+| ------------------------- | -------------------------------------------------------------------- |
+| 0 Foundation              | In progress: Sprint 1 code and CI done; manual browser check pending |
+| 1 Listing collapse        | Planned                                                              |
+| 2 Inline tree             | Planned                                                              |
+| 3 Settings and resilience | Planned (stub-level tickets)                                         |
+| 4 Testing and hardening   | Planned (stub-level tickets)                                         |
+| 5 Release                 | Planned (stub-level tickets)                                         |
 
 ## Features
 
@@ -32,17 +32,18 @@ is implemented yet. The next step is the manual load check of the skeleton in bo
 
 ## Metrics
 
-| Metric              | Value                           | Source                                    |
-| ------------------- | ------------------------------- | ----------------------------------------- |
-| Unit tests          | 15 passing                      | `pnpm test`, 2026-11-15                   |
-| Lint / typecheck    | clean, zero warnings            | `pnpm lint`, `pnpm typecheck`, 2026-11-15 |
-| `web-ext lint`      | 0 errors, 0 warnings, 0 notices | `pnpm lint:firefox`, 2026-11-15           |
-| Content script size | 4.64 kB                         | `pnpm build` output, 2026-11-15           |
-| CI                  | Not yet run (no GitHub remote)  | --                                        |
+| Metric              | Value                           | Source                                     |
+| ------------------- | ------------------------------- | ------------------------------------------ |
+| Unit tests          | 15 passing                      | `pnpm test`, 2026-11-15                    |
+| Lint / typecheck    | clean, zero warnings            | `pnpm lint`, `pnpm typecheck`, 2026-11-15  |
+| `web-ext lint`      | 0 errors, 0 warnings, 0 notices | `pnpm lint:firefox`, 2026-11-15            |
+| Content script size | 4.64 kB                         | `pnpm build` output, 2026-11-15            |
+| CI                  | Green on first push             | GitHub Actions run 43806484751, 2026-11-15 |
 
 ## Known issues
 
-- No GitHub repository or remote yet, so CI has not run.
+- The repository social preview image is not set yet (GitHub has no API for it). Upload
+  `assets/banner.png` under Settings > General > Social preview.
 - Every github.com observation so far was made logged out. Logged-in markup and private-repo data
   access remain unverified (T-GNR-012, T-GNR-201).
 
@@ -50,5 +51,5 @@ is implemented yet. The next step is the manual load check of the skeleton in bo
 
 1. T-GNR-004: load both builds and confirm the log lines on the root page, a folder page, and after a
    soft navigation.
-2. Create the GitHub repository, push, and confirm CI is green (T-GNR-005).
+2. Review the Dependabot pull requests opened on first push.
 3. Phase 0 Sprint 2: fixture capture tooling.
