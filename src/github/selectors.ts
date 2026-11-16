@@ -111,6 +111,11 @@ export const SELECTORS = {
     primary: '.border',
     fallbacks: [],
   },
+  /** A link: used with `closest()` to find the link a click landed in (navigation pre-hide). */
+  anchor: {
+    primary: 'a[href]',
+    fallbacks: [],
+  },
   /** The extension's own Level 1 toggle button (`src/ui/toggle.ts`). */
   gnrToggle: {
     primary: '[data-gnr="toggle"]',

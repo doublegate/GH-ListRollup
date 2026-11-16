@@ -12,8 +12,12 @@ html[data-gnr-pending] table[aria-labelledby='folders-and-files'] {
   display: none !important;
 }
 
-/* Level 1 collapsed: the class is set on the listing container only after the toggle exists. */
-.gnr-collapsed {
+/*
+ * Level 1 collapsed. The marker is on <html>, set only after the toggle exists: React owns the
+ * listing container and replaces it during hydration, so a class there was dropped for a frame.
+ */
+html[data-gnr-collapsed] [data-testid='directory-content'],
+html[data-gnr-collapsed] table[aria-labelledby='folders-and-files'] {
   display: none !important;
 }
 

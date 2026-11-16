@@ -168,7 +168,7 @@ scripts run only on full loads.
    disconnected after the first match), the script runs `apply()`. It also runs once at
    `DOMContentLoaded`. The listing is server-rendered, so a page with no listing by then takes the
    non-listing exit. `apply()` waits for the settings read, inserts the toggle, applies the resolved
-   state (the collapsed class for `collapsed`, nothing for `expanded`), then removes
+   state (the `html[data-gnr-collapsed]` marker for `collapsed`, nothing for `expanded`), then removes
    `data-gnr-pending`.
 
    Every exit path of `apply()` that does not install the toggle removes `data-gnr-pending`
@@ -187,13 +187,38 @@ scripts run only on full loads.
    - `soft-nav:react-done`
    - `turbo:render`
    - `turbo:load`
-   - the Navigation API `navigatesuccess` event, or `popstate` where that API is absent
+   - the Navigation API `navigatesuccess` event, or `popstate` where that API is absent. **Firefox
+     finding (maintainer, 2026-11-16, T-GNR-106):** `navigatesuccess` does **not** reach the content
+     script in Firefox. A folder click there delivered `turbo:load`, `wxt:locationchange` (WXT
+     namespaces it as `<extension id>:content:wxt:locationchange`) and `soft-nav:end`. So the
+     Navigation API is a Chromium-only supplement, and the GitHub and WXT events carry Firefox.
    - WXT's `wxt:locationchange`
 
    Calls are debounced to one per animation frame. The script reads only event names, never event
    payloads, because payloads from the page's world are not reliably readable from the isolated world.
-   Soft navigation never sets `data-gnr-pending`. If it is still set when a soft navigation reaches a
-   non-listing page, that `apply()` takes the non-listing exit and removes it.
+   **In-page navigation pre-hide.** Without it, a new listing rendered visible and collapsed one or two
+   frames later (seen in Firefox by the maintainer, and measured with `tests/e2e/manual/flash-probe.mjs`).
+   So `data-gnr-pending` is also set, synchronously, when an in-page navigation toward a
+   **different listing** starts:
+   - on a plain left click on a same-site link to a listing-shaped URL, from a capture-phase listener
+     that runs before GitHub's router (modified clicks, `target` other than `_self`, `download` links
+     and the listing already shown are ignored);
+   - on `popstate` (back and forward), where `location` already holds the destination.
+
+   It ends like the cold-load pre-hide: the apply that installs the toggle clears it, and so do the
+   no-header and non-listing exits. The no-listing exit **keeps** it mid-navigation: the old listing
+   is gone and the new one not yet rendered, so nothing visible is hidden. It observes the code-view
+   app for the arrival, because clearing pending there flashed the new listing for a frame. A
+   per-navigation watchdog (4 seconds; only the latest navigation's acts) always ends it. If no
+   toggle is installed for the listing actually shown, the watchdog also removes the collapsed
+   marker. An aborted navigation leaves the old URL, and its toggle keeps working.
+
+   **The collapsed marker is on `<html>` (`data-gnr-collapsed`), not on the listing container.**
+   Measured live: React replaced the container about 400 ms after the first apply, during hydration,
+   with `class=""`, which dropped a class there and flashed the listing for one frame. A marker on
+   `<html>` hides any container until the next apply puts the toggle back. Every path that ends with
+   no toggle removes the marker: the no-header and non-listing exits, budget exhaustion, the
+   navigation watchdog and teardown.
 
    **The first signals arrive before the new listing renders** (observed live,
    `ref-docs/research-update-2026-11-16-phase1-fixtures.md` §6). So after a navigation, `apply()`
@@ -228,14 +253,14 @@ scripts run only on full loads.
 
 6. **Teardown.** WXT's `ctx.onInvalidated` disconnects observers and removes listeners when the
    extension updates or reloads. It also **restores the page**: the extension's toggles are removed,
-   the collapsed class and `data-gnr-pending` are cleared. A dead content script would otherwise
+   the collapsed marker and `data-gnr-pending` are cleared. A dead content script would otherwise
    leave the files hidden behind a button that no longer responds (verified live: after an extension
    reload the listing is visible and usable).
 
 The controller also forgets the listing whenever an `apply()` lands on a non-listing page. Returning
 to the same listing later (Issues, then Back) is a navigation, not a re-render, so it starts
 collapsed again. If the header line disappears after a successful collapse, the next `apply()` takes
-the no-header exit. That exit removes the collapsed class, so files are never hidden without a toggle.
+the no-header exit. That exit removes the collapsed marker, so files are never hidden without a toggle.
 It also marks the listing as shown, so a header that returns does not cause a late collapse.
 
 ### Hydration
@@ -259,7 +284,8 @@ state in memory, keyed by path, and re-inserts expanded subtrees on the next app
   so page CSP is not involved. No inline `style` attributes; behaviour is driven by classes. GitHub's
   CSP allows inline styles, but Firefox still applies page CSP to some content-script DOM (Mozilla bug
   1267027). See `ref-docs/github-code-view-dom.md` §6.
-- All selectors are prefixed with `[data-gnr]`, the `gnr-` class prefix, or `html[data-gnr-pending]`.
+- All selectors are prefixed with `[data-gnr]`, the `gnr-` class prefix, `html[data-gnr-pending]` or
+  `html[data-gnr-collapsed]`.
 - Colors come only from Primer CSS variables (`docs/ui-behavior.md` §4).
 
 ## 6. Breakage detection

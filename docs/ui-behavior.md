@@ -31,8 +31,11 @@ reads ref and path from the page's own data (see `docs/dom-integration.md` §3).
 
 - Every listing page load and every soft navigation to a listing page starts `collapsed` unless the
   per-repo memory setting is on and holds a remembered state (`docs/settings.md`).
-- Collapsing hides rows with a class on the listing container (`display: none` via an injected
-  stylesheet). It never removes GitHub's nodes, so GitHub's React tree stays consistent.
+- Collapsing hides the listing container through a marker on `<html>` (`html[data-gnr-collapsed]`,
+  `display: none` via the injected stylesheet). It never removes GitHub's nodes, so GitHub's React
+  tree stays consistent. The marker is not a class on the container: React owns that element's
+  `class` and replaces the element during hydration, which made a class there flash the listing for a
+  frame (`docs/dom-integration.md` §4).
 - Everything outside the listing (README, About sidebar, releases) is untouched. With the listing
   collapsed, the README moves up the page; that is the space saving the feature exists for.
 

@@ -50,7 +50,8 @@ the answer in `docs/dom-integration.md`.
       bar, not `tbody`, so two tests cover it: replacing `tbody` keeps one toggle and the state, and
       React replacing the commit bar's inner row gets the toggle back on the next frame.
 - [x] Test: `apply()` called 10 times produces one toggle.
-- [ ] Firefox Navigation API finding recorded.
+- [x] Firefox Navigation API finding recorded: `navigatesuccess` does not reach Firefox content
+      scripts (`docs/dom-integration.md` §4, step 4).
 - [x] Test: after a soft navigation, `apply()` acts only once the listing in the DOM belongs to the
       new URL (`readListingPage` resolves a ref that passes the cross-check, or the layout and path
       match the URL). Observed live 2026-11-16: GitHub fires `soft-nav:*`/`turbo:*` **before** React
@@ -69,9 +70,10 @@ chevron rotation (with `prefers-reduced-motion`), and uses only Primer variables
 
 **Acceptance criteria:**
 
-- [x] Every selector is scoped to `[data-gnr]`, `.gnr-*` or `html[data-gnr-pending]` (checked by a
-      test that parses the CSS).
-- [ ] Visually checked in light, dark and high-contrast themes.
+- [x] Every selector is scoped to `[data-gnr]`, `.gnr-*`, `html[data-gnr-pending]` or
+      `html[data-gnr-collapsed]` (checked by a test that parses the CSS).
+- [x] Visually checked in light, dark and high-contrast themes: light and dark by screenshots, and
+      high contrast by the maintainer in Firefox (chevron visible, clear focus outline).
 
 **Dependencies:** T-GNR-105 | **Reference:** `docs/ui-behavior.md` §4, `docs/dom-integration.md` §5 | **Complexity:** S
 
@@ -136,7 +138,26 @@ results in the sprint notes.
   - A click shows the listing, and a second click hides it.
   - 20 consecutive soft navigations (folder and Back) each leave exactly one collapsed toggle.
   - Light and dark screenshots were checked visually.
-- **Still open, needs the maintainer:**
-  - the Firefox live check;
-  - the high-contrast theme;
-  - the Firefox Navigation API finding.
+- **Maintainer live check, Firefox (2026-11-16):**
+  - The cold load is collapsed, with the chevron at the left.
+  - The toggle shows and hides the listing.
+  - Repeated folder and Back navigations always showed exactly one chevron, never a hidden list.
+  - High contrast: the chevron is visible, with a clear focus outline.
+  - Firefox delivers `turbo:load`, `wxt:locationchange` and `soft-nav:end`, but **no**
+    `navigatesuccess`.
+- **Two flashes the maintainer reported, now fixed:**
+  - **Cold load, one frame.** React replaces the listing container during hydration with
+    `class=""`. A probe measured this 400 ms after the first apply. The collapsed marker moved to
+    `html[data-gnr-collapsed]`.
+  - **Back/forward and folder clicks, one or two frames.** Soft navigation had no pre-hide. It is
+    now set synchronously when a navigation toward a different listing starts, with a click
+    capture listener and `popstate`. The no-listing exit keeps it until the new listing arrives,
+    and a per-navigation watchdog bounds it.
+  - **Measured by `tests/e2e/manual/flash-probe.mjs`**, which samples every animation frame:
+    **0 flash frames** in two runs of a cold load plus ten expanded navigations each (Chromium).
+    Before the fix it found one navigation flash, and the cold-load flash was confirmed by the class
+    probe.
+- **Still open:**
+  - The maintainer's Firefox re-check of the flash fixes.
+  - 20 consecutive soft navigations in Firefox for the Phase 1 exit criterion. Chromium did 20
+    (automated); Firefox has had "a few" so far.

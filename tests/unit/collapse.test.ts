@@ -6,7 +6,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ContentScriptContext } from 'wxt/utils/content-script-context';
 import {
-  COLLAPSED_CLASS,
+  COLLAPSED_ATTR,
   CollapseController,
   RERENDER_BUDGET,
   WATCHDOG_MS,
@@ -43,7 +43,8 @@ const listing = (doc: Document) => {
   if (!l) throw new Error('no listing');
   return l;
 };
-const collapsed = (doc: Document) => listing(doc).classList.contains(COLLAPSED_CLASS);
+// The collapsed marker lives on <html>: React owns the listing container's class (see #16).
+const collapsed = (doc: Document) => doc.documentElement.hasAttribute(COLLAPSED_ATTR);
 
 /** Loads a fixture and applies a fresh controller to it. */
 const applied = (name: string, url?: string) => {
@@ -102,8 +103,8 @@ describe('toggle and controller (T-GNR-105)', () => {
         }
         if (
           r.type === 'attributes' &&
-          r.attributeName === 'class' &&
-          (r.target as Element).classList.contains(COLLAPSED_CLASS)
+          r.attributeName === COLLAPSED_ATTR &&
+          (r.target as Element).hasAttribute(COLLAPSED_ATTR)
         ) {
           records.push('class');
         }
@@ -194,7 +195,7 @@ describe('lifecycle (T-GNR-106)', () => {
     const doc = loadHtmlFixture('root');
     setPending(doc);
     const controller = new CollapseController(ctx, doc);
-    const spy = vi.spyOn(listing(doc).classList, 'toggle').mockImplementation(() => {
+    const spy = vi.spyOn(doc.documentElement, 'toggleAttribute').mockImplementation(() => {
       throw new Error('boom');
     });
     expect(controller.apply(new URL(fixtureUrl('root')))).toBe('error');
@@ -271,8 +272,7 @@ describe('lifecycle (T-GNR-106)', () => {
     } else {
       // Never hidden without a toggle.
       expect(toggles(doc).length).toBe(0);
-      const l = doc.querySelector('table[aria-labelledby="folders-and-files"]');
-      expect(l?.closest(`.${COLLAPSED_CLASS}`)).toBeNull();
+      expect(collapsed(doc)).toBe(false);
     }
   });
 });
@@ -453,5 +453,147 @@ describe('review findings on #16', () => {
     expect(controller.apply(new URL(fixtureUrl('root')))).toBe('budget');
     expect(collapsed(doc)).toBe(false);
     expect(toggles(doc).length).toBe(0);
+  });
+});
+
+describe('no flash (maintainer live check on #16)', () => {
+  it('the collapse survives React replacing the listing container (cold-load flash)', () => {
+    // Observed live: React re-inserts the container ~400 ms after the first apply, with class="".
+    const { doc } = applied('root');
+    const old = listing(doc);
+    const fresh = old.cloneNode(true) as Element;
+    fresh.removeAttribute('class');
+    old.replaceWith(fresh);
+    // Nothing has re-applied yet, but the marker on <html> still hides the new container.
+    expect(collapsed(doc)).toBe(true);
+  });
+
+  it('the stylesheet hides the listing under the <html> marker', async () => {
+    const { readFileSync } = await import('node:fs');
+    const css = readFileSync('src/entrypoints/content/style.css', 'utf8');
+    expect(css).toMatch(/html\[data-gnr-collapsed\] \[data-testid='directory-content'\]/);
+  });
+
+  describe('in-page navigation pre-hide', () => {
+    const start = (name = 'root') => {
+      const doc = loadHtmlFixture(name);
+      const life = startLifecycle(ctx, doc);
+      life.apply();
+      expect(isPending(doc)).toBe(false);
+      return { doc, life };
+    };
+    const clickLink = (
+      doc: Document,
+      href: string,
+      init: MouseEventInit = {},
+      attrs: Record<string, string> = {},
+    ) => {
+      const a = doc.createElement('a');
+      a.setAttribute('href', href);
+      for (const [k, v] of Object.entries(attrs)) a.setAttribute(k, v);
+      doc.body.appendChild(a);
+      a.addEventListener('click', (e) => e.preventDefault()); // no real navigation in the test
+      a.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true, button: 0, ...init }),
+      );
+    };
+
+    it('a click on a link to another listing sets pending synchronously', () => {
+      const { doc } = start();
+      clickLink(doc, '/git/git/tree/master/contrib');
+      expect(isPending(doc)).toBe(true);
+    });
+
+    it('ignores modified, new-tab, off-site, non-listing and same-listing clicks', () => {
+      const { doc } = start();
+      clickLink(doc, '/git/git/tree/master/contrib', { ctrlKey: true });
+      clickLink(doc, '/git/git/tree/master/contrib', { button: 1 });
+      clickLink(doc, '/git/git/tree/master/contrib', {}, { target: '_blank' });
+      clickLink(doc, 'https://example.com/git/git/tree/master/contrib');
+      clickLink(doc, '/git/git/issues');
+      clickLink(doc, '/git/git/blob/master/README.md');
+      clickLink(doc, '/git/git'); // the listing already shown
+      expect(isPending(doc)).toBe(false);
+    });
+
+    it('popstate to a different listing sets pending; to a non-listing it does not', () => {
+      const { doc } = start();
+      loadHtmlFixture('root', { url: 'https://github.com/git/git/issues' });
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      expect(isPending(document)).toBe(false);
+      loadHtmlFixture('folder');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      expect(isPending(document)).toBe(true);
+      expect(doc).toBeDefined();
+    });
+
+    it('navigation watchdog, landed but never applied: shows the files after 4 s', () => {
+      vi.useFakeTimers();
+      const { doc } = start();
+      clickLink(doc, '/git/git/tree/master/contrib');
+      expect(isPending(doc)).toBe(true);
+      // The URL changes but the DOM never shows the new listing (every apply is stale).
+      const stale = loadHtmlFixture('root', {
+        url: 'https://github.com/git/git/tree/master/contrib',
+      });
+      setPending(stale);
+      stale.documentElement.setAttribute(COLLAPSED_ATTR, '');
+      vi.advanceTimersByTime(WATCHDOG_MS);
+      expect(isPending(stale)).toBe(false);
+      expect(collapsed(stale)).toBe(false);
+      expect(doc).toBeDefined();
+    });
+
+    it('navigation watchdog, aborted navigation: ends the pre-hide, keeps the working toggle', () => {
+      vi.useFakeTimers();
+      const { doc } = start();
+      clickLink(doc, '/git/git/tree/master/contrib'); // the navigation never happens
+      expect(isPending(doc)).toBe(true);
+      vi.advanceTimersByTime(WATCHDOG_MS);
+      expect(isPending(doc)).toBe(false); // otherwise the listing would stay hidden for good
+      expect(collapsed(doc)).toBe(true); // still the collapsed state its toggle shows
+      expect(toggles(doc).length).toBe(1);
+    });
+
+    it('an empty moment mid-navigation keeps the pre-hide until the new listing arrives', async () => {
+      const { doc, life } = start();
+      clickLink(doc, '/git/git/tree/master/contrib');
+      // The old listing is gone and the new one has not rendered yet (observed live).
+      const mid = loadHtmlFixture('folder');
+      const holder = listing(mid);
+      const parent = holder.parentElement;
+      const next = holder.nextSibling;
+      holder.remove();
+      setPending(mid); // the real document keeps the attribute; the test replaced it
+      expect(life.apply()).toBe('no-listing');
+      expect(isPending(mid)).toBe(true); // still hidden: nothing may flash when it arrives
+      parent?.insertBefore(holder, next); // React renders the folder listing
+      await Promise.resolve();
+      await nextFrame();
+      await nextFrame();
+      expect(toggles(mid).length).toBe(1);
+      expect(isPending(mid)).toBe(false);
+      expect(collapsed(mid)).toBe(true);
+    });
+
+    it('a cold load with no listing still clears pending at once', () => {
+      const doc = loadHtmlFixture('root');
+      listing(doc).remove();
+      setPending(doc);
+      expect(new CollapseController(ctx, doc).apply(new URL(fixtureUrl('root')))).toBe(
+        'no-listing',
+      );
+      expect(isPending(doc)).toBe(false);
+    });
+
+    it('a successful apply on the new listing clears the navigation pre-hide', () => {
+      const { doc, life } = start();
+      clickLink(doc, '/git/git/tree/master/contrib');
+      const folder = loadHtmlFixture('folder');
+      setPending(folder); // the document was replaced in the test; the real one keeps the attribute
+      expect(life.apply()).toBe('applied');
+      expect(isPending(folder)).toBe(false);
+      expect(collapsed(folder)).toBe(true);
+    });
   });
 });

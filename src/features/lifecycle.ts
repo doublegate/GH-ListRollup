@@ -12,7 +12,7 @@
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import { watchNavigation } from '@/github/nav';
 import { detectPage } from '@/github/page';
-import { query } from '@/github/selectors';
+import { closest, query } from '@/github/selectors';
 import { log } from '@/log';
 import {
   type ApplyOutcome,
@@ -75,6 +75,29 @@ export function startLifecycle(
   if (doc.readyState === 'loading') {
     ctx.addEventListener(doc, 'DOMContentLoaded', () => apply(), { once: true });
   }
+
+  // 2b. In-page navigation pre-hide, set synchronously at the start of the navigation (maintainer
+  // live check on #16: back/forward and folder clicks showed the new listing for a frame or two).
+  // A capture listener runs before GitHub's router handles the click; popstate fires with the
+  // destination URL already in location, before the router renders it.
+  ctx.addEventListener(
+    doc,
+    'click',
+    (event) => {
+      if (!(event instanceof MouseEvent) || event.button !== 0 || event.defaultPrevented) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? closest('anchor', event.target) : null;
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const target = link.getAttribute('target');
+      if (target && target !== '_self') return;
+      if (link.hasAttribute('download')) return;
+      controller.navigationStarting(new URL(link.href, doc.location.href));
+    },
+    { capture: true },
+  );
+  ctx.addEventListener(window, 'popstate', () => {
+    controller.navigationStarting(new URL(doc.location.href));
+  });
 
   // 3. Soft navigation (already coalesced to one call per animation frame).
   watchNavigation(ctx, () => {

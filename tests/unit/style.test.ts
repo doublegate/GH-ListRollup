@@ -30,9 +30,12 @@ describe('content stylesheet (T-GNR-107)', () => {
     expect(all.length).toBeGreaterThan(5);
   });
 
-  it.each(all)('"%s" is scoped to html[data-gnr-pending], .gnr-* or [data-gnr', (selector) => {
-    expect(selector).toMatch(/^(html\[data-gnr-pending\]|\.gnr-|\[data-gnr)/);
-  });
+  it.each(all)(
+    '"%s" is scoped to html[data-gnr-pending|collapsed], .gnr-* or [data-gnr',
+    (selector) => {
+      expect(selector).toMatch(/^(html\[data-gnr-(pending|collapsed)\]|\.gnr-|\[data-gnr)/);
+    },
+  );
 
   it('uses Primer variables for every color', () => {
     const colorDecls = [...CSS.matchAll(/(?:^|[\s;{])(color|background|outline)\s*:\s*([^;]+);/g)];
