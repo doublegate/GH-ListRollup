@@ -4,7 +4,7 @@
 - **Captured:** 2026-11-16 (logged out, by `scripts/capture-fixture.ts`)
 - **HTTP status:** 200
 - **Content:** ref `main` at commit `5fb8a16f5f8244f9fbfe696487a9da223168a6c7`
-- **SHA-256 of `submodule.json`:** `d3c7482af808c6dfc9362eaa38b7876a39788f431b38181468b84cc9d4d3e447`
+- **SHA-256 of `submodule.json`:** `f1118a261f2bbcaa9db645f887d95764e44c87bacbcab7418d7a2c5f16477d27`
 
 Several submodule entries (cargo, enzyme, rustc-perf) with submoduleUrl.
 

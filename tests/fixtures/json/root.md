@@ -4,7 +4,7 @@
 - **Captured:** 2026-11-16 (logged out, by `scripts/capture-fixture.ts`)
 - **HTTP status:** 200
 - **Content:** ref `master` at commit `7fb6055e678f800320d8ab8cd8f201d9493d1ba0`
-- **SHA-256 of `root.json`:** `ad86be4850cca628b56c283247a00612962ea44f0626dbb10c2d9e5346295a24`
+- **SHA-256 of `root.json`:** `dc06bf4a6c633a7101644f662b0bc247234b86d15d812e950b406e2dff71bd13`
 
 Root listing: directory, file, submodule and symlink_file entries (564 items, under the cap).
 

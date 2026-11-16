@@ -4,7 +4,7 @@
 - **Captured:** 2026-11-16 (logged out, by `scripts/capture-fixture.ts`)
 - **HTTP status:** 404
 - **Content:** ref `master` at commit `7fb6055e678f800320d8ab8cd8f201d9493d1ba0`
-- **SHA-256 of `not-found-404.json`:** `6836e612952427aca4ae90ae7cad888399a2d50bad8b0c12f5c43176fd763274`
+- **SHA-256 of `not-found-404.json`:** `ddb66b725497fc08fe53131e96a5e07e02a9f3e4c752a930cfcf5b29e396be1f`
 
 Missing path: GitHub answers 404 with a JSON body.
 

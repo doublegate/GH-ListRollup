@@ -165,6 +165,10 @@ export function redactSecrets(value: unknown): unknown {
         out[key] = PLACEHOLDER_EMAIL;
       } else if (VOLATILE_NUMBER_KEY.test(key) && typeof child === 'number') {
         out[key] = 0;
+      } else if (key === 'listCacheKey' && typeof child === 'string') {
+        // `v0:<unix time>` changes on every push to the repository, even when this listing did
+        // not; unused by the extension, so normalized to keep re-captures byte-identical.
+        out[key] = 'v0:0';
       } else if (SECRET_KEY.test(key) && child !== null && typeof child !== 'object') {
         out[key] = REDACTED;
       } else if (SECRET_KEY.test(key) && child !== null && typeof child === 'object') {

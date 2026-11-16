@@ -4,7 +4,7 @@
 - **Captured:** 2026-11-16 (logged out, by `scripts/capture-fixture.ts`)
 - **HTTP status:** 200
 - **Content:** ref `main` at commit `6659689e6b03ec062f5b7bcea9850b4c59045807`
-- **SHA-256 of `simplified-chain.json`:** `8a7778cb7336a2f51981f70363e4cb4e7bc5b789d631b02c12064827f9db9505`
+- **SHA-256 of `simplified-chain.json`:** `7ec47ec345bdbbadea639adf7614d7a740e51db02df63e247031a325150798f4`
 
 Contains a single-child folder chain (.agents/skills/launch) with hasSimplifiedPath.
 

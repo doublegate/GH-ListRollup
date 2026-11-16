@@ -287,6 +287,12 @@ describe('volatile values', () => {
       totalCount: 564,
     });
   });
+
+  it('normalizes the per-push listCacheKey', () => {
+    expect(redactSecrets({ refInfo: { name: 'main', listCacheKey: 'v0:1794811672.0' } })).toEqual({
+      refInfo: { name: 'main', listCacheKey: 'v0:0' },
+    });
+  });
 });
 
 describe('replaceIdentity', () => {
