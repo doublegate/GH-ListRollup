@@ -46,6 +46,23 @@ describe('findHeaderLine (T-GNR-104)', () => {
     expect(fallback?.insertionPoint).toBe(primary);
   });
 
+  it.each(LISTINGS)(
+    '%s: the h2.sr-only rank is tried when only this heading lost its testid (Codex, #14)',
+    (name) => {
+      const doc = loadHtmlFixture(name);
+      const primary = findHeaderLine(doc)?.insertionPoint;
+      query('commitDetails', doc)?.element.removeAttribute('data-testid');
+      for (const h of doc.querySelectorAll('h2[data-testid="screen-reader-heading"]')) {
+        if (h.textContent?.trim() === 'Latest commit') h.removeAttribute('data-testid');
+      }
+      // Other screen-reader headings ("History", "Folders and files") still carry the testid.
+      expect(
+        doc.querySelectorAll('h2[data-testid="screen-reader-heading"]').length,
+      ).toBeGreaterThan(0);
+      expect(findHeaderLine(doc)?.insertionPoint).toBe(primary);
+    },
+  );
+
   it('returns null, and probe reports none, when the commit bar is removed', () => {
     const doc = loadHtmlFixture('root');
     const line = findHeaderLine(doc);

@@ -92,31 +92,20 @@ describe('selector strings stay in selectors.ts (T-GNR-101)', () => {
     readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
       e.isDirectory()
         ? files(join(dir, e.name))
-        : e.name.endsWith('.ts')
+        : /\.(ts|tsx|mts)$/.test(e.name)
           ? [join(dir, e.name)]
           : [],
     );
+  const others = () => files(SRC).filter((f) => !f.endsWith(join('github', 'selectors.ts')));
 
-  it('no file in src/ other than selectors.ts calls a DOM selector API with a string', () => {
-    const offenders = files(SRC)
-      .filter((f) => !f.endsWith(join('github', 'selectors.ts')))
-      .flatMap((f) =>
-        readFileSync(f, 'utf8')
-          .split('\n')
-          .map((line, i) => ({ f, line, n: i + 1 }))
-          // DOM method calls (`.closest('tr')`), not this module's own helpers, which take a purpose name.
-          .filter(({ line }) => /\.(querySelector(All)?|closest|matches)\(\s*['"`]/.test(line))
-          .map(({ f, n }) => `${f.slice(SRC.length + 1)}:${n}`),
-      );
-    expect(offenders).toEqual([]);
-  });
-
-  it('no file in src/ other than selectors.ts calls querySelector at all', () => {
-    const offenders = files(SRC).filter(
-      (f) =>
-        !f.endsWith(join('github', 'selectors.ts')) &&
-        /\bquerySelector(All)?\(/.test(readFileSync(f, 'utf8')),
-    );
-    expect(offenders).toEqual([]);
-  });
+  // Element.querySelector(All), .closest and .matches only ever take a selector, so outside
+  // selectors.ts they may not be called at all: with a literal, a constant or across lines (agy, #14).
+  // This module's own helpers are called bare (`closest('tableRow', el)`), never as methods.
+  it.each(['querySelector', 'querySelectorAll', 'closest', 'matches'])(
+    'no file in src/ other than selectors.ts calls .%s(',
+    (method) => {
+      const pattern = new RegExp(`\\.${method}\\s*\\(`);
+      expect(others().filter((f) => pattern.test(readFileSync(f, 'utf8')))).toEqual([]);
+    },
+  );
 });

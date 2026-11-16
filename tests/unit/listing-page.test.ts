@@ -123,4 +123,97 @@ describe('readListingPage', () => {
       path: null,
     });
   });
+
+  // --- review findings on #14 -------------------------------------------------------------------
+
+  it('a root page that lost react-directory-row still reads as a root (Codex, #14)', () => {
+    const doc = loadHtmlFixture('root');
+    for (const el of doc.querySelectorAll('.react-directory-row')) {
+      el.classList.remove('react-directory-row');
+    }
+    expect(readListingPage(new URL(fixtureUrl('root')), doc)).toMatchObject({
+      layout: 'root',
+      ref: 'master',
+      path: '',
+    });
+  });
+
+  it('a folder page whose parent link lost its testid still reads as a folder (Codex, #14)', () => {
+    const doc = loadHtmlFixture('folder');
+    doc.querySelector('a[data-testid="up-tree"]')?.removeAttribute('data-testid');
+    for (const el of doc.querySelectorAll('[data-testid="breadcrumbs"]')) {
+      el.setAttribute('data-testid', 'gone');
+    }
+    // Neither the up-tree testid nor the breadcrumb: only the parent link's ARIA label remains.
+    expect(readListingPage(new URL(fixtureUrl('folder')), doc)?.layout).toBe('folder');
+  });
+
+  const rowLinks = (doc: Document) =>
+    [...(query('listing', doc)?.element.getElementsByTagName('a') ?? [])].filter((a) =>
+      a.getAttribute('aria-label')?.endsWith(', (Directory)'),
+    );
+
+  it('ignores a row link on another origin, even with a matching path (agy, #14)', () => {
+    const doc = loadHtmlFixture('root');
+    for (const a of rowLinks(doc)) {
+      a.setAttribute('href', `https://evil.example${a.getAttribute('href') ?? ''}`);
+    }
+    // Every folder link is now cross-origin; the ref must come from a file row or not at all.
+    const page = readListingPage(new URL(fixtureUrl('root')), doc);
+    expect(page?.ref === 'master' || page?.ref === null).toBe(true);
+    for (const a of query('listing', doc)?.element.getElementsByTagName('a') ?? []) {
+      if (a.getAttribute('aria-label')?.endsWith(', (File)')) a.remove();
+    }
+    expect(readListingPage(new URL(fixtureUrl('root')), doc)?.ref).toBeNull();
+  });
+
+  it('does not accept /tree-other/ as /tree/ (agy, #14)', () => {
+    const doc = loadHtmlFixture('root');
+    for (const a of query('listing', doc)?.element.getElementsByTagName('a') ?? []) {
+      a.setAttribute(
+        'href',
+        (a.getAttribute('href') ?? '').replace(/^\/git\/git\/(tree|blob)\//, '/git/git/$1-other/'),
+      );
+    }
+    expect(readListingPage(new URL(fixtureUrl('root')), doc)?.ref).toBeNull();
+  });
+
+  describe('simplified chains (agy, #14)', () => {
+    /** Turns the folder fixture's first directory row into a chain `contrib/<name>/inner`. */
+    const makeChain = (doc: Document) => {
+      const link = rowLinks(doc)[0];
+      if (!link) throw new Error('no directory row');
+      const name = (link.getAttribute('aria-label') ?? '').replace(/, \(Directory\)$/, '');
+      link.setAttribute('title', 'This path skips through empty directories');
+      link.setAttribute('aria-label', `${name}/inner, (Directory)`);
+      link.setAttribute('href', `/git/git/tree/master/contrib/${name}/inner`);
+      return link;
+    };
+
+    it('resolves the ref from a chain when only chains qualify', () => {
+      const doc = loadHtmlFixture('folder');
+      const chain = makeChain(doc);
+      const chainRow = chain.closest('tr');
+      for (const row of [...(query('listing', doc)?.element.getElementsByTagName('tr') ?? [])]) {
+        if (
+          row !== chainRow &&
+          row.getElementsByTagName('a')[0]?.getAttribute('data-testid') !== 'up-tree'
+        ) {
+          row.remove();
+        }
+      }
+      expect(readListingPage(new URL(fixtureUrl('folder')), doc)?.ref).toBe('master');
+    });
+
+    it('prefers an ordinary row over an earlier chain', () => {
+      const doc = loadHtmlFixture('folder');
+      const chain = makeChain(doc);
+      // A chain whose href would subtract to a WRONG ref: it must not be used while others exist.
+      chain.setAttribute(
+        'href',
+        `/git/git/tree/wrong/contrib/${chain.getAttribute('aria-label')?.replace(/, \(Directory\)$/, '') ?? ''}`,
+      );
+      expect(readListingPage(new URL(fixtureUrl('folder')), doc)?.ref).toBe('master');
+    });
+  });
 });

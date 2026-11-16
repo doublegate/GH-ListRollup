@@ -37,13 +37,14 @@ export const SELECTORS = {
     fallbacks: ['tr[id^="folder-row-"]'],
   },
   /**
-   * The parent-directory (`..`) row on folder pages, queried inside the listing container. The
-   * fallback is the FIRST body row when it is not a normal row: a bare `tr:not(.react-directory-row)`
-   * also matches the root page's "View all files" row, which would make a root look like a folder.
+   * The parent-directory (`..`) link on folder pages, queried inside the listing container. The
+   * fallback is its ARIA label, a positive mark of the parent row: hooks defined by absence
+   * (`tr:not(.react-directory-row)`) also match the root's "View all files" row, or, once GitHub
+   * drops that class, every entry row (Codex review, #14).
    */
   upTree: {
     primary: 'a[data-testid="up-tree"]',
-    fallbacks: ['tbody > tr:first-child:not(.react-directory-row):not([data-testid])'],
+    fallbacks: ['a[aria-label="Parent directory"]'],
   },
   /** Any table row: used with `closest()` to go from a link to its row. */
   tableRow: {
@@ -149,6 +150,24 @@ export function queryAll(purpose: Purpose, root: ParentNode): { elements: Elemen
     if (elements.length > 0) return { elements, rank: rankAt(i) };
   }
   return { elements: [], rank: 'none' };
+}
+
+/**
+ * The first element matching `purpose` under `root` that also passes `accept`, trying each rank in
+ * order. A rank whose matches all fail `accept` falls through to the next one, so unrelated
+ * elements at a higher rank cannot hide a usable fallback (Codex review, #14).
+ */
+export function queryWhere(
+  purpose: Purpose,
+  root: ParentNode,
+  accept: (el: Element) => boolean,
+): { element: Element; rank: Exclude<Rank, 'none'> } | null {
+  const all = selectorsOf(purpose);
+  for (let i = 0; i < all.length; i++) {
+    const element = [...root.querySelectorAll(all[i] ?? '')].find(accept);
+    if (element) return { element, rank: rankAt(i) as Exclude<Rank, 'none'> };
+  }
+  return null;
 }
 
 /** The nearest ancestor of `el` (or `el` itself) matching `purpose`, trying each rank in order. */

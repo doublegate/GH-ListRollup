@@ -41,14 +41,15 @@ export default defineContentScript({
     // Debug level only: Phase 3 gates it behind the debug.logging setting (T-GNR-301).
     const inspectListing = (): void => {
       const listing = readListingPage(new URL(location.href), document);
-      if (listing) {
-        log.debug(
-          'listing',
-          `layout=${listing.layout}`,
-          `ref=${listing.ref}`,
-          `path=${listing.path}`,
-        );
-      }
+      // Only on code-view listing pages: a two-segment URL such as /<user>/<tab> passes the URL
+      // check but is not one (agy review, #14).
+      if (!listing) return;
+      log.debug(
+        'listing',
+        `layout=${listing.layout}`,
+        `ref=${listing.ref}`,
+        `path=${listing.path}`,
+      );
       log.debug('probe:', formatProbe(probe(document)));
     };
 

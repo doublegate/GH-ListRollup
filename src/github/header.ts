@@ -6,7 +6,7 @@
  * identically on the root page (where the box shares a parent with the listing) and on folder pages
  * (a separate box above the listing). Fixtures: `root`, `folder`, and their `-logged-in` twins.
  */
-import { COMMIT_HEADING_TEXT, closest, query, queryAll } from './selectors';
+import { COMMIT_HEADING_TEXT, closest, query, queryWhere } from './selectors';
 
 export interface HeaderLine {
   /** The bar's inner row: the toggle is inserted as its first child. */
@@ -42,8 +42,12 @@ export function findHeaderLine(doc: Document): HeaderLine | null {
     const found = fromAnchor(details, 'primary');
     if (found) return found;
   }
-  const heading = queryAll('commitHeading', doc).elements.find(
+  // The text check runs inside each rank (queryWhere): the page has other screen-reader headings
+  // ("History", "Folders and files") that keep their testid when this one loses it.
+  const heading = queryWhere(
+    'commitHeading',
+    doc,
     (h) => h.textContent?.trim() === COMMIT_HEADING_TEXT,
-  );
+  )?.element;
   return heading ? fromAnchor(heading, 'fallback1') : null;
 }

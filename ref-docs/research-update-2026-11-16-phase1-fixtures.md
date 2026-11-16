@@ -79,8 +79,10 @@ collapse. The confidence gate (`docs/dom-integration.md` §1.5) then leaves the 
   `.react-directory-filename-column` all match, as the primaries do.
 - `tr[id^="folder-row-"]` also matches the parent (`..`) row, which must be excluded in code.
 - `tbody > tr:not(.react-directory-row)`, the parent-row fallback the spec first listed, **also
-  matches a row on the root page** ("View all files"). It was narrowed to the first body row that is
-  neither a normal row nor a testid'd row.
+  matches a row on the root page** ("View all files"). Narrowing it to "the first body row that is not
+  a normal row" was not enough either (Codex, #14): once GitHub drops `react-directory-row`, the first
+  entry row matches. The fallback is now the parent link's `aria-label="Parent directory"`, which
+  positively marks the parent row (its link text is `..`).
 
 ## 6. Live: soft-navigation events fire before the new listing renders
 

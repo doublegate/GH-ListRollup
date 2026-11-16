@@ -120,19 +120,34 @@ export function readListingPage(url: URL, doc: Document): ListingPage | null {
   return { owner, repo, ref, path, layout };
 }
 
-/** Decodes a link's path, or returns `null` for an href that is not a valid same-site path. */
+/**
+ * Decodes a link's path, or returns `null` for an href that is not a valid path on github.com: an
+ * absolute link to another origin is refused even if its path looks right (agy review, #14).
+ */
 function decodedPath(href: string): string | null {
   try {
-    return decodeURIComponent(new URL(href, 'https://github.com').pathname);
+    const url = new URL(href, 'https://github.com');
+    if (url.origin !== 'https://github.com') return null;
+    return decodeURIComponent(url.pathname);
   } catch {
     return null;
   }
 }
 
-/** Lower-cases the owner and repo segments only: GitHub treats those case-insensitively. */
+/**
+ * Lower-cases the owner and repo segments only: GitHub treats those case-insensitively. A trailing
+ * slash is kept, so a prefix such as `/o/r/tree/` cannot match `/o/r/tree-other/` (agy, #14).
+ */
 function normalizeRepoPath(p: string): string {
-  const parts = p.replace(/\/+$/, '').split('/');
-  return parts.map((seg, i) => (i === 1 || i === 2 ? seg.toLowerCase() : seg)).join('/');
+  return p
+    .split('/')
+    .map((seg, i) => (i === 1 || i === 2 ? seg.toLowerCase() : seg))
+    .join('/');
+}
+
+/** As `normalizeRepoPath`, for comparing whole page paths, where a trailing slash is ignored. */
+function normalizePagePath(p: string): string {
+  return normalizeRepoPath(p.replace(/\/+$/, ''));
 }
 
 /**
@@ -175,5 +190,5 @@ function matchesLocation(
     path === ''
       ? [`/${owner}/${repo}`, `/${owner}/${repo}/tree/${ref}`]
       : [`/${owner}/${repo}/tree/${ref}/${path}`];
-  return expected.some((e) => normalizeRepoPath(e) === normalizeRepoPath(actual));
+  return expected.some((e) => normalizePagePath(e) === normalizePagePath(actual));
 }

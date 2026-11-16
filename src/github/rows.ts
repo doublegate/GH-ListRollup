@@ -34,7 +34,9 @@ function kindOfSuffix(suffix: string): RowKind {
 /** Whether `href` points under `/<owner>/<repo>/tree/` (owner and repo case-insensitive). */
 function isUnderTree(href: string, owner: string, repo: string): boolean {
   try {
-    const p = new URL(href, 'https://github.com').pathname.toLowerCase();
+    const url = new URL(href, 'https://github.com');
+    if (url.origin !== 'https://github.com') return false; // agy review, #14
+    const p = url.pathname.toLowerCase();
     return p.startsWith(`/${owner}/${repo}/tree/`.toLowerCase());
   } catch {
     return false;
@@ -66,6 +68,7 @@ export function classifyRow(row: Element, owner: string, repo: string): RowInfo 
  */
 export function classifyRows(listing: Element, owner: string, repo: string): RowInfo[] {
   const upTree = query('upTree', listing)?.element ?? null;
+  // The upTree purpose is the parent LINK (both ranks); its row is the one to drop.
   const parentRow = upTree ? (closest('tableRow', upTree) ?? upTree) : null;
   return queryAll('rows', listing)
     .elements.filter((row) => row !== parentRow && !(upTree !== null && row.contains(upTree)))
