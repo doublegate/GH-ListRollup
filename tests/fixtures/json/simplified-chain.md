@@ -3,8 +3,8 @@
 - **Source:** <https://github.com/microsoft/vscode/tree/main>
 - **Captured:** 2026-11-16 (logged out, by `scripts/capture-fixture.ts`)
 - **HTTP status:** 200
-- **Content:** ref `main` at commit `6659689e6b03ec062f5b7bcea9850b4c59045807`
-- **SHA-256 of `simplified-chain.json`:** `7ec47ec345bdbbadea639adf7614d7a740e51db02df63e247031a325150798f4`
+- **Content:** ref `main` at commit `9163648f4f1fe99dbd8993e4c9f3e2fd3613039d`
+- **SHA-256 of `simplified-chain.json`:** `ee3526d6dc4e9cc29e0d9d0961ce0174d1fe7c3b424b62bd188188f11d246ab8`
 
 Contains a single-child folder chain (.agents/skills/launch) with hasSimplifiedPath.
 

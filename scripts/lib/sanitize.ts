@@ -199,7 +199,9 @@ export interface HtmlSanitizeOptions {
 export function redactSecrets(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(redactSecrets);
   if (value !== null && typeof value === 'object') {
-    const out: Record<string, unknown> = {};
+    // Null prototype: keys are repository-controlled (a file-tree map is keyed by folder path), and
+    // on a plain `{}` a folder named `__proto__` hits the prototype setter and vanishes (Codex, #8).
+    const out = Object.create(null) as Record<string, unknown>;
     for (const [key, child] of Object.entries(value)) {
       if ((AVATAR_KEY.test(key) || RENDERED_MARKDOWN_KEY.test(key)) && typeof child === 'string') {
         out[key] = '';
@@ -240,11 +242,18 @@ function redactAll(value: unknown): unknown {
  *   that equals the login, becomes PLACEHOLDER_LOGIN
  * - the numeric user id, matched as a whole number, becomes PLACEHOLDER_ID
  * - the GraphQL node id becomes PLACEHOLDER_NODE_ID
+ * - the email address becomes PLACEHOLDER_EMAIL
  */
 export function replaceIdentity(text: string, identity: Identity | undefined): string {
   if (!identity) return text;
   const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  let out = text.replace(
+  // The email and node id go FIRST (bootstrap review, #8): both can contain the login or the id
+  // (`someuser@mail.example`, `12345+someuser@users.noreply.github.com`), and replacing those first
+  // left a half-rewritten address that the email pattern, and the leftovers check, no longer saw.
+  let out = text;
+  if (identity.email) out = out.replace(new RegExp(esc(identity.email), 'gi'), PLACEHOLDER_EMAIL);
+  if (identity.nodeId) out = out.split(identity.nodeId).join(PLACEHOLDER_NODE_ID);
+  out = out.replace(
     new RegExp(`(?<![A-Za-z0-9-])${esc(identity.login)}(?![A-Za-z0-9-])`, 'gi'),
     PLACEHOLDER_LOGIN,
   );
@@ -256,8 +265,6 @@ export function replaceIdentity(text: string, identity: Identity | undefined): s
       PLACEHOLDER_ID,
     );
   }
-  if (identity.nodeId) out = out.split(identity.nodeId).join(PLACEHOLDER_NODE_ID);
-  if (identity.email) out = out.replace(new RegExp(esc(identity.email), 'gi'), PLACEHOLDER_EMAIL);
   return out;
 }
 
@@ -282,7 +289,12 @@ export async function sanitizeGitHubHtml(
         continue;
       }
       const parsed: unknown = JSON.parse(script.textContent ?? 'null');
-      script.textContent = replaceIdentity(JSON.stringify(redactSecrets(parsed)), options.identity);
+      // Escape `<` as GitHub does (\u003c): JSON.stringify writes it literally, and a payload string
+      // holding `</script>` would then close the element when serialized (Codex, #8).
+      script.textContent = replaceIdentity(
+        JSON.stringify(redactSecrets(parsed)),
+        options.identity,
+      ).replace(/</g, '\\u003c');
     }
 
     for (const el of doc.querySelectorAll('link, style, noscript')) el.remove();

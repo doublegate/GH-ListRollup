@@ -440,3 +440,44 @@ describe('sanitizeTreeJson', () => {
     expect(sanitizeTreeJson('{"a":1}')).toBe('{\n  "a": 1\n}\n');
   });
 });
+
+describe('bootstrap review findings (#8)', () => {
+  it('replaces an email that contains the login, leaving no part of it', () => {
+    // agy: login was replaced first, so `someuser@mail.example` became `fixture-user@mail.example`
+    // and the email pattern then no longer matched; the domain survived the leftovers check.
+    const identity = { login: 'someuser', id: 4242421, email: 'someuser@mail.example' };
+    const out = replaceIdentity(
+      '"userEmail":"someuser@mail.example","x":"12345+someuser@users.noreply.github.com"',
+      identity,
+    );
+    expect(out).not.toContain('mail.example');
+    expect(out).toContain(PLACEHOLDER_EMAIL);
+  });
+
+  it('keeps </script> inside the embedded JSON escaped, so the fixture stays a fixed point', async () => {
+    // Codex P2: JSON.stringify turned GitHub's \u003c back into a literal `<`.
+    const once = await sanitizeGitHubHtml(
+      // As GitHub serves it: `<` escaped as \u003c inside the JSON.
+      page(
+        '',
+        `<script type="application/json" data-target="react-app.embeddedData">${JSON.stringify({
+          payload: { description: '</script><img src=x onerror=alert(1)>' },
+        }).replace(/</g, '\\u003c')}</script>`,
+      ),
+      opts,
+    );
+    expect(once).not.toContain('</script><img');
+    const twice = await sanitizeGitHubHtml(once, opts);
+    expect(twice).toBe(once);
+    const json = /data-target="react-app\.embeddedData">(.*?)<\/script>/s.exec(once)?.[1] ?? '';
+    expect((JSON.parse(json) as { payload: { description: string } }).payload.description).toBe(
+      '</script><img src=x onerror=alert(1)>',
+    );
+  });
+
+  it('keeps a folder literally named __proto__ in a file-tree map', () => {
+    // Codex P2: assigning `__proto__` into `{}` hit the prototype setter and dropped the entry.
+    const raw = '{"fileTree":{"__proto__":{"items":[{"name":"a"}],"totalCount":1}}}';
+    expect(JSON.parse(sanitizeTreeJson(raw))).toEqual(JSON.parse(raw));
+  });
+});
