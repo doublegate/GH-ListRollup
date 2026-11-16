@@ -111,6 +111,11 @@ export const SELECTORS = {
     primary: '.border',
     fallbacks: [],
   },
+  /** The extension's own Level 1 toggle button (`src/ui/toggle.ts`). */
+  gnrToggle: {
+    primary: '[data-gnr="toggle"]',
+    fallbacks: [],
+  },
   /** The mobile-only "View all files" row. */
   viewAllRow: {
     primary: 'tr[data-testid="view-all-files-row"]',

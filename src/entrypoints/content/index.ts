@@ -1,14 +1,17 @@
 /**
  * Content script entry (docs/architecture.md section 2).
  *
- * Phase 1 Sprint 1: logs the detected page type on load and after every soft navigation, and, on
- * listing pages, the page model and the selector probe (debug level). Nothing on the page changes
- * yet; the collapse arrives in Phase 1 Sprint 2.
+ * Level 1, the whole-listing collapse (Phase 1): `startLifecycle` sets the pre-hide, inserts the
+ * toggle and keeps it across soft navigations and re-renders. This module also logs the detected
+ * page type (info) and, on listing pages, the page model, the probe and the navigation signals seen
+ * (debug level).
  */
+import './style.css';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { detectPage, pageKey, readListingPage } from '@/github/page';
-import { watchNavigation } from '@/github/nav';
 import { formatProbe, probe } from '@/github/probe';
+import { startLifecycle } from '@/features/lifecycle';
+import { watchNavigation } from '@/github/nav';
 import { log } from '@/log';
 
 export default defineContentScript({
@@ -63,8 +66,19 @@ export default defineContentScript({
       log.debug('listing', reading);
     };
 
+    startLifecycle(ctx, document, (outcome) => {
+      if (outcome !== 'applied') log.debug('apply:', outcome);
+    });
+
+    // Which navigation signals reach this content script, once per type per load (T-GNR-106: does
+    // the Navigation API's navigatesuccess arrive in Firefox?).
+    const seen = new Set<string>();
     report();
-    watchNavigation(ctx, report);
+    watchNavigation(ctx, report, (type) => {
+      if (seen.has(type)) return;
+      seen.add(type);
+      log.debug('nav signal:', type);
+    });
     ctx.onInvalidated(() => log.debug('content script invalidated'));
   },
 });
