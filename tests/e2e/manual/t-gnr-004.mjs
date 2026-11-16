@@ -69,7 +69,9 @@ try {
 
   // Extension reload: the old content script must go quiet (ctx invalidated).
   let sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker'));
-  await sw.evaluate(() => chrome.runtime.reload());
+  // The reload can tear down the worker before CDP's evaluate resolves; that rejection is expected
+  // (agy review, PR #7; reload-diag.mjs handles it the same way).
+  await sw.evaluate(() => chrome.runtime.reload()).catch(() => {});
   await page.waitForTimeout(2000);
   await run('6 after extension reload: click folder "packages"', async () => {
     await page.locator('a[href="/wxt-dev/wxt/tree/main/packages"]:visible').first().click();

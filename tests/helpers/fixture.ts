@@ -15,6 +15,7 @@ interface ManifestEntry {
   name: string;
   kind: 'html' | 'json';
   url: string;
+  maxItems?: number;
 }
 
 const manifest = (

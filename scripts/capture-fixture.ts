@@ -268,6 +268,17 @@ async function main(): Promise<void> {
     },
   });
 
+  // Validate --kind up front, and refuse combinations that would silently ignore it (agy review,
+  // PR #3): an unknown kind used to filter everything out, and --kind was ignored with --url. Runs
+  // before every mode branch, so --reprocess and --from-file cannot ignore it either (PR #7).
+  if (values.kind !== undefined) {
+    if (values.kind !== 'html' && values.kind !== 'json') fail('--kind must be html or json');
+    if (values.url !== undefined) fail('--kind does not apply to --url; use --json for JSON');
+    if (values.json) fail('--json and --kind are mutually exclusive');
+    if (values.reprocess) fail('--kind does not apply to --reprocess (signed-in HTML only)');
+    if (values['from-file'] !== undefined) fail('--kind does not apply to --from-file (HTML only)');
+  }
+
   if (values.reprocess) {
     // Re-run the current sanitizer over committed signed-in fixtures, which cannot be re-fetched
     // (the raw browser captures are deleted after review). Sanitizing is idempotent, so an
@@ -327,14 +338,6 @@ async function main(): Promise<void> {
       process.exit(1);
     }
     return;
-  }
-
-  // Validate --kind up front, and refuse combinations that would silently ignore it (agy review,
-  // PR #3): an unknown kind used to filter everything out, and --kind was ignored with --url.
-  if (values.kind !== undefined) {
-    if (values.kind !== 'html' && values.kind !== 'json') fail('--kind must be html or json');
-    if (values.url !== undefined) fail('--kind does not apply to --url; use --json for JSON');
-    if (values.json) fail('--json and --kind are mutually exclusive');
   }
 
   let specs: FixtureSpec[];

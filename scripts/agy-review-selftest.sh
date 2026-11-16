@@ -484,6 +484,9 @@ check "the archive <details> wrapper is guarded on a non-empty archive" "2" \
 # A non-numeric AGY_ERROR_MAX_BYTES silently disabled the backend-error guard (same PR).
 check "AGY_ERROR_MAX_BYTES is normalized" "1" \
   "$(grep -c '^normalize_numeric_env AGY_ERROR_MAX_BYTES ' "$SCRIPT_DIR/agy-review.sh")"
+# ...and 0 is refused too, which would equally disable the guard (agy review, GH-ListRollup PR #7).
+check "AGY_ERROR_MAX_BYTES=0 falls back to the default" "1" \
+  "$(grep -c '^\[ "\$AGY_ERROR_MAX_BYTES" -gt 0 \] ||' "$SCRIPT_DIR/agy-review.sh")"
 
 check "a lowercase error (agy under unbuffer) is caught" "MATCH" \
   "$(se 'error: Eligibility check failed: PERMISSION_DENIED (code 403): Request had insufficient authentication scopes.. Please log out (/logout) and log back in (/login).')"

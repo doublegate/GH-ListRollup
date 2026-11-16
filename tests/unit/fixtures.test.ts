@@ -154,7 +154,11 @@ describe('all fixtures', () => {
       const again =
         entry.kind === 'html'
           ? await sanitizeGitHubHtml(content, { sourceUrl: entry.url, name: entry.name })
-          : sanitizeTreeJson(content);
+          : // Forward maxItems as the capture does, so lowering it without re-capturing fails here.
+            sanitizeTreeJson(
+              content,
+              entry.maxItems !== undefined ? { maxItems: entry.maxItems } : {},
+            );
       expect(again === content, `${entry.kind}/${entry.name} changes when re-sanitized`).toBe(true);
     },
   );
