@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import {
   findEncodedIdentity,
+  identityLeftovers,
   type Identity,
   sanitizeGitHubHtml,
   sanitizeTreeJson,
@@ -194,14 +195,7 @@ async function captureFromFile(
     name: spec.name,
     identity,
   });
-  const leftovers = [
-    identity.login,
-    String(identity.id ?? ''),
-    identity.nodeId ?? '',
-    identity.email ?? '',
-  ]
-    .filter((s) => s.length > 0)
-    .filter((s) => content.toLowerCase().includes(s.toLowerCase()));
+  const leftovers = identityLeftovers(content, identity);
   if (leftovers.length > 0)
     fail(`identity still present after sanitizing: ${leftovers.length} value(s)`);
   const encoded = findEncodedIdentity(content, identity);

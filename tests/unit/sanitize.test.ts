@@ -6,6 +6,7 @@ import {
   PLACEHOLDER_NODE_ID,
   REDACTED,
   findEncodedIdentity,
+  identityLeftovers,
   normalizeVolatileText,
   redactSecrets,
   replaceIdentity,
@@ -157,6 +158,30 @@ describe('redactSecrets', () => {
       a: 1,
       nested: { authToken: REDACTED, list: [{ hmac: REDACTED, name: 'n' }] },
       csrf_tokens: { p: REDACTED },
+    });
+  });
+
+  it('does not redact non-string values or non-token maps whose key merely contains a secret word', () => {
+    // agy review, PR #3: a folder path key like "src/token" wiped a whole file-tree map, and
+    // booleans such as secretScanningEnabled became the string "REDACTED".
+    const tree = {
+      items: [{ name: 'a.ts', path: 'src/token/a.ts', contentType: 'file' }],
+      totalCount: 1,
+    };
+    expect(
+      redactSecrets({
+        fileTree: { 'src/token': tree },
+        secretScanningEnabled: false,
+        tokenCount: 3,
+        uploadToken: 'abc',
+        csrf_tokens: { '/a/post': 'zzz' },
+      }),
+    ).toEqual({
+      fileTree: { 'src/token': tree },
+      secretScanningEnabled: false,
+      tokenCount: 3,
+      uploadToken: REDACTED,
+      csrf_tokens: { '/a/post': REDACTED },
     });
   });
 });
@@ -316,6 +341,31 @@ describe('volatile values', () => {
     expect(redactSecrets({ refInfo: { name: 'main', listCacheKey: 'v0:1794811672.0' } })).toEqual({
       refInfo: { name: 'main', listCacheKey: 'v0:0' },
     });
+  });
+});
+
+describe('identityLeftovers (post-capture fail-closed check)', () => {
+  const identity = { login: 'someuser', id: 6055, email: 'a@b.example' };
+
+  it('ignores the numeric id inside a commit SHA (the replacement keeps SHAs intact)', () => {
+    // Codex's example on PR #3: id 6055 occurs inside oid 7fb6055e678f...
+    const out = replaceIdentity(
+      '"currentOid":"7fb6055e678f800320d8ab8cd8f201d9493d1ba0","id":6055',
+      identity,
+    );
+    expect(identityLeftovers(out, identity)).toEqual([]);
+  });
+
+  it('still flags the id as a whole token', () => {
+    expect(identityLeftovers('"user_id":6055,', identity)).toEqual(['6055']);
+  });
+
+  it('stays strict for the login, even inside a longer token', () => {
+    expect(identityLeftovers('/owner/someuser-tools', identity)).toEqual(['someuser']);
+  });
+
+  it('flags a surviving email', () => {
+    expect(identityLeftovers('mailto:A@B.example', identity)).toEqual(['a@b.example']);
   });
 });
 

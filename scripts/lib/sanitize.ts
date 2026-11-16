@@ -43,8 +43,16 @@ const DROPPED_ATTRIBUTES = [
 /** Rails-style signed message: base64 payload, "--", hex HMAC. May encode user ids. */
 const SIGNED_MESSAGE = /[A-Za-z0-9+/_-]{16,}={0,2}--[0-9a-f]{40,}/g;
 
-/** JSON keys whose string values are replaced with REDACTED. */
+/** JSON keys whose STRING values are replaced with REDACTED. Other value types are left alone. */
 const SECRET_KEY = /token|csrf|hmac|nonce|secret|password/i;
+
+/**
+ * JSON keys that hold a MAP of tokens (for example `csrf_tokens`, keyed by form path), whose leaves
+ * are all redacted. Deliberately narrower than SECRET_KEY: an object under a key that merely
+ * contains a secret word -- a file-tree map keyed by a folder path such as `src/token` -- is
+ * ordinary data and must be traversed, not wiped (agy review, PR #3).
+ */
+const TOKEN_MAP_KEY = /(^|_)tokens$/i;
 
 /** JSON keys holding avatar URLs; their string values are blanked like `<img>` avatars. */
 const AVATAR_KEY = /avatar/i;
@@ -104,6 +112,30 @@ export function normalizeVolatileText(text: string): string {
   return renumbered
     .replace(/([?&](?:amp;)?jwt=)[A-Za-z0-9._-]+/g, `$1${REDACTED}`)
     .replace(SIGNED_MESSAGE, REDACTED);
+}
+
+/**
+ * Plain-text identity values still present in sanitized output (the post-capture fail-closed
+ * check). Login, node id and email are matched as raw case-insensitive substrings ON PURPOSE:
+ * stricter than replaceIdentity, so even a login inside a longer token (a repository named after
+ * the user) stops the capture for human review. The numeric id uses the SAME alphanumeric
+ * boundaries as replaceIdentity: an id that happens to occur inside a commit SHA identifies no one,
+ * and replaceIdentity deliberately leaves the SHA intact, so a raw substring check would abort
+ * every capture whose page holds such a SHA (agy and Codex reviews, PR #3).
+ */
+export function identityLeftovers(text: string, identity: Identity): string[] {
+  const lower = text.toLowerCase();
+  const found: string[] = [];
+  for (const v of [identity.login, identity.nodeId ?? '', identity.email ?? '']) {
+    if (v.length > 0 && lower.includes(v.toLowerCase())) found.push(v);
+  }
+  if (
+    identity.id !== undefined &&
+    new RegExp(`(?<![0-9A-Za-z])${identity.id}(?![0-9A-Za-z])`).test(text)
+  ) {
+    found.push(String(identity.id));
+  }
+  return found;
 }
 
 /**
@@ -178,9 +210,9 @@ export function redactSecrets(value: unknown): unknown {
         // `v0:<unix time>` changes on every push to the repository, even when this listing did
         // not; unused by the extension, so normalized to keep re-captures byte-identical.
         out[key] = 'v0:0';
-      } else if (SECRET_KEY.test(key) && child !== null && typeof child !== 'object') {
+      } else if (SECRET_KEY.test(key) && typeof child === 'string') {
         out[key] = REDACTED;
-      } else if (SECRET_KEY.test(key) && child !== null && typeof child === 'object') {
+      } else if (TOKEN_MAP_KEY.test(key) && child !== null && typeof child === 'object') {
         // A map of tokens (for example csrf_tokens keyed by form path): keep the keys, redact all leaves.
         out[key] = redactAll(child);
       } else {

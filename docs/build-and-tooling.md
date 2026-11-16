@@ -56,6 +56,7 @@ Imports use the `@/` alias for `src/`. WXT APIs are imported explicitly from the
 | `pnpm test` / `pnpm test:coverage`  | Vitest                                                                          |
 | `pnpm fixtures:capture [names]`     | Re-captures GitHub test fixtures from `tests/fixtures/manifest.json`, sanitized |
 | `pnpm fixtures:check`               | Compares fixtures with live GitHub; exits 1 on drift (writes nothing)           |
+| `pnpm fixtures:report`              | Selector match counts per HTML fixture; flags signed-in/out differences         |
 | `pnpm check`                        | Every gate in CI order                                                          |
 
 ### Loading unpacked builds

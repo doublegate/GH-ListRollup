@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { report } from '../../scripts/lib/dom-report.ts';
@@ -119,9 +119,7 @@ describe('JSON fixtures (T-GNR-013 cases)', () => {
     );
   });
 
-  it('no fixture contains an unredacted token or avatar URL', async () => {
-    const { readdirSync, readFileSync } = await import('node:fs');
-    const { join } = await import('node:path');
+  it('no fixture contains an unredacted token or avatar URL', () => {
     for (const kind of ['html', 'json']) {
       const dir = join(import.meta.dirname, '..', 'fixtures', kind);
       for (const file of readdirSync(dir).filter((f) => f.endsWith(`.${kind}`))) {
