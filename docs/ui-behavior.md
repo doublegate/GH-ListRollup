@@ -55,6 +55,10 @@ listing stays as GitHub renders it. Hiding a listing with no way to show it agai
 mode and must be impossible by construction. The toggle is inserted **before** the hiding class is
 applied, and the class is applied only after the toggle is in the DOM.
 
+The one exception is the anti-flash pre-hide in §4, which hides rows before the toggle exists. It is
+bounded. Every path that ends without a toggle removes it at once, including a failed header check.
+The 4-second watchdog removes it in every other case (`docs/dom-integration.md` §4).
+
 ## 3. Level 2: inline nested folder tree
 
 ### 3.1 Affordance
@@ -86,13 +90,15 @@ applied, and the class is applied only after the toggle is in the DOM.
 
 ### 3.3 Errors
 
-| Condition                   | Row shown under the folder                                           |
-| --------------------------- | -------------------------------------------------------------------- |
-| Network or HTTP error       | "Could not load folder contents. Retry" (Retry button re-fetches)    |
-| Rate limited (fallback API) | "GitHub API rate limit reached. Opens folder page instead" (link)    |
-| Empty folder                | "This folder is empty" (rare, possible via submodule or permissions) |
-| Submodule                   | No arrow; GitHub's submodule link is left as-is                      |
-| Symlink to folder           | No arrow in v1                                                       |
+| Condition                   | Row shown under the folder                                                                                                                                       |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Network or HTTP error       | "Could not load folder contents. Retry" (Retry button re-fetches)                                                                                                |
+| Folder not found (404)      | "Folder not found (it may have moved). Open on GitHub"; from the REST fallback with no token saved it adds "Private repositories need a token (see the options)" |
+| Refused request key         | "Could not load folder contents. Open on GitHub" (no request is sent; `docs/data-fetching.md` §2)                                                                |
+| Rate limited (fallback API) | "GitHub API rate limit reached. Opens folder page instead" (link)                                                                                                |
+| Empty folder                | "This folder is empty" (rare, possible via submodule or permissions)                                                                                             |
+| Submodule                   | No arrow; GitHub's submodule link is left as-is                                                                                                                  |
+| Symlink to folder           | No arrow in v1                                                                                                                                                   |
 
 ### 3.4 Keyboard and ARIA
 
@@ -116,9 +122,13 @@ allows:
   `file-directory-fill`, `file`), MIT-licensed; the license is reproduced in `NOTICE`.
 - Hover and focus-visible outlines follow GitHub's `--focus-outlineColor`.
 - No flash of the full listing on load. While `html[data-gnr-pending]` is set, the manifest stylesheet
-  hides listing rows. The attribute is set at `document_start` and removed after the first apply, or
-  after a 4-second watchdog (`docs/dom-integration.md` §4). The watchdog keeps the §2.3 rule that a
+  hides listing rows. The attribute is set at `document_start` on URLs with a listing shape. It is
+  removed after the first apply installs the toggle, immediately by any apply that ends without a
+  toggle, or by a 4-second watchdog (`docs/dom-integration.md` §4). This keeps the §2.3 rule that a
   hidden listing is always recoverable.
+- When the Level 1 state resolves to `expanded` (Phase 3 settings), the rows are hidden only until
+  the settings read returns, normally a few milliseconds and never longer than the watchdog. On such
+  a page the rows appear after that short delay rather than at first paint.
 
 ## 5. Interaction with other extensions
 

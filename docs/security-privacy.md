@@ -20,12 +20,20 @@ names, and README content. They cannot run code in the extension's contexts.
 
 1. **No HTML from strings.** File, folder and ref names are repository-controlled. Build every node
    with `document.createElement` and set text via `textContent`. `innerHTML`, `outerHTML`,
-   `insertAdjacentHTML` and `DOMParser` on data are forbidden; ESLint enforces this
-   (`no-restricted-properties` / `no-unsanitized` plugin). Static SVG icons are created with
+   `insertAdjacentHTML`, `document.write`, `DOMParser.parseFromString` and
+   `Range.createContextualFragment` are forbidden in `src/`; ESLint enforces this
+   (`no-restricted-properties`, plus `no-eval` and `no-new-func`). Static SVG icons are created with
    `createElementNS` from constant path data.
-2. **URLs are built, not concatenated.** Child links are built with `new URL()` from the current origin
-   plus percent-encoded path segments (`encodeURIComponent` per segment). Names such as `..`, `%2e`,
-   `#` or `?` must still produce a correct GitHub URL. The test suite covers these.
+2. **URLs are built, not concatenated.** Fetch URLs and child links are built with `new URL()` from
+   the expected origin plus percent-encoded path segments (`encodeURIComponent` per segment). Names
+   such as `%2e`, `#` or `?` must still produce a correct GitHub URL. Because the URL parser resolves
+   dot segments, an owner, repo, ref segment or path segment that is empty, `.` or `..` is rejected
+   before encoding; Git allows none of these as names. After building, the URL's origin must be the
+   expected one and its pathname must equal the built pathname and start with the expected prefix
+   (`/<owner>/<repo>/tree/` for a tree fetch or a folder link, `/<owner>/<repo>/blob/` for a file
+   link, or `/repos/<owner>/<repo>/contents/` for the fallback). Anything else is
+   a typed error and no request is sent (`docs/data-fetching.md` §2, §4). The test suite covers these,
+   including a traversal path such as `a/../../settings`.
 3. **One origin.** Host permissions are `https://github.com/*` and, for the fallback,
    `https://api.github.com/*` only. No other network origin is ever contacted. No analytics, crash
    reporting, remote config or remote code; MV3 forbids remote code anyway.
@@ -36,8 +44,8 @@ names, and README content. They cannot run code in the extension's contexts.
    Documentation recommends a fine-grained token with read-only **Contents** permission, or no token.
 5. **Message validation.** The background script accepts messages only from its own extension
    (`sender.id === browser.runtime.id`, and a content script on a github.com URL). It validates the
-   message shape and each owner/repo/ref/path component against GitHub's name rules before building a
-   request.
+   message shape and each owner/repo/ref/path component against GitHub's name rules, including the
+   dot-segment rule in item 2, before building a request.
 6. **Bounded work.** At most 4 concurrent child fetches per tab; cached responses are reused; a folder is
    never fetched twice concurrently (in-flight de-duplication). Large folders are capped
    (`docs/ui-behavior.md` §3.2).
@@ -63,11 +71,13 @@ data collected; single purpose "collapse and expand the file listing on GitHub r
 
 ## 4. Review checklist (run before each release)
 
-- [ ] `rg -n "innerHTML|outerHTML|insertAdjacentHTML|eval\(|new Function" src entrypoints` returns nothing.
+- [ ] `rg -n "innerHTML|outerHTML|insertAdjacentHTML|document\.write|parseFromString|createContextualFragment|eval\(|new Function" src`
+      returns nothing. ESLint also bans these sinks in `src/`.
 - [ ] Manifest permissions unchanged from `docs/cross-browser.md`, or the change is justified in the
       CHANGELOG.
 - [ ] Token never appears in logs: run the E2E suite with `debug.logging` on and grep the output for
       the test token.
-- [ ] Hostile-name fixture tests pass (names with `<img onerror>`, `..`, `%2F`, RTL override, 255-char names).
+- [ ] Hostile-name fixture tests pass (names with `<img onerror>`, `%2F`, `%2e`, RTL override, 255-char
+      names), and `.` / `..` segments are rejected.
 - [ ] `pnpm audit` is clean, or every ignored GHSA in `pnpm-workspace.yaml` has been re-checked and
       still has no fix.

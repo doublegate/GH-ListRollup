@@ -163,11 +163,15 @@ describe('all fixtures', () => {
     },
   );
 
-  it('every fixture file is listed in the manifest', () => {
+  it('every file in a fixture directory is a listed fixture or its sidecar', () => {
+    // Every entry, not just `.<kind>` files: an orphaned `.md` sidecar or a stray file left by a
+    // rename must fail too (agy review, #7).
     for (const kind of ['html', 'json'] as const) {
       const dir = join(import.meta.dirname, '..', 'fixtures', kind);
-      for (const file of readdirSync(dir).filter((f) => f.endsWith(`.${kind}`))) {
-        expect(() => fixturePath(file.slice(0, -kind.length - 1), kind), file).not.toThrow();
+      for (const file of readdirSync(dir)) {
+        const m = new RegExp(`^(.+)\\.(${kind}|md)$`).exec(file);
+        expect(m, `${kind}/${file} is neither a .${kind} fixture nor a .md sidecar`).not.toBeNull();
+        expect(() => fixturePath(m?.[1] ?? '', kind), `${kind}/${file}`).not.toThrow();
       }
     }
   });
@@ -179,7 +183,7 @@ describe('signed-in fixtures (T-GNR-012)', () => {
       join(import.meta.dirname, '..', 'fixtures', 'html', `${name}.html`),
       'utf8',
     );
-    const json = /data-target="react-app.embeddedData">(.*?)<\/script>/s.exec(html)?.[1];
+    const json = /data-target="react-app\.embeddedData">(.*?)<\/script>/s.exec(html)?.[1];
     if (!json) throw new Error(`no embedded data in ${name}`);
     return {
       html,

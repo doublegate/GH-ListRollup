@@ -40,8 +40,10 @@ strings; add a lint rule or a test that greps for `querySelector` outside this m
 ### T-GNR-103: DOM-backed page model
 
 **Description:** Extend `detectPage` into `readListingPage(url, document)` returning the
-`ListingPage` defined in `docs/dom-integration.md` §3: owner, repo, ref (derived from the row hrefs
-minus the known path), path (from the breadcrumb, or empty for the root) and layout.
+`ListingPage` defined in `docs/dom-integration.md` §3: owner, repo, ref, path and layout. The path
+comes from the breadcrumb selector, or is empty for the root. The ref comes from the first `(Directory)`
+or `(File)` row whose link is under this repository's `/tree/` or `/blob/`, minus the known path and
+name, and is cross-checked against `location.pathname`. It is `null` when any step fails.
 
 **Acceptance criteria:**
 
@@ -49,6 +51,9 @@ minus the known path), path (from the breadcrumb, or empty for the root) and lay
 - [ ] Correct ref for a commit SHA URL.
 - [ ] Returns `null` when the code-view gate fails.
 - [ ] Empty-repo fixture: returns a page with `ref` unresolved, without throwing.
+- [ ] A submodule row is never the reference row: a test with a submodule as the first row still
+      resolves the ref from a later row.
+- [ ] Rows left from a different page (`location.pathname` does not match) give `ref: null`.
 
 **Dependencies:** T-GNR-101 | **Reference:** `docs/dom-integration.md` §3 | **Complexity:** M
 

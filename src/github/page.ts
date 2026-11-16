@@ -57,6 +57,8 @@ export function detectPage(url: URL): PageInfo {
 
   if (section === undefined) return { kind: 'repo-root', owner, repo };
   if (section === 'tree') {
+    // A bare `/tree` names no ref, so it is not a listing (bootstrap review, #8).
+    if (segments.length < 4) return { kind: 'other' };
     // `/tree/<ref>` alone is the root listing at a ref; anything deeper is a folder page.
     return {
       kind: segments.length <= 4 ? 'repo-root' : 'repo-tree',
@@ -65,4 +67,13 @@ export function detectPage(url: URL): PageInfo {
     };
   }
   return { kind: 'other' };
+}
+
+/**
+ * Identifies a page for navigation de-duplication: origin, path and query, without the fragment.
+ * An in-page anchor (`#readme`) changes `location.href` and fires `popstate`, but is not a new page
+ * (bootstrap review, #8).
+ */
+export function pageKey(url: URL): string {
+  return `${url.origin}${url.pathname}${url.search}`;
 }

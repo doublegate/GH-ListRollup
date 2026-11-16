@@ -67,19 +67,28 @@ they can be unit-tested against fixtures with no browser.
 
 ### 3.1 Page load (listing present in the first HTML)
 
-1. `document_start`: the entry sets `html[data-gnr-pending]`, so CSS hides rows, and starts the
-   4-second watchdog.
+1. `document_start`: on a URL with a listing shape, the entry sets `html[data-gnr-pending]`, so CSS
+   hides rows, starts the 4-second watchdog and starts the settings read. This pre-hide is the one
+   bounded exception to the rule that the listing is never hidden without a toggle
+   (`docs/dom-integration.md` §4).
 2. The first-listing observer sees `[data-testid="directory-content"]` and calls `apply()`.
 3. `apply()`: the detector returns a `ListingPage`. The collapse controller inserts the toggle and
    applies the stored or default state. The tree controller decorates folder rows. Then
    `data-gnr-pending` is removed.
+4. Any `apply()` exit that does not install the toggle removes `data-gnr-pending` at once: not a
+   listing page, the confidence gate failed, a needed selector missed, or an exception. The watchdog
+   covers everything else.
 
 ### 3.2 Soft navigation
 
 1. GitHub fires `soft-nav:end` and later `soft-nav:react-done`. Each schedules `apply()`.
-2. If the repo or ref changed, the controllers reset their state and the fetcher cache is cleared.
-   Otherwise the existing state is re-applied, so the toggle and expanded folders survive a
-   re-render.
+2. If the navigation reached a **different listing** (`location.pathname` changed, which covers a
+   new repo, ref or folder path), both controllers reset. Level 1 returns to the default state, or
+   the remembered per-repo state when `listing.rememberPerRepo` is on. Level 2 starts with every
+   folder collapsed (`docs/ui-behavior.md` §2.1, §3.1). The fetcher cache is cleared only when the
+   repo or ref changed, since its entries stay valid across folders of the same ref.
+3. If the `apply()` comes from a React re-render of the **same listing**, the existing state is
+   re-applied, so the toggle and expanded folders survive the re-render.
 
 ### 3.3 Expanding a folder
 
@@ -94,7 +103,7 @@ they can be unit-tested against fixtures with no browser.
 | State                          | Owner                                    | Lifetime                                                               |
 | ------------------------------ | ---------------------------------------- | ---------------------------------------------------------------------- |
 | Collapsed or expanded per page | Collapse controller                      | Page view. Persisted per repo only if `listing.rememberPerRepo` is on. |
-| Expanded paths and inline rows | Tree controller (`Map<path, NodeState>`) | Page view; reset when the repo or ref changes                          |
+| Expanded paths and inline rows | Tree controller (`Map<path, NodeState>`) | Page view; reset on navigation to a different listing                  |
 | Folder listings                | Fetcher cache                            | Tab, in memory; reset when the repo or ref changes                     |
 | Settings                       | `storage.sync` / `storage.local`         | Persistent                                                             |
 | Token, rate-limit reset time   | Background (`storage.local`)             | Persistent; never sent to content scripts                              |

@@ -4,10 +4,11 @@
 import { chromium } from 'playwright';
 
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
 // Fail fast on a missing or wrong path instead of an opaque Chromium launch (agy review, #2).
-const EXT = process.argv[2];
+// Absolute, so Chromium's extension flags get a usable path from a relative argument (#7).
+const EXT = process.argv[2] ? resolve(process.argv[2]) : undefined;
 if (!EXT || !existsSync(join(EXT, 'manifest.json'))) {
   console.error(`usage: node ${process.argv[1]} <path to .output/chrome-mv3>`);
   process.exit(2);
@@ -91,10 +92,11 @@ try {
   // Chromium does not re-inject the extension after chrome.runtime.reload(), a harness limit
   // (to-dos/phase-0-foundation/sprint-1-skeleton-ci.md, T-GNR-004).
   const expected = [
+    // Full expected lines, compared with endsWith, so a wrong or extra path cannot pass (agy, #7).
     { softNav: false, page: 'page repo-root wxt-dev/wxt path=/wxt-dev/wxt' },
     { softNav: true, page: 'page repo-tree wxt-dev/wxt path=/wxt-dev/wxt/tree/main/packages' },
     { softNav: true, page: 'page repo-root wxt-dev/wxt path=/wxt-dev/wxt' },
-    { softNav: true, page: 'page other' },
+    { softNav: true, page: 'page other path=/wxt-dev/wxt/issues' },
     { softNav: true, page: 'page repo-root wxt-dev/wxt path=/wxt-dev/wxt' },
     { softNav: true, page: null }, // invalidated: the old content script must log no page line
   ];
@@ -104,7 +106,7 @@ try {
     const pages = got.gnr.filter((t) => t.includes('[gnr] page'));
     if (got.softNav !== want.softNav) failures.push(`${got.step}: softNav ${got.softNav}`);
     if (
-      want.page === null ? pages.length !== 0 : pages.length !== 1 || !pages[0].includes(want.page)
+      want.page === null ? pages.length !== 0 : pages.length !== 1 || !pages[0].endsWith(want.page)
     )
       failures.push(`${got.step}: page lines ${JSON.stringify(pages)}`);
   });

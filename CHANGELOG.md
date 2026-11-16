@@ -33,8 +33,18 @@ All notable user-visible changes to this project are documented here. The format
   - `pnpm test` checks every fixture against its sidecar SHA-256 and the current sanitizer, and
     the signed-in capture path requires every identifier of the account being replaced.
 
+### Fixed
+
+- The content script no longer reports an in-page anchor (`#readme`) as a new page, and a bare
+  `/<owner>/<repo>/tree` URL is no longer treated as a repository listing.
+- Fixture sanitizing: an email address that contains the login is now fully replaced, a
+  `</script>` inside a page's embedded JSON stays escaped, and a folder named `__proto__`
+  survives.
+
 ### Security
 
+- ESLint now enforces the ban on parsing strings as HTML in the extension (`DOMParser`,
+  `createContextualFragment`), as `docs/security-privacy.md` already required.
 - Forced `minimatch` to 11.0.8 through a pnpm override, fixing GHSA-g3hv-75wg-m249 (moderate) in
   the lint tooling.
 - Reviewed and documented GHSA-gcqx-w48m-w2h4 (deepmerge, low). No fix exists, and the package is

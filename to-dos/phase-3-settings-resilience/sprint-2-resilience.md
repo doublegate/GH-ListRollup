@@ -15,7 +15,9 @@ field with its "Test token" button on the options page.
 
 **Acceptance criteria:**
 
-- [ ] Unit tests: sender validation, URL building, the rate-limit backoff driven by fake headers.
+- [ ] Unit tests: sender validation, URL building (the dot-segment rule and the
+      `/repos/<owner>/<repo>/contents/` prefix check), the rate-limit backoff driven by fake headers.
+- [ ] A fallback `404` with no token saved shows the "Private repositories need a token" hint.
 - [ ] A test proves the token never appears in a message to the content script, nor in any log line.
 - [ ] `docs/cross-browser.md` §2 and `docs/release.md` §3 step 5 updated; the AMO declaration
       decision made.

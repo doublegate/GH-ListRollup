@@ -30,26 +30,27 @@ WXT builds Firefox as MV2 unless told otherwise. `manifestVersion: 3` in `wxt.co
 to every command, so no script needs `--mv3`. Sources: `ref-docs/firefox-mv3.md`,
 `ref-docs/wxt-framework.md`.
 
-## 2. Generated manifest (target shape)
+## 2. Generated manifest
 
-Shared keys:
+### 2.1 Baseline (what `wxt.config.ts` produces today)
+
+Shared keys, as built by the Phase 0 skeleton (WXT adds `version` from `package.json` and the
+`background` entry):
 
 ```json
 {
   "manifest_version": 3,
   "name": "GH ListRollup",
-  "description": "Collapse GitHub's file listing to one line and expand folders inline as a tree.",
+  "description": "Collapse GitHub's repository file listing to one line and expand folders inline as a nested tree.",
   "permissions": ["storage"],
-  "host_permissions": ["https://github.com/*", "https://api.github.com/*"],
+  "host_permissions": ["https://github.com/*"],
   "content_scripts": [
     {
       "matches": ["https://github.com/*"],
       "js": ["content-scripts/content.js"],
-      "css": ["content-scripts/content.css"],
       "run_at": "document_start"
     }
-  ],
-  "options_ui": { "page": "options.html", "open_in_tab": false }
+  ]
 }
 ```
 
@@ -68,6 +69,16 @@ Firefox adds:
 ```
 
 Chrome adds `"minimum_chrome_version": "121"`.
+
+### 2.2 Additions by later tickets
+
+| Addition                                                         | Ticket    | Condition                                                       |
+| ---------------------------------------------------------------- | --------- | --------------------------------------------------------------- |
+| `"css": ["content-scripts/content.css"]` on the content script   | T-GNR-107 | Always; WXT adds it once the content script imports `style.css` |
+| `"options_ui": { "page": "options.html", "open_in_tab": false }` | T-GNR-303 | Always; WXT adds it once `src/entrypoints/options/` exists      |
+| `"https://api.github.com/*"` in `host_permissions`               | T-GNR-302 | Only if ADR 0003 keeps the REST fallback (T-GNR-209)            |
+
+Each ticket updates §2.1 when it lands, so §2.1 always describes the current build.
 
 Rules for the manifest:
 
@@ -95,6 +106,8 @@ Rules for the manifest:
 ## 4. Verification per browser
 
 - Run `pnpm build` and `pnpm build:firefox`. Check the generated `manifest.json` in each build against
-  §2 with `pnpm check:manifest`, a test that loads both manifests and asserts the keys.
+  the §2.1 baseline plus the §2.2 additions that have landed. Today this is a manual check; a
+  planned `pnpm check:manifest` test (not yet in `package.json`) will load both manifests and assert
+  the keys.
 - Run `web-ext lint --source-dir .output/firefox-mv3 --warnings-as-errors` with zero findings.
 - Load both builds unpacked and run the manual smoke checklist in `docs/testing-strategy.md` §5.

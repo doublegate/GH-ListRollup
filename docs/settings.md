@@ -28,6 +28,11 @@ approaches the `storage.local` quota.
   default and a version number, in `src/settings.ts`. Readers never hand-write key strings.
 - **Validation.** Values read from storage are validated (type and range) before use; an invalid value
   falls back to the default and is logged under `debug.logging`.
+- **Read early.** The content script starts reading `listing.defaultState`, `listing.rememberPerRepo`
+  and the current repo's `repoState` entry at `document_start`. The first apply waits for that read
+  while the pre-hide is in place. When the result is `expanded`, the pending attribute is cleared as
+  soon as the read returns, so the rows are hidden only for the length of the read, which the
+  4-second watchdog bounds (`docs/dom-integration.md` §4).
 - **Live updates.** The content script watches the items it uses, so changing a setting applies to open
   GitHub tabs without a reload.
 - **Migration.** A bumped item version supplies a migration function. Removing a key requires a

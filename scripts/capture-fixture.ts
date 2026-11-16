@@ -268,6 +268,26 @@ async function main(): Promise<void> {
     },
   });
 
+  // Refuse flag combinations that a mode would silently ignore (bootstrap review, #8, #10).
+  const fromFile = values['from-file'] !== undefined;
+  const modes = [
+    values.reprocess && '--reprocess',
+    fromFile && '--from-file',
+    values.url !== undefined && '--url',
+  ].filter(Boolean);
+  if (modes.length > 1) fail(`${modes.join(', ')} are mutually exclusive`);
+  if (values.json && values.url === undefined) fail('--json applies only to --url');
+  const identityFlags = ['login', 'user-id', 'node-id', 'email'] as const;
+  if (!fromFile && identityFlags.some((f) => values[f] !== undefined)) {
+    fail('--login, --user-id, --node-id and --email apply only to --from-file');
+  }
+  if (values.name !== undefined && values.url === undefined && !fromFile) {
+    fail('--name applies only to --url or --from-file; pass manifest names as positionals');
+  }
+  if (positionals.length > 0 && (values.url !== undefined || fromFile)) {
+    fail('positional fixture names cannot be combined with --url or --from-file');
+  }
+
   // Validate --kind up front, and refuse combinations that would silently ignore it (agy review,
   // PR #3): an unknown kind used to filter everything out, and --kind was ignored with --url. Runs
   // before every mode branch, so --reprocess and --from-file cannot ignore it either (PR #7).

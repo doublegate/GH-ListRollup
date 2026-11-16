@@ -2,10 +2,11 @@
 import { chromium } from 'playwright';
 
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
 // Fail fast on a missing or wrong path instead of an opaque Chromium launch (agy review, #2).
-const EXT = process.argv[2];
+// Absolute, so Chromium's extension flags get a usable path from a relative argument (#7).
+const EXT = process.argv[2] ? resolve(process.argv[2]) : undefined;
 if (!EXT || !existsSync(join(EXT, 'manifest.json'))) {
   console.error(`usage: node ${process.argv[1]} <path to .output/chrome-mv3>`);
   process.exit(2);
