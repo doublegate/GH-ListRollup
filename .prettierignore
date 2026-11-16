@@ -5,7 +5,8 @@ pnpm-lock.yaml
 ref-docs/
 LICENSE-APACHE
 
-# Antigravity reviewer: template-managed files, kept byte-identical to the template
-# (its selftest parses the workflow; reformatting breaks it and noisy future syncs).
+# Antigravity reviewer: template-managed files, kept in sync with the template (the workflow
+# omits only the first-install bootstrap steps). Its selftest parses the workflow; reformatting
+# breaks it and makes future syncs noisy.
 .github/workflows/antigravity-review.yml
 .github/AGY-REVIEWER.md

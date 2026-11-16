@@ -101,9 +101,12 @@ workspace template. Operations guide: `.github/AGY-REVIEWER.md`; project rules:
   `agy`: `github-agy-runner@gh-listrollup`, a `systemd --user` service that runs while the
   maintainer is logged in.
 - **Fork PRs** need approval for every outside contributor before any workflow runs.
-- **Keep the template files byte-identical:** the workflow and the operations doc are excluded
-  from Prettier, because the self-test parses the workflow. Update them only by re-syncing from
-  the template.
+- **Keep the template files in sync with the template.** The workflow and the operations doc are
+  excluded from Prettier, because the self-test parses the workflow. The doc is byte-identical.
+  The workflow differs in exactly one way: the template's first-install bootstrap steps are
+  omitted. They could never fire once the reviewer was on `main`, and they trip CodeQL
+  `actions/untrusted-checkout`; RustyNES does the same. Update both only by re-syncing from the
+  template, then re-apply that omission.
 
 To run the secret scan locally, give gitleaks an **absolute path**:
 `gitleaks git "$PWD" --redact`. On this workstation the `gitleaks` command is a wrapper that changes
