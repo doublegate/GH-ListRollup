@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "title": "vscode/src/vs at main · microsoft/vscode"
+  },
+  "payload": {
+    "codeViewTreeRoute": {
+      "path": "src/vs",
+      "refInfo": {
+        "name": "main",
+        "listCacheKey": "v0:0",
+        "canEdit": false,
+        "refType": "branch",
+        "currentOid": "6659689e6b03ec062f5b7bcea9850b4c59045807"
+      },
+      "tree": {
+        "items": [
+          {
+            "name": "base",
+            "path": "src/vs/base",
+            "contentType": "directory"
+          },
+          {
+            "name": "code",
+            "path": "src/vs/code",
+            "contentType": "directory"
+          },
+          {
+            "name": "editor",
+            "path": "src/vs/editor",
+            "contentType": "directory"
+          },
+          {
+            "name": "platform",
+            "path": "src/vs/platform",
+            "contentType": "directory"
+          },
+          {
+            "name": "server",
+            "path": "src/vs/server",
+            "contentType": "directory"
+          },
+          {
+            "name": "sessions",
+            "path": "src/vs/sessions",
+            "contentType": "directory"
+          },
+          {
+            "name": "workbench",
+            "path": "src/vs/workbench",
+            "contentType": "directory"
+          },
+          {
+            "name": "amdX.ts",
+            "path": "src/vs/amdX.ts",
+            "contentType": "file"
+          },
+          {
+            "name": "monaco.d.ts",
+            "path": "src/vs/monaco.d.ts",
+            "contentType": "file"
+          },
+          {
+            "name": "nls.ts",
+            "path": "src/vs/nls.ts",
+            "contentType": "file"
+          }
+        ],
+        "totalCount": 10,
+        "templateDirectorySuggestionUrl": null,
+        "readme": null,
+        "showBranchInfobar": false
+      },
+      "userNameDisplayConfiguration": "name_handle",
+      "treeExpanded": true,
+      "symbolsExpanded": false,
+      "copilotSWEAgentEnabled": false,
+      "copilotAccessAllowed": false
+    }
+  }
+}

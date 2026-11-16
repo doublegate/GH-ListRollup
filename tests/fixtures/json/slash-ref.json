@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "title": "GitHub - refined-github/sandbox at branch/with/slashes"
+  },
+  "payload": {
+    "codeViewTreeRoute": {
+      "path": "/",
+      "refInfo": {
+        "name": "branch/with/slashes",
+        "listCacheKey": "v0:0",
+        "canEdit": false,
+        "refType": "branch",
+        "currentOid": "f9dc77536144ede629d39e5f47f94b61ed34d9c8"
+      },
+      "tree": {
+        "items": [
+          {
+            "name": "renamed.md",
+            "path": "renamed.md",
+            "contentType": "file"
+          }
+        ],
+        "totalCount": 1,
+        "templateDirectorySuggestionUrl": null,
+        "readme": null,
+        "showBranchInfobar": true
+      },
+      "userNameDisplayConfiguration": "handle",
+      "treeExpanded": false,
+      "symbolsExpanded": false,
+      "copilotSWEAgentEnabled": false,
+      "copilotAccessAllowed": false,
+      "isOverview": true,
+      "overview": {
+        "banners": {
+          "shouldRecommendReadme": false,
+          "isPersonalRepo": false,
+          "showUseActionBanner": false,
+          "actionSlug": null,
+          "actionId": null,
+          "showProtectBranchBanner": false,
+          "requiredCustomPropertyValuesMissingCount": 0,
+          "transactionalMessageBanner": null,
+          "publishBannersInfo": {
+            "dismissActionNoticePath": "/settings/dismiss-notice/publish_action_from_repo",
+            "releasePath": "/refined-github/sandbox/releases/new?marketplace=true",
+            "showPublishActionBanner": false
+          },
+          "interactionLimitBanner": null,
+          "showInvitationBanner": false,
+          "inviterName": null,
+          "actionsMigrationBannerInfo": {
+            "releaseTags": [],
+            "showImmutableActionsMigrationBanner": false,
+            "initialMigrationStatus": null
+          },
+          "copilotSurveyBanner": null,
+          "showSpammyBanner": false,
+          "blockedContributorsBanner": null,
+          "codespacesSurveyBanner": null
+        },
+        "codeButton": {
+          "contactPath": "/contact",
+          "isEnterprise": false,
+          "local": {
+            "protocolInfo": {
+              "httpAvailable": true,
+              "sshAvailable": null,
+              "httpUrl": "https://github.com/refined-github/sandbox.git",
+              "showCloneWarning": null,
+              "sshUrl": null,
+              "sshCertificatesRequired": null,
+              "sshCertificatesAvailable": null,
+              "ghCliUrl": "gh repo clone refined-github/sandbox",
+              "defaultProtocol": "http",
+              "newSshKeyUrl": "/settings/ssh/new",
+              "setProtocolPath": "/users/set_protocol?protocol_type=clone"
+            },
+            "platformInfo": {
+              "cloneUrl": "https://desktop.github.com",
+              "showVisualStudioCloneButton": false,
+              "visualStudioCloneUrl": "https://windows.github.com",
+              "showXcodeCloneButton": false,
+              "xcodeCloneUrl": "xcode://clone?repo=https%3A%2F%2Fgithub.com%2Frefined-github%2Fsandbox",
+              "zipballUrl": "/refined-github/sandbox/archive/refs/heads/branch/with/slashes.zip"
+            }
+          },
+          "newCodespacePath": "/codespaces/new?hide_repo_select=true&ref=branch%2Fwith%2Fslashes&repo=402758072"
+        },
+        "popovers": {
+          "rename": null,
+          "renamedParentRepo": null
+        },
+        "commitCount": "7",
+        "overviewFiles": [],
+        "overviewFilesProcessingTime": 0,
+        "copilotSWEAgentEnabled": false,
+        "sidebarAboutData": {
+          "description": "Test `repo`",
+          "formattedDescription": "Test `repo`",
+          "topics": [],
+          "showInsights": true,
+          "canOpenStargazersAndWatchers": false,
+          "stargazerCount": 0,
+          "watcherCount": 0,
+          "forksCount": 0,
+          "stargazersPath": "/refined-github/sandbox/stargazers",
+          "watchersPath": "/refined-github/sandbox/watchers",
+          "forkNetworkPath": "/refined-github/sandbox/forks",
+          "activityPath": "/refined-github/sandbox/activity",
+          "customPropertiesPath": "/refined-github/sandbox/custom-properties",
+          "reportPath": "/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Frefined-github%2Fsandbox&report=refined-github+%28user%29",
+          "canEditMetadata": false,
+          "ownerLogin": "refined-github",
+          "repoName": "sandbox",
+          "isOrg": true,
+          "sections": {
+            "releases": false,
+            "sponsors": false,
+            "deployments": false,
+            "packages": false,
+            "usedBy": true,
+            "contributors": true,
+            "languages": false,
+            "cta": false,
+            "suggestedWorkflows": false
+          },
+          "hasCitation": false,
+          "repo": {
+            "ownerAvatarUrl": "",
+            "ownerId": 53074291,
+            "isPrivate": false,
+            "isTemplate": false,
+            "isFork": false,
+            "isMirror": false,
+            "isArchived": false,
+            "visibilityLabel": "Public",
+            "isAdvisoryWorkspace": false
+          },
+          "star": {
+            "viewerHasStarred": false,
+            "canStar": false
+          },
+          "fork": {
+            "canFork": false,
+            "forkabilityError": "not_logged_in"
+          },
+          "pin": {
+            "canPin": false,
+            "isPinned": false,
+            "isOrgOwned": true,
+            "pinItemsRemaining": 5
+          },
+          "watch": {
+            "canWatch": false,
+            "watchData": {
+              "repositoryId": "402758072",
+              "repositoryName": "refined-github/sandbox",
+              "watchersCount": 0,
+              "subscriptionType": "none",
+              "subscribableThreadTypes": [
+                {
+                  "name": "Issue",
+                  "enabled": true,
+                  "subscribed": false
+                },
+                {
+                  "name": "PullRequest",
+                  "enabled": true,
+                  "subscribed": false
+                },
+                {
+                  "name": "Release",
+                  "enabled": true,
+                  "subscribed": false
+                },
+                {
+                  "name": "Discussion",
+                  "enabled": false,
+                  "subscribed": false
+                },
+                {
+                  "name": "SecurityAlert",
+                  "enabled": true,
+                  "subscribed": false
+                }
+              ],
+              "showLabelSubscriptions": false,
+              "subscribedLabels": []
+            }
+          },
+          "viewer": {
+            "isLoggedIn": false,
+            "isSiteAdmin": false,
+            "emuContributionBlocked": false
+          },
+          "showSponsorButton": false,
+          "showTemplateButton": false,
+          "showDemoNotification": false
+        }
+      }
+    }
+  }
+}
