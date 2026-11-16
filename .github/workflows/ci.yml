@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Format, lint, typecheck, test, build (Chrome + Firefox)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      # pnpm version comes from package.json "packageManager"; corepack keeps it pinned.
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Same gate as local `pnpm check` (docs/testing-strategy.md section 7).
+      - name: Check
+        run: pnpm check
+
+      - name: Upload builds
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: extension-builds
+          path: |
+            .output/chrome-mv3
+            .output/firefox-mv3
+          retention-days: 14

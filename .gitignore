@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# WXT build output and generated types
+.output/
+.wxt/
+web-ext-artifacts/
+stats.html
+stats-*.json
+
+# Packaged extensions
+*.zip
+*.xpi
+*.crx
+*.pem
+
+# Tests and coverage
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Caches and logs
+.eslintcache
+.cache/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Environment and secrets (an optional GitHub token must never be committed)
+.env
+.env.*
+!.env.example
+
+# Local Claude Code state
+.claude/
+CLAUDE.local.md
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~
+
+# Generation logs from artwork tooling
+agy-*.log

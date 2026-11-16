@@ -1,0 +1,35 @@
+/**
+ * Navigation watcher (docs/dom-integration.md section 4).
+ *
+ * GitHub changes pages without full loads (Turbo plus a React router, wrapped in `soft-nav:*`
+ * events). This turns all of those signals into one callback per animation frame. Only event names
+ * are used; payloads from the page world are not read.
+ */
+import type { ContentScriptContext } from 'wxt/utils/content-script-context';
+
+/** Document-level events GitHub fires after a soft navigation has rendered. */
+export const SOFT_NAV_EVENTS = [
+  'soft-nav:end',
+  'soft-nav:react-done',
+  'turbo:render',
+  'turbo:load',
+] as const;
+
+export function watchNavigation(ctx: ContentScriptContext, onChange: () => void): void {
+  let scheduled = false;
+  const schedule = (): void => {
+    if (scheduled) return;
+    scheduled = true;
+    ctx.requestAnimationFrame(() => {
+      scheduled = false;
+      onChange();
+    });
+  };
+
+  for (const type of SOFT_NAV_EVENTS) {
+    ctx.addEventListener(document, type, schedule);
+  }
+  ctx.addEventListener(window, 'popstate', schedule);
+  // WXT's own URL watcher: fires at the start of a navigation, so it is a supplement only.
+  ctx.addEventListener(window, 'wxt:locationchange', schedule);
+}
