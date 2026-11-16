@@ -49,10 +49,11 @@ const SECRET_KEY = /token|csrf|hmac|nonce|secret|password/i;
 /**
  * JSON keys that hold a MAP of tokens (for example `csrf_tokens`, keyed by form path), whose leaves
  * are all redacted. Deliberately narrower than SECRET_KEY: an object under a key that merely
- * contains a secret word -- a file-tree map keyed by a folder path such as `src/token` -- is
- * ordinary data and must be traversed, not wiped (agy review, PR #3).
+ * contains a secret word -- a file-tree map keyed by a folder path such as `src/token`, or a root
+ * folder literally named `tokens` -- is ordinary data and must be traversed, not wiped. Exact key
+ * only: `csrf_tokens` is the one token map GitHub serves on these pages (agy reviews, PR #3).
  */
-const TOKEN_MAP_KEY = /(^|_)tokens$/i;
+const TOKEN_MAP_KEY = /^csrf_tokens$/i;
 
 /** JSON keys holding avatar URLs; their string values are blanked like `<img>` avatars. */
 const AVATAR_KEY = /avatar/i;

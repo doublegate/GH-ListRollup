@@ -125,7 +125,7 @@ describe('JSON fixtures (T-GNR-013 cases)', () => {
       for (const file of readdirSync(dir).filter((f) => f.endsWith(`.${kind}`))) {
         const text = readFileSync(join(dir, file), 'utf8');
         expect(text, file).not.toMatch(/avatars\.githubusercontent\.com/);
-        expect(text, file).not.toMatch(/"(uploadToken|authenticity_token)":"(?!REDACTED)/);
+        expect(text, file).not.toMatch(/"(uploadToken|authenticity_token)":\s*"(?!REDACTED)/);
         expect(text, file).not.toMatch(/\bnonce=/);
         expect(text, file).not.toMatch(/jwt=eyJ/);
         expect(text, file).not.toMatch(/data-channel=/);

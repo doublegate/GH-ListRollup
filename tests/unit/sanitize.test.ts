@@ -184,6 +184,13 @@ describe('redactSecrets', () => {
       csrf_tokens: { '/a/post': REDACTED },
     });
   });
+
+  it('does not wipe a file-tree entry for a folder literally named tokens', () => {
+    const entry = { items: [{ name: 'k.json', path: 'tokens/k.json' }], totalCount: 1 };
+    expect(redactSecrets({ fileTree: { tokens: entry, auth_tokens: entry } })).toEqual({
+      fileTree: { tokens: entry, auth_tokens: entry },
+    });
+  });
 });
 
 describe('minimization (third-party and GitHub-authored content)', () => {

@@ -53,8 +53,10 @@ function replaceDocumentElement(html: string): void {
  * so for example `location.pathname` is `/git/git/tree/master/contrib` for `folder`.
  */
 export function loadHtmlFixture(name: string, options: { url?: string } = {}): Document {
+  // Resolve the URL first so an unknown name gets the manifest's descriptive error, not ENOENT.
+  const url = options.url ?? fixtureUrl(name, 'html');
   const html = readFileSync(join(FIXTURES, 'html', `${name}.html`), 'utf8');
-  setLocation(options.url ?? fixtureUrl(name, 'html'));
+  setLocation(url);
   replaceDocumentElement(html);
   return document;
 }

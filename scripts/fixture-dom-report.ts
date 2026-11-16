@@ -17,7 +17,13 @@ const names = readdirSync(HTML_DIR)
 const table = await report(names);
 const labels = Object.keys(table[names[0] ?? ''] ?? {});
 const width = Math.max(...labels.map((l) => l.length)) + 2;
-console.info(`${'selector'.padEnd(width)}${names.map((n) => n.padEnd(18)).join('')}`);
+// Column width from the widest name or value, so long cells (the aria-label suffix list) align.
+const col =
+  Math.max(
+    ...names.map((n) => n.length),
+    ...names.flatMap((n) => labels.map((l) => String(table[n]?.[l] ?? '').length)),
+  ) + 2;
+console.info(`${'selector'.padEnd(width)}${names.map((n) => n.padEnd(col)).join('')}`);
 for (const label of labels) {
   const values = names.map((n) => table[n]?.[label] ?? '');
   const differs = names.some((n) => {
@@ -25,6 +31,6 @@ for (const label of labels) {
     return twin !== null && names.includes(twin) && table[n]?.[label] !== table[twin]?.[label];
   });
   console.info(
-    `${label.padEnd(width)}${values.map((v) => String(v).padEnd(18)).join('')}${differs ? '<-- differs' : ''}`,
+    `${label.padEnd(width)}${values.map((v) => String(v).padEnd(col)).join('')}${differs ? '<-- differs' : ''}`,
   );
 }

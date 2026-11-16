@@ -135,13 +135,19 @@ function refInfoOf(kind: Kind, content: string): string {
   return kind === 'json' ? 'no refInfo in response' : 'ref not found in embedded data';
 }
 
-function sidecar(spec: FixtureSpec, file: string, content: string, status: number): string {
+function sidecar(
+  spec: FixtureSpec,
+  file: string,
+  content: string,
+  status: number,
+  captured: string,
+): string {
   const sha = createHash('sha256').update(content).digest('hex');
   const lines = [
     `# Fixture: ${spec.kind}/${spec.name}`,
     '',
     `- **Source:** <${spec.url}>`,
-    `- **Captured:** ${new Date().toISOString().slice(0, 10)} (${
+    `- **Captured:** ${captured} (${
       spec.loggedIn
         ? 'signed in; saved from a browser, then sanitized by `scripts/capture-fixture.ts --from-file` with the user identity replaced by `fixture-user`, and reviewed by hand'
         : 'logged out, by `scripts/capture-fixture.ts`'
@@ -204,11 +210,22 @@ async function captureFromFile(
   return store(spec, content, 200, check);
 }
 
+/** The `Captured:` date recorded in an existing sidecar, if any. */
+async function capturedDateOf(sidecarPath: string): Promise<string | undefined> {
+  const md = await readFile(sidecarPath, 'utf8').catch(() => '');
+  return /- \*\*Captured:\*\* (\d{4}-\d{2}-\d{2})/.exec(md)?.[1];
+}
+
+/**
+ * Writes a fixture and its sidecar. `keepCapturedDate` (used by --reprocess) keeps the sidecar's
+ * original capture date: re-sanitizing a committed fixture is not a new capture (agy review, PR #3).
+ */
 async function store(
   spec: FixtureSpec,
   content: string,
   status: number,
   check: boolean,
+  keepCapturedDate = false,
 ): Promise<Result> {
   const dir = join(FIXTURES, spec.kind);
   const file = `${spec.name}.${spec.kind}`;
@@ -217,10 +234,20 @@ async function store(
   if (previous === content) return 'unchanged';
   if (check) return 'drift';
 
+  const sidecarPath = join(dir, `${spec.name}.md`);
+  const today = new Date().toISOString().slice(0, 10);
+  const captured = (keepCapturedDate ? await capturedDateOf(sidecarPath) : undefined) ?? today;
   await mkdir(dir, { recursive: true });
   await writeFile(path, content);
-  await writeFile(join(dir, `${spec.name}.md`), sidecar(spec, file, content, status));
+  await writeFile(sidecarPath, sidecar(spec, file, content, status, captured));
   return 'written';
+}
+
+/** Filters specs to the named ones, failing on any name that matches nothing (agy review, PR #3). */
+function selectByName(specs: FixtureSpec[], names: string[]): FixtureSpec[] {
+  const unknown = names.filter((n) => !specs.some((s) => s.name === n));
+  if (unknown.length > 0) fail(`no fixture named: ${unknown.join(', ')}`);
+  return specs.filter((s) => names.includes(s.name));
 }
 
 async function main(): Promise<void> {
@@ -246,13 +273,13 @@ async function main(): Promise<void> {
     // (the raw browser captures are deleted after review). Sanitizing is idempotent, so an
     // unchanged sanitizer leaves the files byte-identical.
     let specs = (await loadManifest()).filter((s) => s.kind === 'html' && s.loggedIn);
-    if (positionals.length > 0) specs = specs.filter((s) => positionals.includes(s.name));
+    if (positionals.length > 0) specs = selectByName(specs, positionals);
     if (specs.length === 0) fail('no logged-in html fixtures matched');
     let drift = 0;
     for (const spec of specs) {
       const current = await readFile(join(FIXTURES, 'html', `${spec.name}.html`), 'utf8');
       const content = await sanitizeGitHubHtml(current, { sourceUrl: spec.url, name: spec.name });
-      const result = await store(spec, content, 200, values.check);
+      const result = await store(spec, content, 200, values.check, true);
       if (result === 'drift') drift++;
       console.info(
         `${result.padEnd(9)} ${relative(ROOT, join(FIXTURES, 'html', `${spec.name}.html`))}`,
@@ -271,11 +298,16 @@ async function main(): Promise<void> {
       (s) => s.name === name && s.kind === 'html' && s.loggedIn,
     );
     if (!spec) fail(`no logged-in html entry named "${name}" in tests/fixtures/manifest.json`);
-    const id = values['user-id'] !== undefined ? Number(values['user-id']) : undefined;
-    if (id !== undefined && !Number.isInteger(id)) fail('--user-id must be an integer');
+    // Required, not optional (agy review, PR #3): without it the page's numeric user id
+    // (currentUser.id and others) is neither replaced nor checked for, so a capture could pass
+    // the fail-closed leftovers check while still carrying the real id.
+    const rawId =
+      values['user-id'] ?? fail('--from-file requires --user-id (the numeric id to replace)');
+    if (!/^[1-9][0-9]*$/.test(rawId)) fail('--user-id must be a positive integer');
+    const id = Number(rawId);
     const identity: Identity = {
       login,
-      ...(id !== undefined ? { id } : {}),
+      id,
       ...(values['node-id'] !== undefined ? { nodeId: values['node-id'] } : {}),
       ...(values.email !== undefined ? { email: values.email } : {}),
     };
@@ -296,7 +328,7 @@ async function main(): Promise<void> {
   } else {
     specs = await loadManifest();
     if (values.kind !== undefined) specs = specs.filter((s) => s.kind === values.kind);
-    if (positionals.length > 0) specs = specs.filter((s) => positionals.includes(s.name));
+    if (positionals.length > 0) specs = selectByName(specs, positionals);
     if (specs.length === 0) fail('no fixtures matched');
   }
 
