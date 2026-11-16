@@ -42,7 +42,8 @@ export function startLifecycle(
   const controller = new CollapseController(ctx, doc, apply);
 
   // 1. Pre-hide and watchdog: listing-shaped URLs only. Soft navigation never sets it.
-  if (detectPage(new URL(doc.location.href)).kind !== 'other') {
+  const listingShaped = detectPage(new URL(doc.location.href)).kind !== 'other';
+  if (listingShaped) {
     setPending(doc);
     ctx.setTimeout(() => {
       if (isPending(doc)) {
@@ -52,16 +53,21 @@ export function startLifecycle(
     }, WATCHDOG_MS);
   }
 
-  // 2. First apply: as soon as the listing exists, and in any case at DOMContentLoaded.
+  // 2. First apply: as soon as the listing exists, and in any case at DOMContentLoaded. The document
+  // observer runs only on listing-shaped URLs and for at most the watchdog's 4 seconds; soft
+  // navigations reach listings through their own signals (agy, #16).
   if (query('listing', doc)) {
     controller.schedule();
-  } else {
+  } else if (listingShaped) {
     const first = new MutationObserver(() => {
       if (!query('listing', doc)) return;
       first.disconnect();
       controller.schedule();
     });
     first.observe(doc.documentElement, { childList: true, subtree: true });
+    ctx.setTimeout(() => {
+      first.disconnect();
+    }, WATCHDOG_MS);
     ctx.onInvalidated(() => {
       first.disconnect();
     });
@@ -73,11 +79,6 @@ export function startLifecycle(
   // 3. Soft navigation (already coalesced to one call per animation frame).
   watchNavigation(ctx, () => {
     apply();
-  });
-
-  ctx.onInvalidated(() => {
-    // Never leave the rows hidden behind a dead content script.
-    clearPending(doc);
   });
 
   return { controller, apply };

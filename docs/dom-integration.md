@@ -223,7 +223,16 @@ scripts run only on full loads.
    the next navigation to a different listing.
 
 6. **Teardown.** WXT's `ctx.onInvalidated` disconnects observers and removes listeners when the
-   extension updates or reloads.
+   extension updates or reloads. It also **restores the page**: the extension's toggles are removed,
+   the collapsed class and `data-gnr-pending` are cleared. A dead content script would otherwise
+   leave the files hidden behind a button that no longer responds (verified live: after an extension
+   reload the listing is visible and usable).
+
+The controller also forgets the listing whenever an `apply()` lands on a non-listing page. Returning
+to the same listing later (Issues, then Back) is a navigation, not a re-render, so it starts
+collapsed again. If the header line disappears after a successful collapse, the next `apply()` takes
+the no-header exit. That exit removes the collapsed class, so files are never hidden without a toggle.
+It also marks the listing as shown, so a header that returns does not cause a late collapse.
 
 ### Hydration
 

@@ -84,7 +84,18 @@ export class CollapseController {
   ) {
     ctx.onInvalidated(() => {
       this.disconnect();
+      this.restore();
     });
+  }
+
+  /**
+   * Leaves the page as GitHub rendered it: our toggles removed, the listing shown. Runs on teardown,
+   * because a dead content script would leave the files hidden behind an inert button (Codex, #16).
+   */
+  restore(): void {
+    for (const el of queryAll('gnrToggle', this.doc).elements) el.remove();
+    query('listing', this.doc)?.element.classList.remove(COLLAPSED_CLASS);
+    clearPending(this.doc);
   }
 
   /** Runs `apply` on the next animation frame, coalescing repeated requests. */
@@ -117,7 +128,10 @@ export class CollapseController {
     const doc = this.doc;
     const page = readListingPage(url, doc);
     if (!page) {
+      // Forget the listing: coming back to it later is a navigation, not a re-render (agy, #16).
       clearPending(doc);
+      this.state = null;
+      this.disconnect();
       return 'not-listing';
     }
     const listing = query('listing', doc)?.element ?? null;
@@ -157,9 +171,15 @@ export class CollapseController {
     }
     const header = findHeaderLine(doc);
     if (!header) {
-      // The confidence gate: leave GitHub's listing visible and untouched.
+      // The confidence gate: leave GitHub's listing visible. If an earlier apply collapsed it and
+      // the header (with our toggle) has since gone, show the files again (Codex, #16), and keep
+      // them shown when the header returns: no late collapse.
       clearPending(doc);
-      if (!state.installed) state.shownWithoutToggle = true;
+      listing.classList.remove(COLLAPSED_CLASS);
+      state.shownWithoutToggle = true;
+      state.installed = false;
+      // Watch for the header line arriving later: nothing else would re-apply (agy, #16).
+      this.observe(listing.parentElement ?? listing);
       return 'no-header';
     }
 
@@ -177,6 +197,8 @@ export class CollapseController {
     clearPending(doc);
 
     this.observe(commonAncestor(header.box, listing) ?? listing);
+    // Our own insertion above is not a re-render: drop its records (agy, #16).
+    this.observer?.takeRecords();
     return 'applied';
   }
 
@@ -195,18 +217,17 @@ export class CollapseController {
     }
     const button = createToggle(this.doc, controlsId);
     this.ctx.addEventListener(button, 'click', () => {
-      this.toggle();
+      this.toggle(button);
     });
     insertionPoint.prepend(button);
     return button;
   }
 
-  /** The user's click: flips the state of the listing currently shown. */
-  toggle(): void {
+  /** The user's click on `button`: flips the state of the listing currently shown. */
+  toggle(button: HTMLButtonElement): void {
     const state = this.state;
     const listing = query('listing', this.doc)?.element;
-    const button = queryAll('gnrToggle', this.doc).elements[0];
-    if (!state || !listing || !(button instanceof HTMLButtonElement)) return;
+    if (!state || !listing) return;
     state.expanded = !state.expanded;
     setToggleExpanded(button, state.expanded);
     listing.classList.toggle(COLLAPSED_CLASS, !state.expanded);

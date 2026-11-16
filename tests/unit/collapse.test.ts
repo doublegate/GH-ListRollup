@@ -175,11 +175,11 @@ describe('lifecycle (T-GNR-106)', () => {
   });
 
   it('apply() on a non-listing page, also after a soft navigation, clears pending at once', () => {
-    const { doc, controller } = applied('root');
-    setPending(doc); // as if left over
-    loadHtmlFixture('root', { url: 'https://github.com/git/git/issues' });
+    const { controller } = applied('root');
+    const issues = loadHtmlFixture('root', { url: 'https://github.com/git/git/issues' });
+    setPending(issues); // set AFTER the load, which replaces the document element (agy, #16)
     expect(controller.apply(new URL('https://github.com/git/git/issues'))).toBe('not-listing');
-    expect(isPending(document)).toBe(false);
+    expect(isPending(issues)).toBe(false);
   });
 
   it('a successful first apply clears pending, after the toggle exists', () => {
@@ -315,5 +315,102 @@ describe('state reset on navigation (T-GNR-108)', () => {
     expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
     expect(collapsed(doc)).toBe(false);
     expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+  });
+});
+
+describe('review findings on #16', () => {
+  it('listing -> non-listing -> back to the same listing starts collapsed again (agy)', () => {
+    const { doc, controller } = applied('root');
+    toggle(doc).click(); // expanded
+    loadHtmlFixture('root', { url: 'https://github.com/git/git/issues' });
+    expect(controller.apply(new URL('https://github.com/git/git/issues'))).toBe('not-listing');
+    const back = loadHtmlFixture('root');
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(collapsed(back)).toBe(true);
+    expect(toggle(back).getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('/o/r/tree/<tag> -> /o/r: an apply on the stale DOM still ends collapsed on the new listing (agy)', () => {
+    const tagUrl = fixtureUrl('root-tag');
+    const { doc, controller } = applied('root-tag');
+    toggle(doc).click(); // expanded on the tag
+    // URL changes to the repository root while the tag's rows are still shown; the tag's ref
+    // passes the root cross-check, so the controller applies on the stale DOM.
+    loadHtmlFixture('root-tag', { url: 'https://github.com/git/git' });
+    controller.apply(new URL('https://github.com/git/git'));
+    // React renders the root listing.
+    const root = loadHtmlFixture('root');
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(collapsed(root)).toBe(true);
+    expect(toggles(root).length).toBe(1);
+    expect(tagUrl).not.toBe(fixtureUrl('root'));
+  });
+
+  it('if the header line disappears after a collapse, the files are shown again (Codex)', () => {
+    const { doc, controller } = applied('root');
+    expect(collapsed(doc)).toBe(true);
+    const row = findHeaderLine(doc)?.insertionPoint;
+    const parent = row?.parentElement;
+    row?.remove(); // React drops the commit bar, and our toggle with it
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-header');
+    expect(collapsed(doc)).toBe(false);
+    // When the header returns, the listing stays expanded: no late collapse.
+    if (row && parent) {
+      row.querySelector('[data-gnr="toggle"]')?.remove();
+      parent.prepend(row);
+    }
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(collapsed(doc)).toBe(false);
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('invalidation shows the files again and removes the inert toggle (Codex)', () => {
+    const doc = loadHtmlFixture('root');
+    startLifecycle(ctx, doc).apply();
+    expect(collapsed(doc)).toBe(true);
+    ctx.notifyInvalidated();
+    expect(collapsed(doc)).toBe(false);
+    expect(toggles(doc).length).toBe(0);
+    expect(isPending(doc)).toBe(false);
+  });
+
+  it('a header line rendered after a no-header exit is picked up without a navigation (agy)', async () => {
+    const doc = loadHtmlFixture('root');
+    const row = findHeaderLine(doc)?.insertionPoint;
+    const parent = row?.parentElement;
+    row?.remove();
+    const outcomes: string[] = [];
+    startLifecycle(ctx, doc, (o) => outcomes.push(o));
+    await nextFrame(); // the lifecycle's first scheduled apply runs: no header yet
+    await nextFrame();
+    expect(outcomes).toContain('no-header');
+    expect(toggles(doc).length).toBe(0);
+    if (row && parent) parent.prepend(row); // the commit bar renders late
+    await Promise.resolve();
+    await nextFrame();
+    await nextFrame();
+    expect(toggles(doc).length).toBe(1);
+  });
+
+  it("the toggle insertion does not trigger the controller's own observer (agy)", async () => {
+    const doc = loadHtmlFixture('root');
+    const onSchedule = vi.fn();
+    const controller = new CollapseController(ctx, doc, onSchedule);
+    controller.apply(new URL(fixtureUrl('root')));
+    // Remove our toggle (as a stray re-render might) and re-apply: the re-insertion is ours.
+    toggle(doc).remove();
+    controller.apply(new URL(fixtureUrl('root')));
+    await Promise.resolve();
+    await nextFrame();
+    expect(onSchedule).not.toHaveBeenCalled();
+  });
+
+  it('a non-listing page gets no document observer (agy)', () => {
+    const doc = loadHtmlFixture('root', { url: 'https://github.com/git/git/issues' });
+    listing(doc).remove();
+    const spy = vi.spyOn(MutationObserver.prototype, 'observe');
+    startLifecycle(ctx, doc);
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
   });
 });
