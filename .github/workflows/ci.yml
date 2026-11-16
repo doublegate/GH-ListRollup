@@ -40,6 +40,11 @@ jobs:
       - name: Check
         run: pnpm check
 
+      # Offline self-test of the Antigravity reviewer (workflow budgets, lock wait, filters).
+      # Catches edits that break the template-managed workflow, e.g. reformatting it.
+      - name: Antigravity reviewer self-test
+        run: bash scripts/agy-review-selftest.sh
+
       - name: Upload builds
         uses: actions/upload-artifact@v7.0.2
         with:
