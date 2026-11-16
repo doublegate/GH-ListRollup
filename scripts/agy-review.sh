@@ -212,6 +212,10 @@ normalize_numeric_env() {
 # <<< SELFTEST-EXTRACT
 normalize_numeric_env AGY_TIMEOUT_SECONDS_PER_MIB   900
 normalize_numeric_env AGY_PRINT_TIMEOUT_MAX_SECONDS 1800
+# Set above, inside the service-error block (which cannot call this helper: it is defined later).
+# A non-numeric value made service_error_present's `-le` test fail into `|| return 1`, silently
+# disabling the backend-error guard (agy review, GH-ListRollup PR #6). Only read in the retry loop.
+normalize_numeric_env AGY_ERROR_MAX_BYTES 2000
 AGY_DIFF_MODE="${AGY_DIFF_MODE:-auto}"     # auto|inline|file. A diff is passed to agy either inlined
                                            # in the --print prompt, or written to a FILE agy reads with
                                            # its own tools. `auto` inlines a diff that fits under the
