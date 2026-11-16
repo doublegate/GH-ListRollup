@@ -26,4 +26,12 @@ These are in scope:
 
 These are out of scope: vulnerabilities in GitHub itself, in the browsers, or in other extensions.
 
+## For maintainers: CI on a self-hosted runner
+
+The Antigravity PR reviewer runs on a self-hosted runner on the maintainer's machine. Workflows
+from pull requests opened from forks need manual approval for every outside contributor. **Do not
+approve them until you have read every change the pull request makes under `.github/`.** A pull
+request controls the workflow files that run for it, so approving one runs its code on that
+machine. See `docs/build-and-tooling.md` §4.
+
 The design rules the extension follows are in [`docs/security-privacy.md`](docs/security-privacy.md).

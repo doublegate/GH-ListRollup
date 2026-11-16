@@ -433,6 +433,29 @@ check "every mktemp'd variable is in the cleanup trap" "" "${missing# }"
 check "archive jq failures are logged" "no" \
   "$(grep -n 'SELECT_OURS_JQ" 2>/dev/null' "$SCRIPT_DIR/agy-review.sh" >/dev/null && echo yes || echo no)"
 
+# --- byte limits are normalized before any arithmetic uses them -------------------
+# REGRESSION (agy review, GH-ListRollup PR #4): MAX_PROMPT_BYTES=080000 passed the `[ ]` check and
+# then aborted in `$(( ))` as invalid octal; MAX_BODY_BYTES=60k aborted the same way; and a
+# non-numeric MAX_DIFF_BYTES silently disabled the diff cap. Each must be normalized, and before
+# the first line that does arithmetic on it or passes it to agy_cut_file.
+for v in MAX_DIFF_BYTES MAX_PROMPT_BYTES MAX_BODY_BYTES; do
+  # `|| true`: under pipefail a missing line must report as a FAIL below, not abort the selftest.
+  norm_line="$(grep -n "^normalize_numeric_env $v " "$SCRIPT_DIR/agy-review.sh" | head -1 | cut -d: -f1 || true)"
+  # Code lines only: the explanatory comments quote the arithmetic they guard against.
+  use_line="$(grep -nE "\\\$\\(\\( *$v|agy_cut_file \"\\\$diff_file\" \"\\\$$v\"|\\(\\( *$v" "$SCRIPT_DIR/agy-review.sh" \
+                | grep -vE '^[0-9]+:[[:space:]]*#' | head -1 | cut -d: -f1 || true)"
+  check "$v is normalized before its first arithmetic use" "yes" \
+    "$([ -n "$norm_line" ] && [ -n "$use_line" ] && [ "$norm_line" -lt "$use_line" ] && echo yes || echo "no (normalize:${norm_line:-none} use:${use_line:-none})")"
+done
+_nne_probe=080000; normalize_numeric_env _nne_probe 120000
+check "normalize_numeric_env turns a leading-zero 080000 into 80000" "80000" "$_nne_probe"
+
+# --- an archive emptied by trimming renders no empty <details> -------------------
+# REGRESSION (agy review, GH-ListRollup PR #4): when every archived round was dropped, the
+# "Earlier review rounds" <details> wrapper was still emitted around nothing.
+check "the archive <details> wrapper is guarded on a non-empty archive" "2" \
+  "$(grep -c '^    if \[ -s "\$archived_file" \]; then$' "$SCRIPT_DIR/agy-review.sh")"
+
 check "a lowercase error (agy under unbuffer) is caught" "MATCH" \
   "$(se 'error: Eligibility check failed: PERMISSION_DENIED (code 403): Request had insufficient authentication scopes.. Please log out (/logout) and log back in (/login).')"
 check "an all-caps ERROR: is caught" "MATCH" "$(se 'ERROR: backend unavailable')"

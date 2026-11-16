@@ -220,6 +220,10 @@ AGY_DIFF_MODE="${AGY_DIFF_MODE:-auto}"     # auto|inline|file. A diff is passed 
 MAX_DIFF_BYTES="${MAX_DIFF_BYTES:-5000000}" # sanity cap on a pathological diff (5 MB). No longer the
                                            # arg-size limit -- a large diff goes to agy as a file, not
                                            # as an argv value -- just a guard against a runaway diff.
+# Same validation as the other numerics (agy review, GH-ListRollup PR #4): a non-numeric value such
+# as `5MB` failed agy_cut_file's `-gt 0` test and SILENTLY disabled the cap, and `0` does the same.
+normalize_numeric_env MAX_DIFF_BYTES 5000000
+[ "$MAX_DIFF_BYTES" -gt 0 ] || { log "MAX_DIFF_BYTES=0 would disable the sanity cap; using the default (5000000)"; MAX_DIFF_BYTES=5000000; }
 MAX_PROMPT_BYTES="${MAX_PROMPT_BYTES:-120000}" # hard ceiling on the INLINED prompt: agy takes it as a
                                            # --print VALUE (not stdin), and a single execve argument
                                            # cannot exceed MAX_ARG_STRLEN (PAGE_SIZE*32 = 128 KiB on
@@ -240,6 +244,12 @@ ARG_SIZE_CEILING=120000                     # hard cap: a configured MAX_PROMPT_
 # so without it the clamp is skipped and the `head -c "$MAX_PROMPT_BYTES"` prompt cap below runs
 # as GNU `head -c -1` (print all-but-last-byte) — silently defeating the E2BIG backstop. A
 # non-numeric value trips the `2>/dev/null` and is clamped too.
+#
+# normalize_numeric_env first (agy review, GH-ListRollup PR #4): `[ ]` reads `080000` as decimal and
+# lets it through, but the `$(( MAX_PROMPT_BYTES - ... ))` arithmetic below parses a leading zero as
+# octal and aborts the run under `set -e` ("value too great for base"). Normalizing strips the
+# leading zero and maps anything non-numeric (including a negative) to the default.
+normalize_numeric_env MAX_PROMPT_BYTES 120000
 if ! { [ "$MAX_PROMPT_BYTES" -gt 0 ] && [ "$MAX_PROMPT_BYTES" -le "$ARG_SIZE_CEILING" ]; } 2>/dev/null; then
   log "MAX_PROMPT_BYTES='${MAX_PROMPT_BYTES}' invalid, non-positive, or above the ${ARG_SIZE_CEILING}-byte ceiling; clamping"
   MAX_PROMPT_BYTES="$ARG_SIZE_CEILING"
@@ -270,6 +280,10 @@ MARKER="<!-- antigravity-pr-review -->"
 . "$(dirname -- "${BASH_SOURCE[0]}")/_agy_comment_body.sh"
 
 MAX_BODY_BYTES="${MAX_BODY_BYTES:-60000}"
+# Reaches `$(( MAX_BODY_BYTES - 4096 ))`: `60k` or `060000` would abort the run there (agy review,
+# GH-ListRollup PR #4). It must also leave room for that 4096-byte reserve.
+normalize_numeric_env MAX_BODY_BYTES 60000
+[ "$MAX_BODY_BYTES" -gt 8192 ] || { log "MAX_BODY_BYTES=${MAX_BODY_BYTES} leaves no room for a review; using the default (60000)"; MAX_BODY_BYTES=60000; }
 
 # The jq program that finds THIS bot's existing review comment on the PR, so it can be edited
 # rather than replaced. Named, and exercised directly by `scripts/agy-review-selftest.sh`,
@@ -325,6 +339,9 @@ REPO="${GITHUB_REPOSITORY:?GITHUB_REPOSITORY not set}"
 # an outage wearing a decision's clothes, and it would sit undiagnosed until someone noticed
 # reviews had quietly stopped.
 agy_has_write_access() {
+  # `local` like the other helpers -- except _perm_err, which stays global ON PURPOSE: the EXIT
+  # trap's cleanup() must see it to remove the temp file if the run aborts mid-lookup.
+  local _login _login_enc _perm
   _login="${1:-}"
   [ -n "$_login" ] || { log "no login to check for write access"; return 1; }
   _perm_err="$(mktemp)"
@@ -1273,11 +1290,20 @@ if [ -n "$prior_id" ] && [ -s "$prior_body_file" ]; then
     if [ "$total_dropped" -gt 0 ]; then
       printf '<sub>%d earlier round(s) dropped to stay under GitHub'"'"'s comment size limit.</sub>\n\n' "$total_dropped"
     fi
-    printf '<details>\n<summary><b>Earlier review rounds</b> (newest first)</summary>\n\n'
+    # The sentinels are always written (later runs locate the archive and its dropped count by
+    # them), but the visible `<details>` wrapper only when a round survived the trimming above --
+    # otherwise it renders as an empty disclosure (agy review, GH-ListRollup PR #4).
+    # `if`, not `[ -s ] && printf`: as the group's last command, a false `&&` list would make the
+    # whole `{ } >> "$body_file"` group return 1 and abort the run under `set -e`.
+    if [ -s "$archived_file" ]; then
+      printf '<details>\n<summary><b>Earlier review rounds</b> (newest first)</summary>\n\n'
+    fi
     printf '%s\n' "$AGY_ARCHIVE_START"
     cat "$archived_file"
     printf '%s\n' "$AGY_ARCHIVE_END"
-    printf '\n</details>\n'
+    if [ -s "$archived_file" ]; then
+      printf '\n</details>\n'
+    fi
   } >> "$body_file"
   rm -f "$archived_file"
 
