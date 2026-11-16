@@ -494,7 +494,9 @@ describe('bootstrap review findings (#8)', () => {
 });
 
 describe('replaceIdentity placeholder collisions (#11)', () => {
-  it.each(['example', 'invalid', 'fixture', 'user', 'node', 'id', 'FIXTURE_NODE_ID'])(
+  // Real logins only: GitHub allows letters, digits and hyphens, so a login can never equal
+  // PLACEHOLDER_NODE_ID (`FIXTURE_NODE_ID`). `fixture-user` is valid and maps to itself.
+  it.each(['example', 'invalid', 'fixture', 'user', 'node', 'id', 'fixture-user'])(
     'a login of %s does not rewrite the placeholders inserted for other fields',
     (login) => {
       const identity = {
@@ -513,4 +515,32 @@ describe('replaceIdentity placeholder collisions (#11)', () => {
       );
     },
   );
+});
+
+describe('sanitizers end to end: placeholder collisions (#12)', () => {
+  // redactSecrets writes PLACEHOLDER_EMAIL before replaceIdentity runs, and sanitizeGitHubHtml runs
+  // replaceIdentity twice (payload JSON, then the serialized page), so masking inside one call of
+  // replaceIdentity was not enough on its own.
+  const identity = { login: 'example', id: 4242421 };
+
+  it('sanitizeTreeJson keeps PLACEHOLDER_EMAIL intact for a login of example', () => {
+    const out = sanitizeTreeJson(
+      '{"payload":{"userEmail":"someone@mail.example","login":"example"}}',
+      {
+        identity,
+      },
+    );
+    const parsed = JSON.parse(out) as { payload: { userEmail: string; login: string } };
+    expect(parsed.payload.userEmail).toBe(PLACEHOLDER_EMAIL);
+    expect(parsed.payload.login).toBe(PLACEHOLDER_LOGIN);
+  });
+
+  it('sanitizeGitHubHtml keeps PLACEHOLDER_EMAIL intact for a login of example', async () => {
+    const out = await sanitizeGitHubHtml(
+      page('', embedded({ payload: { userEmail: 'someone@mail.example', login: 'example' } })),
+      { ...opts, identity },
+    );
+    expect(out).toContain(PLACEHOLDER_EMAIL);
+    expect(out).not.toContain('fixture-user@fixture-user');
+  });
 });

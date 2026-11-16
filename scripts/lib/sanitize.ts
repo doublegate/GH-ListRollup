@@ -255,7 +255,15 @@ export function replaceIdentity(text: string, identity: Identity | undefined): s
   // at the end (#11): written directly, a placeholder inserted by an earlier pass could itself be
   // rewritten by a later one, for example a login of `example` inside `fixture-user@example.invalid`.
   // A sentinel cannot match any later pattern, which are all ASCII.
-  let out = text;
+  //
+  // Placeholders ALREADY in the input are masked the same way first (#12): redactSecrets writes
+  // PLACEHOLDER_EMAIL before this runs, and sanitizeGitHubHtml calls this twice (payload JSON, then
+  // the serialized page). The email goes before the login because `fixture-user` occurs inside it.
+  let out = text
+    .replaceAll(PLACEHOLDER_EMAIL, SENTINEL.email)
+    .replaceAll(PLACEHOLDER_NODE_ID, SENTINEL.nodeId)
+    .replaceAll(PLACEHOLDER_LOGIN, SENTINEL.login)
+    .replaceAll(PLACEHOLDER_ID, SENTINEL.id);
   if (identity.email) out = out.replace(new RegExp(esc(identity.email), 'gi'), SENTINEL.email);
   if (identity.nodeId) out = out.split(identity.nodeId).join(SENTINEL.nodeId);
   out = out.replace(
