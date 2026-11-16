@@ -195,16 +195,26 @@ scripts run only on full loads.
    Soft navigation never sets `data-gnr-pending`. If it is still set when a soft navigation reaches a
    non-listing page, that `apply()` takes the non-listing exit and removes it.
 
+   **The first signals arrive before the new listing renders** (observed live,
+   `ref-docs/research-update-2026-11-16-phase1-fixtures.md` §6). So after a navigation, `apply()`
+   first checks that the listing in the DOM belongs to the new URL. When the ref resolves, it passes
+   the cross-check and the DOM is current. When it does not, and the first entry row's href equals
+   the previous page's, the DOM is stale: `apply()` does nothing and waits for the next signal. Rows
+   identical across two URLs (`/<o>/<r>` and `/<o>/<r>/tree/main`) resolve a ref and are never
+   mistaken for stale. Implemented in `src/features/collapse.ts`.
+
    An `apply()` after a navigation to a **different listing** resets both levels. A different
    listing means `location.pathname` changed since the last apply, compared as a whole string. Level
    1 returns to the default state, or to the remembered per-repo state if that setting is on, and
    Level 2 starts with every folder collapsed. An `apply()` on the **same listing**, after a React
    re-render, keeps both levels' state (`docs/architecture.md` §3.2).
 
-5. **React re-render.** A scoped MutationObserver on the listing container, watching `childList` with
-   `subtree`, re-runs the cheap part of `apply()` when GitHub replaces rows. This happens when deferred
-   commit info fills in after first paint. Budget: the callback does no layout reads and stops after
-   at most 50 runs per page.
+5. **React re-render.** A scoped MutationObserver on the nearest common ancestor of the listing
+   container and the header line's box, watching `childList` with `subtree`, schedules `apply()`
+   when GitHub replaces rows, the listing or the commit bar (and so the toggle). This happens when
+   deferred commit info fills in after first paint. Budget: the callback does no layout reads and
+   stops after at most 50 runs per listing. The controller's own writes are attribute changes or
+   no-ops, so it does not trigger itself.
 
    **No late collapse.** If the first `apply()` on a listing shows it uncollapsed (for example, the
    header line was not yet rendered and `data-gnr-pending` was cleared), a later `apply()` on the

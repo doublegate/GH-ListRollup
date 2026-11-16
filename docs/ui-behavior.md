@@ -42,7 +42,8 @@ reads ref and path from the page's own data (see `docs/dom-integration.md` §3).
   (right-pointing when collapsed, down-pointing when expanded), rotated with a CSS transform with a
   150 ms transition. `prefers-reduced-motion: reduce` disables the transition.
 - `aria-expanded` mirrors the state; `aria-controls` points at the listing container's id (assigned by
-  the extension if GitHub gives none); accessible name "Show files" / "Hide files".
+  the extension if GitHub gives none: `gnr-listing`, since GitHub's container has no id); accessible
+  name "Show files" / "Hide files", which is also the button's tooltip (`title`).
 - Activated by click, Enter or Space. Clicks on GitHub's own header controls (branch picker, "Go to
   file", "Code") are never intercepted.
 - A count badge after the arrow in the collapsed state, such as "42 items", is optional (Phase 3,

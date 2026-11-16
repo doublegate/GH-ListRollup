@@ -11,6 +11,7 @@ adds `@playwright/test` and a proper E2E suite, which should absorb these script
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `t-gnr-004.mjs`   | Root, folder, Back, Issues and Code navigation, plus the extension-reload check. A page-world marker confirms that each step was a soft navigation.                                                                                                                                             |
 | `reload-diag.mjs` | Shows that after `chrome.runtime.reload()`, Playwright's Chromium does not restore an extension that was side-loaded with `--load-extension`. That limit belongs to the automation harness, not the extension (see the T-GNR-004 notes in `to-dos/phase-0-foundation/sprint-1-skeleton-ci.md`). |
+| `t-gnr-109.mjs`   | Phase 1 exit check (T-GNR-109): one collapsed toggle on a cold load, click to show and hide, 20 consecutive soft navigations each leaving one collapsed toggle, and screenshots of the collapsed header in light and dark themes (`node t-gnr-109.mjs <extension> [<screenshot dir>]`).         |
 
 ## Running
 

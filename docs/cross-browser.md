@@ -48,6 +48,7 @@ Shared keys, as built by the Phase 0 skeleton (WXT adds `version` from `package.
     {
       "matches": ["https://github.com/*"],
       "js": ["content-scripts/content.js"],
+      "css": ["content-scripts/content.css"],
       "run_at": "document_start"
     }
   ]
@@ -72,11 +73,10 @@ Chrome adds `"minimum_chrome_version": "121"`.
 
 ### 2.2 Additions by later tickets
 
-| Addition                                                         | Ticket    | Condition                                                       |
-| ---------------------------------------------------------------- | --------- | --------------------------------------------------------------- |
-| `"css": ["content-scripts/content.css"]` on the content script   | T-GNR-107 | Always; WXT adds it once the content script imports `style.css` |
-| `"options_ui": { "page": "options.html", "open_in_tab": false }` | T-GNR-303 | Always; WXT adds it once `src/entrypoints/options/` exists      |
-| `"https://api.github.com/*"` in `host_permissions`               | T-GNR-302 | Only if ADR 0003 keeps the REST fallback (T-GNR-209)            |
+| Addition                                                         | Ticket    | Condition                                                  |
+| ---------------------------------------------------------------- | --------- | ---------------------------------------------------------- |
+| `"options_ui": { "page": "options.html", "open_in_tab": false }` | T-GNR-303 | Always; WXT adds it once `src/entrypoints/options/` exists |
+| `"https://api.github.com/*"` in `host_permissions`               | T-GNR-302 | Only if ADR 0003 keeps the REST fallback (T-GNR-209)       |
 
 Each ticket updates §2.1 when it lands, so §2.1 always describes the current build.
 
