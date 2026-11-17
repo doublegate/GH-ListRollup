@@ -1,6 +1,7 @@
 .output/
 .wxt/
 test-builds/
+release-builds/
 coverage/
 release-builds/
 test-builds/

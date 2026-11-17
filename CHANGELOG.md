@@ -53,6 +53,11 @@ All notable user-visible changes to this project are documented here. The format
     splitting the URL;
   - the locator for the header line the collapsed listing keeps;
   - a selector probe, logged at debug level on listing pages.
+- Store release preparation (`T-GNR-501`, `T-GNR-502`):
+  - extension icons (`public/icon/{16,32,48,96,128}.png`, derived from `assets/icon.png`) and
+    `homepage_url` in the Chrome and Firefox manifests;
+  - `SOURCE_CODE_REVIEW.md` with reproducible build and `diff -r` instructions for Mozilla Add-ons
+    reviewers.
 
 ### Fixed
 
@@ -101,5 +106,7 @@ All notable user-visible changes to this project are documented here. The format
 
 ### Changed
 
+- Deferred the `storage` manifest permission until Phase 3 settings (`T-GNR-301`), so `v0.1.0`
+  store packages request only `host_permissions: ["https://github.com/*"]`.
 - Project renamed from the working title GH-Nested-Rollup to **GH-ListRollup**. The package name,
   extension name and Firefox add-on ID (`gh-listrollup@lparobek.dev`) changed to match.

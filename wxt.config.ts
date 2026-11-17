@@ -10,7 +10,7 @@ export default defineConfig({
     name: 'GH ListRollup',
     description:
       "Collapse GitHub's repository file listing to one line and expand folders inline as a nested tree.",
-    permissions: ['storage'],
+    homepage_url: 'https://github.com/doublegate/GH-ListRollup',
     host_permissions: ['https://github.com/*'],
     ...(browser === 'firefox'
       ? {
@@ -30,6 +30,12 @@ export default defineConfig({
     startUrls: ['https://github.com/wxt-dev/wxt'],
   },
   zip: {
-    excludeSources: ['test-builds/**', 'coverage/**', 'ref-docs/raw/**'],
+    excludeSources: [
+      'release-builds/**',
+      'test-builds/**',
+      'coverage/**',
+      'ref-docs/raw/**',
+      'assets/agy-assets.log',
+    ],
   },
 });
