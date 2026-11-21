@@ -55,7 +55,8 @@ try {
         if (r.type === 'childList') {
           for (const n of r.addedNodes)
             if (n.nodeType === 1) {
-              if (n.getAttribute('data-gnr') === 'toggle') log('toggle inserted');
+              if (n.matches?.('[data-gnr="toggle"]') || n.querySelector?.('[data-gnr="toggle"]'))
+                log('toggle inserted');
               if (
                 n.matches?.('[data-testid="directory-content"]') ||
                 n.querySelector?.('[data-testid="directory-content"]')
@@ -64,7 +65,9 @@ try {
             }
           for (const n of r.removedNodes)
             if (n.nodeType === 1) {
-              if (n.getAttribute?.('data-gnr') === 'toggle') log('toggle removed');
+              // An ancestor removed by React (hydration, soft navigation) takes the toggle with it.
+              if (n.matches?.('[data-gnr="toggle"]') || n.querySelector?.('[data-gnr="toggle"]'))
+                log('toggle removed');
               if (
                 n.matches?.('[data-testid="directory-content"]') ||
                 n.querySelector?.('[data-testid="directory-content"]')

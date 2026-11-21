@@ -29,17 +29,25 @@ try {
     new MutationObserver((recs) => {
       for (const r of recs) {
         const el = r.target;
-        if (r.type === 'attributes' && el.getAttribute?.('data-testid') === 'directory-content')
+        if (
+          r.type === 'attributes' &&
+          r.attributeName === 'class' &&
+          el.getAttribute?.('data-testid') === 'directory-content'
+        )
           log(`listing class "${r.oldValue}" -> "${el.getAttribute('class')}"`);
         if (
           r.type === 'attributes' &&
           el === document.documentElement &&
-          r.attributeName === 'data-gnr-pending'
+          r.attributeName?.startsWith('data-gnr-')
         )
-          log(`html pending ${el.hasAttribute('data-gnr-pending') ? 'SET' : 'cleared'}`);
+          log(`html ${r.attributeName} ${el.hasAttribute(r.attributeName) ? 'SET' : 'cleared'}`);
         if (r.type === 'childList')
           for (const n of r.addedNodes) {
-            if (n.nodeType === 1 && n.getAttribute('data-gnr') === 'toggle') log('toggle inserted');
+            if (
+              n.nodeType === 1 &&
+              (n.getAttribute('data-gnr') === 'toggle' || n.querySelector?.('[data-gnr="toggle"]'))
+            )
+              log('toggle inserted');
             if (
               n.nodeType === 1 &&
               (n.getAttribute?.('data-testid') === 'directory-content' ||
