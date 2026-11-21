@@ -71,7 +71,9 @@
 - [ ] The manual checklist (`docs/testing-strategy.md` §5) is complete for both browsers.
 - [ ] The security checklist (`docs/security-privacy.md` §4) is complete.
 - [ ] `CHANGELOG.md`: `[Unreleased]` renamed to `[X.Y.Z] - YYYY-MM-DD`.
-- [ ] The version is consistent across `package.json`, both built manifests, and the README badge.
+- [ ] The version is consistent across `package.json`, both built manifests, the README (status
+      note, installation, compatibility), `SOURCE_CODE_REVIEW.md` (it names the archive files) and
+      `PROJECT-STATUS.md`.
 - [ ] The tag does not already exist (`git tag -l vX.Y.Z` is empty).
 - [ ] The annotated tag message includes a summary, changes, the testing evidence, and the store
       submission status.
@@ -100,7 +102,15 @@ part of §4 that can run today:
   `t-gnr-004.mjs`) in place of the E2E, Firefox smoke and live-probe suites;
 - the manual Firefox check on the release build;
 - the AMO reproducibility check (§3, step 3), run from a clean directory;
-- the CHANGELOG section dated, and the version consistent across `package.json` and both manifests.
+- the CHANGELOG section dated, and the version consistent everywhere §4 lists it.
+
+**The packages are built from a clean worktree of the release commit** (`git worktree add --detach
+<dir> <commit>`, then `pnpm install --frozen-lockfile`, `pnpm zip`, `pnpm zip:firefox`), never from
+the working checkout. WXT does not read `.gitignore` for the sources zip, so a gitignored local file
+(a log, a key, `CLAUDE.local.md`) would otherwise be published to Mozilla's reviewers.
+`zip.excludeSources` mirrors `.gitignore` as a second guard (`tests/unit/zip-config.test.ts` keeps
+them in sync), and the release check confirms that every file in the sources zip is tracked by git
+(0.1.1: 147 files).
 
 The packages, checksums, store artwork and a submission guide with the listing text are assembled in
 `release-builds/vX.Y.Z/` (gitignored); the packages and checksums are attached to the GitHub

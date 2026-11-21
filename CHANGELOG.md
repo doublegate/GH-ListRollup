@@ -6,6 +6,23 @@ All notable user-visible changes to this project are documented here. The format
 
 ## [Unreleased]
 
+### Added
+
+- The data layer for the inline folder tree (Phase 2 Sprint 1), no visible change yet:
+  - a URL builder that refuses path traversal and encodes every name segment;
+  - a defensive parser for GitHub's folder data that tolerates unknown fields and drops malformed
+    entries;
+  - a fetcher with an in-memory cache, request de-duplication, at most 4 requests at a time, a
+    10-second timeout and cancellation on navigation.
+- Development builds log a one-line report of whether folder data can be loaded on the current page
+  (T-GNR-201), with no names or paths.
+
+### Security
+
+- The Firefox sources archive excludes every gitignored file pattern, and release packages are
+  built from a clean copy of the release commit, so no local file can reach Mozilla's reviewers
+  (#25).
+
 ## [0.1.1] - 2026-11-21
 
 Collapse reliability release: no new features. Every fix keeps the listing usable during GitHub's

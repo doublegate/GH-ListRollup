@@ -1,6 +1,6 @@
 // Store screenshots for a release: the extension on a public repository, 1280x800, light theme.
 //   node store-shots.mjs <path to .output/chrome-mv3> <output dir>
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright';
 
@@ -10,6 +10,10 @@ if (!process.argv[2] || !process.argv[3]) {
 }
 const EXT = resolve(process.argv[2]);
 const OUT = resolve(process.argv[3]);
+if (!existsSync(join(EXT, 'manifest.json'))) {
+  console.error(`no manifest.json in ${EXT}: pass the built .output/chrome-mv3 directory`);
+  process.exit(2);
+}
 mkdirSync(OUT, { recursive: true });
 const PAGES = [
   ['root', 'https://github.com/wxt-dev/wxt'],

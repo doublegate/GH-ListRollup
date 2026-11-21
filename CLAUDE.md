@@ -23,7 +23,11 @@ GH-ListRollup/
 ├── to-dos/              ROADMAP.md + phase-N-*/ (overview + sprint ticket files)
 ├── src/
 │   ├── entrypoints/     content/index.ts (content script), background.ts
+│   ├── features/        collapse controller and lifecycle (Level 1)
 │   ├── github/          page detection, navigation, selectors (pure, fixture-testable)
+│   ├── data/            folder contents: tree JSON URL builder, parser, fetcher (Level 2 data)
+│   ├── dev/             development-build-only probes (stripped from production builds)
+│   ├── ui/              the toggle button
 │   └── log.ts
 ├── tests/unit/          Vitest
 ├── wxt.config.ts        manifest function (shared, Firefox gecko block, Chrome minimum)

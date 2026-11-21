@@ -1,6 +1,7 @@
 # Data Fetching Specification
 
-**Status:** Draft v0.1 (2026-11-15) | **Tickets:** Phase 2 Sprint 1, Phase 3 Sprint 2
+**Status:** v0.2 (2026-11-21): §1-§3 and §5 implemented in `src/data/` (T-GNR-202 to 204); §4 is
+Phase 3 | **Tickets:** Phase 2 Sprint 1, Phase 3 Sprint 2
 **Sources:** `ref-docs/github-data-sources.md` (endpoints, limits, observed shapes),
 `ref-docs/chrome-mv3.md` and `ref-docs/firefox-mv3.md` (CORS for content scripts),
 `docs/adr/0002-same-origin-tree-json.md`
@@ -19,7 +20,7 @@ interface TreeEntry {
 }
 
 interface FolderListing {
-  entries: TreeEntry[]; // GitHub order: folders first, then files
+  entries: TreeEntry[]; // GitHub order: folders (and submodules, sorted among them) first, then files
   totalCount: number; // may exceed entries.length (1,000-item cap)
   refName: string;
   commitOid: string | null;
@@ -27,7 +28,7 @@ interface FolderListing {
 }
 
 interface FolderSource {
-  list(key: FolderKey, signal: AbortSignal): Promise<FolderListing>;
+  list(key: FolderKey, signal?: AbortSignal): Promise<FolderListing>;
 }
 
 interface FolderKey {
@@ -38,8 +39,10 @@ interface FolderKey {
 }
 ```
 
-The tree controller depends only on `FolderSource`. `src/data/fetcher.ts` composes a cache, the primary
-source and the fallback.
+The tree controller depends only on `FolderSource`. `src/data/fetcher.ts` (`TreeJsonSource`) is the
+primary source with its cache; the fallback (§4) composes with it in Phase 3. The modules are
+`types.ts`, `errors.ts` (§5), `url.ts` (§2, URL construction), `parse.ts` (§2, defensive parsing)
+and `fetcher.ts` (§3).
 
 ## 2. Primary source: same-origin tree JSON (content script)
 
@@ -97,22 +100,31 @@ Rules:
   (`ref-docs/research-update-2026-11-16-content-types.md`). Fixtures for every row are in
   `tests/fixtures/json/`.
 
-  It drops malformed items and counts them for `debug.logging`. If no items array is found, it throws
-  `SchemaError`.
+  It drops malformed items (a missing or empty `name` or `path`, a non-string `contentType`) and
+  returns their count with the listing (`ParseResult.malformed`) for `debug.logging`. `refName` comes
+  from `refInfo.name`, or the requested ref when the response has none; `commitOid` from
+  `refInfo.currentOid` when it is 40 hex digits, otherwise `null`; `totalCount` from
+  `tree.totalCount` when it is an integer no smaller than the entries kept, otherwise the number of
+  entries. If no items array is found, or no ref name is available, it throws `SchemaError`.
 
 - **Simplified chains.** An item with `hasSimplifiedPath` gets `simplified: true`, and `path` is the
   deepest folder.
 
 ## 3. Cache and request discipline
 
-- **Cache.** The cache is per tab and in memory, a `Map` keyed by `owner/repo@commitOid:path`.
-  `refName` is used in the key until the first response supplies `commitOid`. It is cleared on soft
-  navigation to a different repo or ref. Nothing is persisted, so stale data never outlives the page
-  view.
+- **Cache.** The cache is per tab and in memory, an LRU of 200 listings keyed by
+  `owner/repo@commitOid:path` (owner and repo lower-cased). Each listing is stored once: under the
+  commit OID when its response names one (the ref then resolves to that OID for later lookups), and
+  under the ref name otherwise. A branch that moves is therefore fetched again for folders not yet
+  seen at the new head. `clear()` empties it and aborts every request in flight or queued; the tree
+  controller calls it on soft navigation to a different repo or ref, and the lifetime signal
+  (`ctx.signal`) does the same on teardown. Nothing is persisted, so stale data never outlives the
+  page view.
 - **In-flight de-duplication.** A second `list()` for a key already in flight returns the same promise.
 - **Concurrency.** At most 4 requests are in flight per tab; the rest queue in FIFO order.
-- **Abort.** Every request takes an `AbortSignal`. Navigating away aborts all pending requests, and
-  so does WXT's `ctx.onInvalidated`.
+- **Abort.** A caller's `AbortSignal` rejects that caller with `AbortError`; a request still queued
+  for it never starts, and one already running continues for any other caller sharing it.
+  Navigating away (`clear()`) and WXT's lifetime signal abort every request.
 - **Volume.** One request per user expansion. There is no prefetching in v1: GitHub's throttling of
   github.com routes is undocumented, and matching user clicks one-to-one is the safe rate.
 - **Timeout.** 10 seconds per request, which maps to the "Could not load" row (`docs/ui-behavior.md`
