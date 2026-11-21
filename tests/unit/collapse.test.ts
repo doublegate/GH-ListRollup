@@ -891,6 +891,60 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(collapsed(folder)).toBe(true);
   });
 
+  it('a return to the outgoing listing whose toggle React replaced ends at the next apply (agy, #20, blocking)', () => {
+    const { doc, life } = start();
+    clickLink(doc, '/git/git/tree/master/contrib');
+    // The link redirected back; React already replaced the commit bar, so no toggle exists yet.
+    for (const t of toggles(doc)) t.remove();
+    doc.dispatchEvent(new Event('soft-nav:end'));
+    expect(isPending(doc)).toBe(true); // nothing to show the files with yet
+    expect(life.apply()).toBe('applied'); // the frame's apply installs the new toggle
+    expect(isPending(doc)).toBe(false);
+    expect(collapsed(doc)).toBe(true);
+  });
+
+  it('a watchdog exposure with a stale installed flag is still recorded (agy, #20)', () => {
+    vi.useFakeTimers();
+    // A bare controller: no re-apply runs between the toggle vanishing and the watchdog, so
+    // `installed` is stale when it fires (the defensive case the review describes).
+    const { doc, controller } = applied('root');
+    expect(
+      controller.navigationStarting(new URL('https://github.com/git/git/tree/master/contrib')),
+    ).toBe(true);
+    for (const t of toggles(doc)) t.remove();
+    expect(controller.current?.installed).toBe(true); // stale
+    vi.advanceTimersByTime(WATCHDOG_MS); // the navigation never landed: files shown
+    expect(collapsed(doc)).toBe(false);
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(collapsed(doc)).toBe(false); // not collapsed late
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('an exposure recorded for one listing does not leak into a later visit (agy, #20)', () => {
+    vi.useFakeTimers();
+    const { doc, life } = start();
+    clickLink(doc, '/git/git/tree/master/contrib');
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    vi.advanceTimersByTime(WATCHDOG_MS); // every apply stale: the folder's files shown, recorded
+    history.pushState(null, '', '/git/git/issues');
+    expect(life.apply()).toBe('not-listing');
+    history.pushState(null, '', '/git/git');
+    // A later, normal visit to that folder starts collapsed.
+    clickLink(doc, '/git/git/tree/master/contrib');
+    const folder = loadHtmlFixture('folder');
+    setPending(folder);
+    expect(life.apply()).toBe('applied');
+    expect(collapsed(folder)).toBe(true);
+  });
+
+  it('the no-listing exit outside a navigation removes a leftover toggle (agy, #20)', () => {
+    const { doc, controller } = applied('folder');
+    expect(toggles(doc).length).toBe(1);
+    listing(doc).remove(); // the commit bar, a separate box on folder pages, stays
+    expect(controller.apply(new URL(fixtureUrl('folder')))).toBe('no-listing');
+    expect(toggles(doc).length).toBe(0);
+  });
+
   it('the lifecycle shares its navigation watcher with the content script (agy, #17)', () => {
     const doc = loadHtmlFixture('root');
     const signals: string[] = [];

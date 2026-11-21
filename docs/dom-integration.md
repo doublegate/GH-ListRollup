@@ -222,7 +222,10 @@ scripts run only on full loads.
    **and** still in the DOM): Back before the destination renders (#19), a click on a link to the
    listing still shown, and a completion signal (`soft-nav:end`, `turbo:load`, `navigatesuccess`)
    that arrives with `location` back on it, which is where a link redirecting to the page already
-   shown ends up (#17). A start signal (`wxt:locationchange`) does not count. The cold-load watchdog
+   shown ends up (#17). A start signal (`wxt:locationchange`) does not count. When the return
+   comes before a working toggle exists (React replaced the commit bar and the apply that installs
+   a new one is a frame away), the outgoing listing stops counting as outgoing, so that next
+   successful apply ends the pre-hide (#20). The cold-load watchdog
    never ends a navigation's pre-hide: a folder click about 4 s after load lost its pre-hide to that
    timer, which flashed the new listing for a frame. If no working toggle exists for the listing
    actually shown, the watchdog also removes the collapsed marker. "Installed" alone is not enough:
@@ -238,7 +241,8 @@ scripts run only on full loads.
    navigation watchdog, teardown, an exception inside `apply()` (the toggle counts as installed only
    once it is in the DOM), and a no-listing exit that is not part of a click or `popstate`
    navigation, such as a keyboard-shortcut navigation or React unmounting the listing. The
-   no-header and non-listing exits also remove the extension's own toggles, so no inert button stays
+   no-header, non-listing and (outside a navigation) no-listing exits also remove the extension's own
+   toggles, so no inert button stays
    behind in a DOM React keeps (#17).
 
    **The first signals arrive before the new listing renders** (observed live,
@@ -276,7 +280,8 @@ scripts run only on full loads.
    the next navigation to a different listing. Exposure is recorded wherever the files become
    visible without a toggle: the no-header exit, a cold-load no-listing exit (the listing renders
    visible later), and either watchdog ending a pre-hide with no working toggle, including before
-   any state exists for the listing (#17). A listing that React unmounts briefly, outside a
+   any state exists for the listing (#17). An exposure belongs to one visit: it is dropped when a navigation pre-hide
+   starts and when an apply lands on a non-listing page (#20). A listing that React unmounts briefly, outside a
    navigation, keeps the user's own choice when it returns instead (#17).
 
    **One navigation watcher.** `startLifecycle` registers the only `watchNavigation`; the content

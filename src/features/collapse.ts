@@ -176,7 +176,15 @@ export class CollapseController {
    * instead of leaving it to the watchdog (agy, #19); otherwise the watchdog keeps it bounded.
    */
   returningTo(path: string): void {
-    if (!this.navigating || !this.toggleLive(path)) return;
+    if (!this.navigating) return;
+    if (!this.toggleLive(path)) {
+      // No working toggle yet (React replaced the commit bar; the apply that installs a new one is
+      // a frame away). The navigation is back on `path`, so an apply there is no longer an outgoing
+      // re-render: let the next successful apply end the pre-hide, as on any destination. The
+      // watchdog still bounds it (agy, #20, blocking).
+      if (path === this.navOrigin) this.navOrigin = null;
+      return;
+    }
     this.navigation++; // the in-flight watchdog no longer acts
     this.navigating = false;
     clearPending(this.doc);
@@ -194,7 +202,10 @@ export class CollapseController {
   private markExposed(): void {
     const here = listingPath(this.doc.location.pathname);
     if (this.state?.pathname === here) {
-      if (!this.state.installed) this.state.shownWithoutToggle = true;
+      // Callers have checked that no working toggle exists, whatever `installed` still says: a
+      // stale flag would skip the exposure and collapse the visible files later (agy, #20).
+      this.state.installed = false;
+      this.state.shownWithoutToggle = true;
     } else {
       this.exposedPath = here;
     }
@@ -245,6 +256,7 @@ export class CollapseController {
       this.removeToggles(); // none may stay behind, inert, in a DOM React keeps (agy, #17)
       this.navigating = false;
       this.state = null;
+      this.exposedPath = null; // an exposure belongs to that visit only (agy, #20)
       this.disconnect();
       return 'not-listing';
     }
@@ -299,6 +311,9 @@ export class CollapseController {
         // collapsed late, and one the user had already set keeps that choice (Codex, agy, #17).
         clearPending(doc);
         setCollapsed(doc, false);
+        // On folder pages the commit bar is a separate box that may outlive the listing: no inert
+        // toggle may stay behind in it (agy, #20). The next apply puts a working one back.
+        this.removeToggles();
         state.shownWithoutToggle = state.installed ? state.expanded : true;
         state.installed = false;
       } else if (queryAll('gnrToggle', doc).elements.length === 0) {
@@ -402,6 +417,7 @@ export class CollapseController {
       return false;
     }
     setPending(this.doc);
+    this.exposedPath = null; // a fresh, pre-hidden visit: an earlier exposure no longer applies
     this.navigating = true;
     this.navOrigin = this.state?.pathname ?? null;
     const token = ++this.navigation;
