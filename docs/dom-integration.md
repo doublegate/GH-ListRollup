@@ -233,8 +233,9 @@ scripts run only on full loads.
    actually shown (installed by an apply on it, in the DOM, and with the listing present), the
    watchdog also removes the collapsed marker. A watchdog whose navigation already ended does
    nothing (#20). When the navigation stalled (the URL moved on but the destination never rendered),
-   the outgoing listing is what becomes visible: its toggle is set to expanded, so it says what is
-   shown and coming Back does not collapse it (#20). "Installed" alone is not enough:
+   the outgoing listing is what becomes visible (still in the same container node). It is recorded
+   as shown, and a toggle still in place is set to expanded, so it says what is shown and coming
+   Back does not collapse it, whether or not its toggle was still installed (#20, #21). "Installed" alone is not enough:
    mid-navigation React may already have removed the header line and the toggle with it (agy,
    post-merge review of #19). An aborted navigation leaves the old URL, and its toggle keeps
    working.
@@ -289,7 +290,9 @@ scripts run only on full loads.
    visible without a toggle: the no-header exit, a cold-load no-listing exit (the listing renders
    visible later), and either watchdog ending a pre-hide with no working toggle, including before
    any state exists for the listing (#17). An exposure belongs to one visit: it is dropped when a navigation pre-hide
-   starts and when an apply lands on a non-listing page (#20). A listing that React unmounts briefly, outside a
+   starts and by any apply that is not stale, after the state for its listing has consumed it (#20,
+   #21). A mid-navigation no-listing or no-header exit also carries the user's choice, so an aborted
+   navigation brings the outgoing listing back as it was (#21). A listing that React unmounts briefly, outside a
    navigation, keeps the user's own choice when it returns instead (#17); the choice is carried once, so further applies while it is absent change nothing (#20).
 
    **One navigation watcher.** `startLifecycle` registers the only `watchNavigation`; the content

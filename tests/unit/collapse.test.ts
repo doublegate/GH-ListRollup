@@ -1038,6 +1038,79 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(isPending(doc)).toBe(true);
   });
 
+  /** Hides the header line's hooks; returns a function that puts them back. */
+  const stripHeader = (doc: Document) => {
+    const details = query('commitDetails', doc)?.element;
+    details?.removeAttribute('data-testid');
+    const headings = [...doc.querySelectorAll('h2')].filter(
+      (h) => h.textContent?.trim() === 'Latest commit',
+    );
+    for (const h of headings) h.textContent = 'Something else';
+    return () => {
+      details?.setAttribute('data-testid', 'latest-commit-details');
+      for (const h of headings) h.textContent = 'Latest commit';
+    };
+  };
+  const ROOT = 'https://github.com/git/git';
+  const FOLDER = 'https://github.com/git/git/tree/master/contrib';
+
+  it('a stalled exposure does not outlive Back to the outgoing listing (agy, #21)', () => {
+    vi.useFakeTimers();
+    const { controller } = applied('root');
+    controller.navigationStarting(new URL(FOLDER));
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    expect(controller.apply(new URL(FOLDER))).toBe('stale');
+    vi.advanceTimersByTime(WATCHDOG_MS); // stalled: the folder is recorded as exposed
+    history.pushState(null, '', '/git/git'); // Back
+    expect(controller.navigationStarting(new URL(ROOT))).toBe(false);
+    expect(controller.apply(new URL(ROOT))).toBe('applied');
+    // Later, a keyboard-shortcut navigation to the folder (no pre-hide): it starts collapsed.
+    const folder = loadHtmlFixture('folder');
+    expect(controller.apply(new URL(FOLDER))).toBe('applied');
+    expect(collapsed(folder)).toBe(true);
+  });
+
+  it('mid-navigation no-header keeps the user’s expansion for an aborted navigation (agy, #21)', () => {
+    const { doc, controller } = applied('root');
+    toggle(doc).click(); // expanded
+    controller.navigationStarting(new URL(FOLDER));
+    const restoreHeader = stripHeader(doc); // React replaces the outgoing commit bar
+    expect(controller.apply(new URL(ROOT))).toBe('no-header');
+    restoreHeader(); // the navigation is aborted: the outgoing page comes back
+    expect(controller.apply(new URL(ROOT))).toBe('applied');
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('mid-navigation no-listing keeps the user’s expansion for an aborted navigation (agy, #21)', () => {
+    const { doc, controller } = applied('root');
+    toggle(doc).click(); // expanded
+    controller.navigationStarting(new URL(FOLDER));
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(ROOT))).toBe('no-listing');
+    parent?.appendChild(held); // aborted: the outgoing listing comes back
+    expect(controller.apply(new URL(ROOT))).toBe('applied');
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('a stalled watchdog records the outgoing listing as shown even if not installed (agy, #21)', () => {
+    vi.useFakeTimers();
+    const { doc, controller } = applied('root');
+    controller.navigationStarting(new URL(FOLDER));
+    const restoreHeader = stripHeader(doc);
+    expect(controller.apply(new URL(ROOT))).toBe('no-header'); // installed: false
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    expect(controller.apply(new URL(FOLDER))).toBe('stale');
+    vi.advanceTimersByTime(WATCHDOG_MS); // stalled: the root's listing is shown
+    expect(collapsed(doc)).toBe(false);
+    history.pushState(null, '', '/git/git'); // Back
+    restoreHeader();
+    expect(controller.navigationStarting(new URL(ROOT))).toBe(false);
+    expect(controller.apply(new URL(ROOT))).toBe('applied');
+    expect(collapsed(doc)).toBe(false); // not collapsed late under the pointer
+  });
+
   it('the lifecycle shares its navigation watcher with the content script (agy, #17)', () => {
     const doc = loadHtmlFixture('root');
     const signals: string[] = [];

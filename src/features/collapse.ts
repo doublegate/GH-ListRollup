@@ -294,8 +294,11 @@ export class CollapseController {
         rerenders: 0,
         exhausted: false,
       };
-      this.exposedPath = null;
     }
+    // A recorded exposure is consumed by the state created for its listing (above), or belongs to a
+    // visit that is over: a non-stale apply anywhere else ends it, so Back after a stalled
+    // navigation cannot leave it waiting for a later visit (agy, #21).
+    this.exposedPath = null;
     const state = this.state;
     state.signature = signature;
     state.node = listing;
@@ -334,6 +337,8 @@ export class CollapseController {
         // commit bar can outlive the listing). The pre-hide stays, bounded by the watchdog.
         this.removeToggles();
         this.observer?.takeRecords();
+        // An aborted navigation brings this listing back: it keeps the user's choice (agy, #21).
+        if (state.installed) state.shownWithoutToggle = state.expanded;
         state.installed = false;
       }
       this.observe(this.observationRoot());
@@ -347,7 +352,9 @@ export class CollapseController {
         // Mid-navigation the header line may simply not have rendered yet (or the outgoing page's
         // is being replaced). Keep the pre-hide rather than expose the files and record them as
         // shown, which kept a root expanded after /tree/<ref> -> /o/r (agy, #17). The navigation
-        // watchdog bounds it, and shows the files if no header line ever arrives.
+        // watchdog bounds it, and shows the files if no header line ever arrives. An aborted
+        // navigation brings the outgoing listing back with the user's choice (agy, #21).
+        if (state.installed) state.shownWithoutToggle = state.expanded;
         state.installed = false;
         this.observe(this.observationRoot());
         return 'no-header';
@@ -451,12 +458,21 @@ export class CollapseController {
       const here = listingPath(this.doc.location.pathname);
       if (this.toggleLive(here)) return;
       setCollapsed(this.doc, false);
-      if (this.state && this.state.pathname !== here && this.state.installed) {
-        // A stalled navigation: the OUTGOING listing is what is now visible. Its toggle must say
-        // so, and coming Back to it must not collapse it under the pointer (agy, #20).
-        this.state.expanded = true;
-        for (const b of queryAll('gnrToggle', this.doc).elements) {
-          if (b instanceof HTMLButtonElement) setToggleExpanded(b, true);
+      const outgoing = this.state;
+      if (
+        outgoing &&
+        outgoing.pathname !== here &&
+        query('listing', this.doc)?.element === outgoing.node
+      ) {
+        // A stalled navigation: the OUTGOING listing is what is now visible. Coming Back to it must
+        // not collapse it under the pointer (agy, #20), whether or not its toggle was still
+        // installed (agy, #21); a toggle still in place must say what is shown.
+        outgoing.shownWithoutToggle = true;
+        if (outgoing.installed) {
+          outgoing.expanded = true;
+          for (const b of queryAll('gnrToggle', this.doc).elements) {
+            if (b instanceof HTMLButtonElement) setToggleExpanded(b, true);
+          }
         }
       }
       this.markExposed();

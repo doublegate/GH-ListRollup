@@ -81,7 +81,10 @@ All notable user-visible changes to this project are documented here. The format
   still on screen, as the new one: the destination is collapsed as usual, not left expanded (#20).
 - A navigation that never finishes rendering no longer leaves the old listing visible while its
   chevron still says "collapsed", and going Back to it no longer collapses it under the pointer
-  (#20).
+  (#20, #21).
+- A navigation that is cancelled partway brings the listing back as you left it, expanded or
+  collapsed, and a folder you once saw expanded after a stalled navigation is not expanded on a
+  later visit (#21).
 
 ### Security
 
