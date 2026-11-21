@@ -1,6 +1,6 @@
 # Project Status
 
-**Last updated:** 2026-11-16 | **Version:** 0.1.0 (unreleased) | **Phase:** 2, Inline tree (Phases 0 and 1 complete)
+**Last updated:** 2026-11-21 | **Version:** 0.1.1 | **Phase:** 2, Inline tree (Phases 0 and 1 complete)
 
 ## Summary
 
@@ -49,6 +49,7 @@ toggle.
 | Metric              | Value                           | Source                                     |
 | ------------------- | ------------------------------- | ------------------------------------------ |
 | Unit tests          | 279 passing                     | `pnpm test`, 2026-11-21 (#24)              |
+| Latest release      | 0.1.1 (store packages built)    | `CHANGELOG.md`, 2026-11-21                 |
 | Lint / typecheck    | clean, zero warnings            | `pnpm lint`, `pnpm typecheck`, 2026-11-15  |
 | `web-ext lint`      | 0 errors, 0 warnings, 0 notices | `pnpm lint:firefox`, 2026-11-15            |
 | Content script size | 18.93 kB (CSS 896 B)            | `pnpm build` output, 2026-11-21            |
@@ -68,4 +69,4 @@ toggle.
 1. Phase 2 Sprint 1: the data layer, starting with spike T-GNR-201 (same-origin tree JSON for
    private repositories in Firefox).
 2. Open follow-ups from bot reviews: issues #13 and #15 (non-blocking). The collapse lifecycle
-   edge cases are closed: #17 by #20, #21 by #22, and #23 by its own PR.
+   edge cases are closed: #17 by #20, #21 by #22, and #23 by #24.

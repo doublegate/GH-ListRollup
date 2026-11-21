@@ -6,6 +6,52 @@ All notable user-visible changes to this project are documented here. The format
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-21
+
+Collapse reliability release: no new features. Every fix keeps the listing usable during GitHub's
+in-page navigations.
+
+### Fixed
+
+- When a folder link redirects (a `/tree/master/...` link landing on `/tree/main/...`), the
+  listing's chevron now works as soon as it appears. Before, the files stayed hidden and the chevron
+  did nothing for up to 4 seconds (#17).
+- Never hidden without a working chevron, in more cases: a second Back or click toward a folder that
+  has not rendered yet, or a listing that disappears mid-navigation, no longer leaves the files
+  hidden with no control (review of #19).
+- Fewer 4-second waits after a navigation: going back to the listing still shown (by Back, a link to
+  it, or a link that redirects to it) ends the hiding at once, and a root and its default-branch
+  `/tree/<branch>` page are told apart even when the branch cannot be read from the rows (#17).
+- No late collapse: when the files were already visible (a slow page load, or a listing that
+  rendered after the hiding ended), the chevron arrives with the listing expanded instead of
+  collapsing it under the pointer. A listing that GitHub briefly re-renders keeps your expanded or
+  collapsed choice (#17).
+- No leftover, inert chevron when the commit bar stops being recognised or you leave the listing
+  page, and a malformed link on the page no longer causes an error on click (#17).
+- Navigating between a repository's root and its `/tree/<branch>` page no longer treats the old page,
+  still on screen, as the new one: the destination is collapsed as usual, not left expanded (#20).
+- A navigation that never finishes rendering no longer leaves the old listing visible while its
+  chevron still says "collapsed", and going Back to it no longer collapses it under the pointer
+  (#20, #21).
+- A navigation that is cancelled partway brings the listing back as you left it, expanded or
+  collapsed, and a folder you once saw expanded after a stalled navigation is not expanded on a
+  later visit, even if you go back and return within a frame (#21, #23).
+- A listing GitHub briefly removes and re-adds before a navigation changes the URL is still
+  recognised as the page being left, so the new page is not collapsed from the old one's rows
+  (#23). The same removal after the URL has changed is a known limitation (#24): going Back can
+  then hide that page for up to 4 seconds and show it without a chevron.
+
+### Changed
+
+- The extension description (manifest, and so the store listings) now describes what this version
+  does, the collapsible listing, instead of the inline folder tree that arrives in a later version.
+- The `homepage_url`, icons and the `SOURCE_CODE_REVIEW.md` reviewer guide from the 0.1.0 store
+  build are now part of the main branch, so every later build carries them.
+
+## [0.1.0] - 2026-11-16
+
+First store build: the collapsible listing (Phase 1).
+
 ### Added
 
 - Project bootstrap:
@@ -67,33 +113,6 @@ All notable user-visible changes to this project are documented here. The format
 - Fixture sanitizing: an email address that contains the login is now fully replaced, a
   `</script>` inside a page's embedded JSON stays escaped, and a folder named `__proto__`
   survives.
-- When a folder link redirects (a `/tree/master/...` link landing on `/tree/main/...`), the
-  listing's chevron now works as soon as it appears. Before, the files stayed hidden and the chevron
-  did nothing for up to 4 seconds (#17).
-- Never hidden without a working chevron, in more cases: a second Back or click toward a folder that
-  has not rendered yet, or a listing that disappears mid-navigation, no longer leaves the files
-  hidden with no control (review of #19).
-- Fewer 4-second waits after a navigation: going back to the listing still shown (by Back, a link to
-  it, or a link that redirects to it) ends the hiding at once, and a root and its default-branch
-  `/tree/<branch>` page are told apart even when the branch cannot be read from the rows (#17).
-- No late collapse: when the files were already visible (a slow page load, or a listing that
-  rendered after the hiding ended), the chevron arrives with the listing expanded instead of
-  collapsing it under the pointer. A listing that GitHub briefly re-renders keeps your expanded or
-  collapsed choice (#17).
-- No leftover, inert chevron when the commit bar stops being recognised or you leave the listing
-  page, and a malformed link on the page no longer causes an error on click (#17).
-- Navigating between a repository's root and its `/tree/<branch>` page no longer treats the old page,
-  still on screen, as the new one: the destination is collapsed as usual, not left expanded (#20).
-- A navigation that never finishes rendering no longer leaves the old listing visible while its
-  chevron still says "collapsed", and going Back to it no longer collapses it under the pointer
-  (#20, #21).
-- A navigation that is cancelled partway brings the listing back as you left it, expanded or
-  collapsed, and a folder you once saw expanded after a stalled navigation is not expanded on a
-  later visit, even if you go back and return within a frame (#21, #23).
-- A listing GitHub briefly removes and re-adds before a navigation changes the URL is still
-  recognised as the page being left, so the new page is not collapsed from the old one's rows
-  (#23). The same removal after the URL has changed is a known limitation (#24): going Back can
-  then hide that page for up to 4 seconds and show it without a chevron.
 
 ### Security
 

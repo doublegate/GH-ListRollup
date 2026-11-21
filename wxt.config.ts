@@ -8,8 +8,10 @@ export default defineConfig({
   manifestVersion: 3,
   manifest: ({ browser }) => ({
     name: 'GH ListRollup',
+    // Describes what ships today; the store listings show this text, and listing a feature that is not
+    // there yet (the inline folder tree, Phase 2) breaks both stores' policies.
     description:
-      "Collapse GitHub's repository file listing to one line and expand folders inline as a nested tree.",
+      "Collapse GitHub's repository file listing to its latest-commit line, with a chevron to show it again.",
     homepage_url: 'https://github.com/doublegate/GH-ListRollup',
     host_permissions: ['https://github.com/*'],
     ...(browser === 'firefox'

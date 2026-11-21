@@ -41,7 +41,7 @@ Shared keys, as built today (WXT adds `version` from `package.json`, `icons` dis
 {
   "manifest_version": 3,
   "name": "GH ListRollup",
-  "description": "Collapse GitHub's repository file listing to one line and expand folders inline as a nested tree.",
+  "description": "Collapse GitHub's repository file listing to its latest-commit line, with a chevron to show it again.",
   "homepage_url": "https://github.com/doublegate/GH-ListRollup",
   "host_permissions": ["https://github.com/*"],
   "icons": {
@@ -80,11 +80,11 @@ Chrome adds `"minimum_chrome_version": "121"`.
 
 ### 2.2 Additions by later tickets
 
-| Addition                                                         | Ticket    | Condition                                                                                       |
-| ---------------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------- |
-| `"permissions": ["storage"]`                                     | T-GNR-301 | Added when Phase 3 settings land (omitted in v0.1.0 so stores do not flag an unused permission) |
-| `"options_ui": { "page": "options.html", "open_in_tab": false }` | T-GNR-303 | Always; WXT adds it once `src/entrypoints/options/` exists                                      |
-| `"https://api.github.com/*"` in `host_permissions`               | T-GNR-302 | Only if ADR 0003 keeps the REST fallback (T-GNR-209)                                            |
+| Addition                                                         | Ticket    | Condition                                                                                      |
+| ---------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| `"permissions": ["storage"]`                                     | T-GNR-301 | Added when Phase 3 settings land (omitted in 0.1.x so stores do not flag an unused permission) |
+| `"options_ui": { "page": "options.html", "open_in_tab": false }` | T-GNR-303 | Always; WXT adds it once `src/entrypoints/options/` exists                                     |
+| `"https://api.github.com/*"` in `host_permissions`               | T-GNR-302 | Only if ADR 0003 keeps the REST fallback (T-GNR-209)                                           |
 
 Each ticket updates §2.1 when it lands, so §2.1 always describes the current build.
 

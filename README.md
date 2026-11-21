@@ -45,8 +45,10 @@ GH-ListRollup changes two things:
 > [!NOTE]
 > **Project status: alpha.** The whole-listing collapse (Level 1) works in Chrome and Firefox. It was
 > verified live on github.com, across soft navigations, re-renders and themes, with no flash of the
-> full listing. The inline nested folder tree (Level 2) is next, in Phase 2. There is no store
-> release yet; install from source. See the [roadmap](#roadmap). Known non-blocking edge cases are
+> full listing. The inline nested folder tree (Level 2) is next, in Phase 2. The current version is
+> 0.1.1; its Chrome and Firefox packages are attached to the
+> [GitHub release](https://github.com/doublegate/GH-ListRollup/releases), and the store listings
+> follow once reviewed. See the [roadmap](#roadmap). Known non-blocking edge cases are
 > tracked in [GitHub issues](https://github.com/doublegate/GH-ListRollup/issues).
 
 ## Features
@@ -96,8 +98,10 @@ README.md
 ## Installation
 
 > [!IMPORTANT]
-> Store listings for the Chrome Web Store and Firefox Add-ons are planned for v1.0 (Phase 5). Until
-> then, build from source.
+> Version 0.1.1 is being submitted to the Chrome Web Store and Firefox Add-ons; the store links appear here
+> once the listings are live. Until then, load a build yourself: download the packages from the
+> [latest GitHub release](https://github.com/doublegate/GH-ListRollup/releases/latest) (unzip the
+> Chrome package and use **Load unpacked**), or build from source as below.
 
 ### From source
 
@@ -128,12 +132,12 @@ published on AMO.
 
 ### Compatibility
 
-| Browser                       | Minimum version | Manifest             | Status                       |
-| ----------------------------- | --------------- | -------------------- | ---------------------------- |
-| Chrome, Chromium, Edge, Brave | 121             | MV3 (service worker) | Builds                       |
-| Firefox desktop               | 142             | MV3 (event page)     | Builds; `web-ext lint` clean |
-| Firefox for Android           | --              | --                   | Not planned for v1           |
-| GitHub Enterprise Server      | --              | --                   | Not planned for v1           |
+| Browser                       | Minimum version | Manifest             | Status               |
+| ----------------------------- | --------------- | -------------------- | -------------------- |
+| Chrome, Chromium, Edge, Brave | 121             | MV3 (service worker) | 0.1.1; verified live |
+| Firefox desktop               | 142             | MV3 (event page)     | 0.1.1; verified live |
+| Firefox for Android           | --              | --                   | Not planned for v1   |
+| GitHub Enterprise Server      | --              | --                   | Not planned for v1   |
 
 ## How it works
 

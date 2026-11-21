@@ -4,8 +4,6 @@ node_modules/
 # WXT build output and generated types
 .output/
 .wxt/
-test-builds/
-release-builds/
 web-ext-artifacts/
 stats.html
 stats-*.json
