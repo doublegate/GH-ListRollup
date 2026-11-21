@@ -1205,6 +1205,65 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(isPending(doc)).toBe(false);
   });
 
+  it('from a non-listing page, a destination that renders late is still picked up (agy, #24 round 3)', async () => {
+    const doc = loadHtmlFixture('root');
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove(); // the destination listing has not rendered yet
+    const outcomes: string[] = [];
+    const controller = new CollapseController(ctx, doc, () => {
+      outcomes.push(controller.apply(new URL(ROOT)));
+    });
+    // Coming from an issue page: no listing state yet.
+    expect(controller.navigationStarting(new URL(ROOT))).toBe(true);
+    expect(controller.apply(new URL(ROOT))).toBe('no-listing');
+    parent?.appendChild(held); // React renders the listing; no navigation signal follows
+    await Promise.resolve();
+    await nextFrame();
+    expect(outcomes).toContain('applied');
+    expect(isPending(doc)).toBe(false);
+  });
+
+  it.each([
+    ['exhausted', true],
+    ['at its budget', false],
+  ])(
+    'an outgoing listing %s does not cut the destination’s pre-hide short (agy, #24 round 3)',
+    async (_label, exhausted) => {
+      const { doc, controller } = applied('root');
+      const state = controller.current as { rerenders: number; exhausted: boolean };
+      state.rerenders = RERENDER_BUDGET;
+      state.exhausted = exhausted;
+      controller.navigationStarting(new URL(FOLDER));
+      history.pushState(null, '', '/git/git/tree/master/contrib');
+      listing(doc).remove();
+      expect(controller.apply(new URL(FOLDER))).toBe('no-listing');
+      // The destination renders its skeleton: mutations under the code-view app.
+      query('codeView', doc)?.element.appendChild(doc.createElement('div'));
+      await Promise.resolve();
+      await nextFrame();
+      expect(isPending(doc)).toBe(true); // still the navigation's pre-hide
+    },
+  );
+
+  it('a stall while the outgoing listing is unmounted does not cause a late collapse on Back (agy, #24 round 3)', () => {
+    vi.useFakeTimers();
+    const { doc, controller } = applied('root'); // collapsed
+    controller.navigationStarting(new URL(FOLDER));
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(FOLDER))).toBe('no-listing');
+    vi.advanceTimersByTime(WATCHDOG_MS); // stalled with no listing on screen
+    parent?.appendChild(held); // the outgoing listing comes back, visible
+    expect(collapsed(doc)).toBe(false);
+    history.pushState(null, '', '/git/git'); // Back
+    expect(controller.navigationStarting(new URL(ROOT))).toBe(false);
+    expect(controller.apply(new URL(ROOT))).toBe('applied');
+    expect(collapsed(doc)).toBe(false); // not collapsed under the pointer
+  });
+
   it('a same-page anchor click keeps a cold-load watchdog exposure (agy, #24)', () => {
     vi.useFakeTimers();
     const doc = loadHtmlFixture('root');

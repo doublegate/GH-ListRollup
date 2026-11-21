@@ -266,7 +266,11 @@ scripts run only on full loads.
    node's identity (#23). During a navigation, an apply that finds no listing after the URL has
    changed keeps the outgoing listing's state (and the user's choice) until a destination listing
    exists, so a re-attached outgoing node still reads as stale and an aborted return finds its own
-   state intact (#24). Implemented in
+   state intact (#24). It does so only when an outgoing state exists and is not exhausted (from a
+   non-listing page, or after the budget ran out, the destination's state is created at once), and
+   meanwhile the observer schedules applies without charging the outgoing listing's budget. If
+   the navigation stalls while the outgoing listing is unmounted, the watchdog records it as
+   shown, so it is not collapsed later (#24). Implemented in
    `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different
