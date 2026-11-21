@@ -89,3 +89,27 @@ Respond by:
 
 GitHub DOM changes are expected. When the live probe fails, the response is a selector update
 release, not a rollback.
+
+## 6. Pre-1.0 store builds (0.1.x)
+
+The 0.1.x versions ship Phase 1 to the stores before the Phase 4 suites exist, so their gate is the
+part of §4 that can run today:
+
+- `pnpm check`, CI green on the release commit;
+- the live Playwright checks in `tests/e2e/manual/` (`t-gnr-109.mjs`, `flash-probe.mjs`,
+  `t-gnr-004.mjs`) in place of the E2E, Firefox smoke and live-probe suites;
+- the manual Firefox check on the release build;
+- the AMO reproducibility check (§3, step 3), run from a clean directory;
+- the CHANGELOG section dated, and the version consistent across `package.json` and both manifests.
+
+The packages, checksums, store artwork and a submission guide with the listing text are assembled in
+`release-builds/vX.Y.Z/` (gitignored); the packages and checksums are attached to the GitHub
+release. Store screenshots are captured from the release build with
+`tests/e2e/manual/store-shots.mjs` (light theme, 1280x800) and the small promo tile with
+`tests/e2e/manual/promo-tile.mjs`. Store text and artwork describe only what the version does: a
+feature from a later phase in a screenshot or the description breaks both stores' policies.
+
+| Version | Date       | Content                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 0.1.0   | 2026-11-16 | Phase 1, the collapsible listing (first store build)      |
+| 0.1.1   | 2026-11-21 | Collapse reliability fixes (#16 follow-ups #17, #21, #23) |

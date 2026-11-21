@@ -1,7 +1,7 @@
 {
   "name": "gh-listrollup",
-  "version": "0.1.0",
-  "description": "Collapse GitHub's repository file listing to one line and expand folders inline as a nested tree.",
+  "version": "0.1.1",
+  "description": "Collapse GitHub's repository file listing to its latest-commit line, with a chevron to show it again.",
   "private": true,
   "type": "module",
   "author": "DoubleGate",

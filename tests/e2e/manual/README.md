@@ -16,6 +16,8 @@ adds `@playwright/test` and a proper E2E suite, which should absorb these script
 | `probe-class.mjs`    | Diagnostic: logs listing-container class changes, the `<html>` pending and collapsed markers, and listing and toggle insertions on a cold load. It showed React re-inserting the container about 400 ms after the first apply (#16).                                                                  |
 | `probe-timeline.mjs` | Diagnostic: a timestamped timeline of one expand-and-folder-click navigation (URL, markers, insertions, `[gnr]` console lines, flash frames). Its own mutation logging shifts timing, so use `flash-probe.mjs` to decide whether a flash exists.                                                      |
 | `node-identity.mjs`  | GitHub DOM probe, no extension: whether a soft navigation between two listings with identical rows renders a new listing container (the staleness check relies on it, #20). Re-run after GitHub router changes.                                                                                       |
+| `store-shots.mjs`    | Release tool: store screenshots of the release build on `wxt-dev/wxt` (root and folder, collapsed and expanded), 1280x800, light theme (`docs/release.md` §6).                                                                                                                                        |
+| `promo-tile.mjs`     | Release tool: the Chrome Web Store small promo tile (440x280) from `assets/icon.png`.                                                                                                                                                                                                                 |
 
 ## Running
 
