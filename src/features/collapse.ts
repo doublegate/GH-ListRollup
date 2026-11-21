@@ -119,11 +119,6 @@ export class CollapseController {
    * starts as shown without a toggle, so there is no late collapse (Codex, #17).
    */
   private exposedPath: string | null = null;
-  /**
-   * The last apply kept the outgoing state while waiting for the destination's listing: the
-   * observer then schedules applies without charging that listing's re-render budget.
-   */
-  private awaitingDestination = false;
 
   constructor(
     private readonly ctx: ContentScriptContext,
@@ -290,26 +285,6 @@ export class CollapseController {
     ) {
       this.observe(this.observationRoot()); // the old observer root may be gone (agy, #16)
       return 'stale';
-    }
-
-    this.awaitingDestination = false;
-    if (!listing && this.navigating && navigated && this.state !== null && !this.state.exhausted) {
-      // Mid-navigation, the URL has moved on but no listing is in the DOM yet. Keep the OUTGOING
-      // listing's state until a destination listing exists: replacing it now lost the user's
-      // choice on an aborted navigation, and recorded a re-attached outgoing node under the
-      // destination, so Back read the outgoing page's own DOM as stale (agy, #24). The pre-hide
-      // stays, bounded by the navigation watchdog.
-      // Only with an outgoing state to keep, and one not left alone by the budget; otherwise the
-      // destination's state is created below as before (agy, #24 round 3). While waiting, the
-      // destination's mutations are not charged to the outgoing listing's budget.
-      const outgoing = this.state;
-      this.removeToggles();
-      this.observer?.takeRecords();
-      if (outgoing.installed) outgoing.shownWithoutToggle = outgoing.expanded;
-      outgoing.installed = false;
-      this.awaitingDestination = true;
-      this.observe(this.observationRoot());
-      return 'no-listing';
     }
 
     if (navigated || this.state === null) {
@@ -507,10 +482,6 @@ export class CollapseController {
             if (b instanceof HTMLButtonElement) setToggleExpanded(b, true);
           }
         }
-      } else if (outgoing && outgoing.pathname !== here && !outgoing.installed) {
-        // Stalled while the outgoing listing was unmounted: with the pre-hide and the marker gone,
-        // it renders visible if it returns, so it must not be collapsed later (agy, #24 round 3).
-        outgoing.shownWithoutToggle = true;
       }
       this.markExposed();
       log.debug('navigation watchdog: no toggle within 4 s, showing GitHub’s listing');
@@ -561,11 +532,6 @@ export class CollapseController {
     this.disconnect();
     this.observed = root;
     this.observer = new MutationObserver(() => {
-      if (this.awaitingDestination) {
-        // The destination's mutations, not a re-render of the outgoing listing (agy, #24 round 3).
-        this.schedule();
-        return;
-      }
       const state = this.state;
       if (!state) return;
       state.rerenders++;

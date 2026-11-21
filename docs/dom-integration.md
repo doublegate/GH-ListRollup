@@ -262,15 +262,15 @@ scripts run only on full loads.
    `ref-docs/research-update-2026-11-21-listing-node-identity.md`). A resolved ref is not taken as
    proof that the DOM is current: a bare `/<o>/<r>` URL accepts any ref in the cross-check, so the
    outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). The rows and the
-   container are recorded only when a listing is present, so a brief unmount keeps the outgoing
-   node's identity (#23). During a navigation, an apply that finds no listing after the URL has
-   changed keeps the outgoing listing's state (and the user's choice) until a destination listing
-   exists, so a re-attached outgoing node still reads as stale and an aborted return finds its own
-   state intact (#24). It does so only when an outgoing state exists and is not exhausted (from a
-   non-listing page, or after the budget ran out, the destination's state is created at once), and
-   meanwhile the observer schedules applies without charging the outgoing listing's budget. If
-   the navigation stalls while the outgoing listing is unmounted, the watchdog records it as
-   shown, so it is not collapsed later (#24). Implemented in
+   container are recorded only when a listing is present, so a brief unmount that happens before
+   the URL changes keeps the outgoing node's identity (#23). An unmount after the URL has changed
+   still starts the destination's state (as before #23). An outgoing listing re-attached then is
+   applied once as the destination: the pre-hide ends early while the collapsed marker keeps it
+   hidden, and the user's choice for the outgoing listing is lost. Its node is then recorded under
+   the destination, so going Back to the outgoing listing reads its own DOM as stale: hidden up to
+   the 4-second watchdog, then shown without a toggle until the next navigation. Accepted
+   limitation (#24): two attempts to keep the outgoing state across that unmount each opened new
+   edge cases, and the worst case leaves the files visible. Implemented in
    `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different
