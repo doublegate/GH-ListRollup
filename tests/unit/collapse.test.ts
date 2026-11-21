@@ -1174,6 +1174,20 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(collapsed(folder)).toBe(true);
   });
 
+  it('a same-page anchor click keeps a cold-load watchdog exposure (agy, #24)', () => {
+    vi.useFakeTimers();
+    const doc = loadHtmlFixture('root');
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove(); // a slow load: nothing to apply yet
+    const life = startLifecycle(ctx, doc);
+    vi.advanceTimersByTime(WATCHDOG_MS); // the watchdog shows the files: exposure recorded
+    clickLink(doc, '#readme'); // an in-page anchor on the same page
+    parent?.appendChild(held);
+    expect(life.apply()).toBe('applied');
+    expect(collapsed(doc)).toBe(false); // no late collapse
+  });
+
   it('the outgoing node identity survives a brief unmount mid-navigation (agy, #23)', () => {
     const { doc, controller } = applied('root');
     controller.navigationStarting(new URL(FOLDER));

@@ -177,9 +177,11 @@ export class CollapseController {
    * instead of leaving it to the watchdog (agy, #19); otherwise the watchdog keeps it bounded.
    */
   returningTo(path: string): void {
-    // The visit the exposure was recorded for is over: drop it now, not at the next frame's apply,
-    // which a navigation with no pre-hide (a keyboard shortcut) could otherwise beat (agy, #23).
-    this.exposedPath = null;
+    // Returning to `path` ends a visit elsewhere: drop an exposure recorded for another listing
+    // now, not at the next frame's apply, which a navigation with no pre-hide (a keyboard shortcut)
+    // could otherwise beat (agy, #23). One recorded for `path` itself still holds: a same-page
+    // anchor click lands here too, and must not cause a late collapse (agy, #24).
+    if (this.exposedPath !== path) this.exposedPath = null;
     if (!this.navigating) return;
     if (!this.toggleLive(path)) {
       // No working toggle yet (React replaced the commit bar; the apply that installs a new one is
