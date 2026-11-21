@@ -84,7 +84,9 @@ All notable user-visible changes to this project are documented here. The format
   (#20, #21).
 - A navigation that is cancelled partway brings the listing back as you left it, expanded or
   collapsed, and a folder you once saw expanded after a stalled navigation is not expanded on a
-  later visit (#21).
+  later visit, even if you go back and return within a frame (#21, #23).
+- A listing GitHub briefly removes and re-adds during a navigation is still recognised as the page
+  being left, so the new page is not collapsed from the old one's rows (#23).
 
 ### Security
 

@@ -261,7 +261,9 @@ scripts run only on full loads.
    container, even when its rows are identical (`/<o>/<r>` and `/<o>/<r>/tree/main`; measured live,
    `ref-docs/research-update-2026-11-21-listing-node-identity.md`). A resolved ref is not taken as
    proof that the DOM is current: a bare `/<o>/<r>` URL accepts any ref in the cross-check, so the
-   outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). Implemented in
+   outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). The rows and the
+   container are recorded only when a listing is present, so a brief mid-navigation unmount keeps
+   the outgoing node's identity (#23). Implemented in
    `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different
@@ -290,7 +292,7 @@ scripts run only on full loads.
    visible without a toggle: the no-header exit, a cold-load no-listing exit (the listing renders
    visible later), and either watchdog ending a pre-hide with no working toggle, including before
    any state exists for the listing (#17). An exposure belongs to one visit: it is dropped when a navigation pre-hide
-   starts and by any apply that is not stale, after the state for its listing has consumed it (#20,
+   starts, when a navigation returns to the outgoing listing (#23), and by any apply that is not stale, after the state for its listing has consumed it (#20,
    #21). A mid-navigation no-listing or no-header exit also carries the user's choice, so an aborted
    navigation brings the outgoing listing back as it was (#21). A listing that React unmounts briefly, outside a
    navigation, keeps the user's own choice when it returns instead (#17); the choice is carried once, so further applies while it is absent change nothing (#20).
