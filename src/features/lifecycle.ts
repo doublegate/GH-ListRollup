@@ -11,16 +11,10 @@
  */
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import { watchNavigation } from '@/github/nav';
-import { detectPage } from '@/github/page';
+import { detectPage, listingPath } from '@/github/page';
 import { closest, query } from '@/github/selectors';
 import { log } from '@/log';
-import {
-  type ApplyOutcome,
-  CollapseController,
-  WATCHDOG_MS,
-  listingPath,
-  setPending,
-} from './collapse';
+import { type ApplyOutcome, CollapseController, WATCHDOG_MS, setPending } from './collapse';
 
 export interface Lifecycle {
   controller: CollapseController;
@@ -28,10 +22,19 @@ export interface Lifecycle {
   apply(): ApplyOutcome;
 }
 
+/** Optional observers of the lifecycle's single navigation watcher (the content script's logging). */
+export interface LifecycleHooks {
+  /** After each coalesced navigation change, before the apply. */
+  onNavigation?: () => void;
+  /** Each navigation signal's event type, before coalescing. */
+  onSignal?: (type: string) => void;
+}
+
 export function startLifecycle(
   ctx: ContentScriptContext,
   doc: Document = document,
   onApply: (outcome: ApplyOutcome) => void = () => undefined,
+  hooks: LifecycleHooks = {},
 ): Lifecycle {
   const apply = (): ApplyOutcome => {
     const outcome = controller.apply(new URL(doc.location.href));
@@ -89,11 +92,23 @@ export function startLifecycle(
       const target = link.getAttribute('target');
       if (target && target !== '_self') return;
       if (link.hasAttribute('download')) return;
-      const destination = new URL(link.href, doc.location.href);
+      // A user-authored href that does not parse (`http://[::1`) is no navigation we can read; this
+      // listener runs for every link click on github.com, so it must not throw (agy, #17).
+      let destination: URL;
+      try {
+        destination = new URL(link.href, doc.location.href);
+      } catch {
+        return;
+      }
       // A link to the page already shown (an in-page anchor, a reload of the same listing) is no
       // navigation to a different listing (agy, #16). Not checked for popstate, where location is
       // already the destination.
-      if (listingPath(destination.pathname) === listingPath(doc.location.pathname)) return;
+      // A click back to the listing still shown, while a navigation is in flight, ends its
+      // pre-hide if that listing's toggle still works (agy, post-merge review of #19).
+      if (listingPath(destination.pathname) === listingPath(doc.location.pathname)) {
+        controller.returningTo(listingPath(destination.pathname));
+        return;
+      }
       controller.navigationStarting(destination);
     },
     { capture: true },
@@ -102,10 +117,19 @@ export function startLifecycle(
     controller.navigationStarting(new URL(doc.location.href));
   });
 
-  // 3. Soft navigation (already coalesced to one call per animation frame).
-  watchNavigation(ctx, () => {
-    apply();
-  });
+  // 3. Soft navigation (already coalesced to one call per animation frame). The only navigation
+  // watcher: the content script's logging hooks in here rather than registering its own (agy, #17).
+  watchNavigation(
+    ctx,
+    () => {
+      hooks.onNavigation?.();
+      apply();
+    },
+    (type) => {
+      controller.navigationSignal(type);
+      hooks.onSignal?.(type);
+    },
+  );
 
   return { controller, apply };
 }

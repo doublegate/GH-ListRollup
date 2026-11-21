@@ -65,6 +65,18 @@ All notable user-visible changes to this project are documented here. The format
 - When a folder link redirects (a `/tree/master/...` link landing on `/tree/main/...`), the
   listing's chevron now works as soon as it appears. Before, the files stayed hidden and the chevron
   did nothing for up to 4 seconds (#17).
+- Never hidden without a working chevron, in more cases: a second Back or click toward a folder that
+  has not rendered yet, or a listing that disappears mid-navigation, no longer leaves the files
+  hidden with no control (review of #19).
+- Fewer 4-second waits after a navigation: going back to the listing still shown (by Back, a link to
+  it, or a link that redirects to it) ends the hiding at once, and a root and its default-branch
+  `/tree/<branch>` page are told apart even when the branch cannot be read from the rows (#17).
+- No late collapse: when the files were already visible (a slow page load, or a listing that
+  rendered after the hiding ended), the chevron arrives with the listing expanded instead of
+  collapsing it under the pointer. A listing that GitHub briefly re-renders keeps your expanded or
+  collapsed choice (#17).
+- No leftover, inert chevron when the commit bar stops being recognised or you leave the listing
+  page, and a malformed link on the page no longer causes an error on click (#17).
 
 ### Security
 

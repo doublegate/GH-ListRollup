@@ -250,10 +250,12 @@ describe('lifecycle (T-GNR-106)', () => {
   it('after a soft navigation, waits until the DOM shows the new listing', () => {
     const { doc, controller } = applied('root');
     toggle(doc).click(); // expanded on the root
-    // URL changes to a folder, but the DOM still shows the root's rows (observed live).
+    // URL changes to a folder, but the DOM still shows the root's rows, in the same nodes
+    // (observed live: React keeps the old listing until it renders the new one).
     const folderUrl = 'https://github.com/git/git/tree/master/contrib';
-    loadHtmlFixture('root', { url: folderUrl });
+    history.pushState(null, '', folderUrl);
     expect(controller.apply(new URL(folderUrl))).toBe('stale');
+    expect(doc).toBe(document);
     // React renders the folder listing: now it applies, collapsed (a different listing).
     const folderDoc = loadHtmlFixture('folder');
     expect(controller.apply(new URL(folderUrl))).toBe('applied');
@@ -532,16 +534,14 @@ describe('no flash (maintainer live check on #16)', () => {
       const { doc } = start();
       clickLink(doc, '/git/git/tree/master/contrib');
       expect(isPending(doc)).toBe(true);
-      // The URL changes but the DOM never shows the new listing (every apply is stale).
-      const stale = loadHtmlFixture('root', {
-        url: 'https://github.com/git/git/tree/master/contrib',
-      });
-      setPending(stale);
-      stale.documentElement.setAttribute(COLLAPSED_ATTR, '');
+      // The URL changes but the DOM never shows the new listing: the same nodes, so every apply is
+      // stale (live, React keeps the old listing in place until it renders the new one).
+      history.pushState(null, '', '/git/git/tree/master/contrib');
+      // The old toggle is gone with the outgoing header (React removed it).
+      for (const t of toggles(doc)) t.remove();
       vi.advanceTimersByTime(WATCHDOG_MS);
-      expect(isPending(stale)).toBe(false);
-      expect(collapsed(stale)).toBe(false);
-      expect(doc).toBeDefined();
+      expect(isPending(doc)).toBe(false);
+      expect(collapsed(doc)).toBe(false);
     });
 
     it('navigation watchdog, aborted navigation: ends the pre-hide, keeps the working toggle', () => {
@@ -720,5 +720,182 @@ describe('review findings on #16, round 4', () => {
     expect(listing(doc).id).toBe('gnr-listing');
     ctx.notifyInvalidated();
     expect(listing(doc).hasAttribute('id')).toBe(false);
+  });
+});
+
+describe('issue #17 and the post-merge review of #19', () => {
+  /** Clicks a link to `href` (default prevented: no real navigation in the test). */
+  const clickLink = (doc: Document, href: string) => {
+    const a = doc.createElement('a');
+    a.setAttribute('href', href);
+    doc.body.appendChild(a);
+    a.addEventListener('click', (e) => e.preventDefault());
+    a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }));
+  };
+  const start = () => {
+    const doc = loadHtmlFixture('root');
+    const life = startLifecycle(ctx, doc);
+    expect(life.apply()).toBe('applied');
+    return { doc, life };
+  };
+  /** Makes the header line unrecognisable while leaving its row (and our toggle) in the DOM. */
+  const hideHeaderHooks = (doc: Document) => {
+    query('commitDetails', doc)?.element.removeAttribute('data-testid');
+    for (const h of doc.querySelectorAll('h2')) {
+      if (h.textContent?.trim() === 'Latest commit') h.textContent = 'Something else';
+    }
+  };
+
+  it('a popstate toward an unrendered destination keeps its watchdog (agy, #19, blocking)', () => {
+    vi.useFakeTimers();
+    const { doc, life } = start();
+    clickLink(doc, '/git/git/tree/master/contrib');
+    // The URL moves on and the old listing (with the header and our toggle) unmounts.
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    for (const t of toggles(doc)) t.remove();
+    listing(doc).remove();
+    expect(life.apply()).toBe('no-listing'); // state: the folder, not installed
+    window.dispatchEvent(new PopStateEvent('popstate')); // toward that same folder
+    expect(isPending(doc)).toBe(true); // still bounded by the navigation's watchdog
+    vi.advanceTimersByTime(WATCHDOG_MS);
+    expect(isPending(doc)).toBe(false);
+    expect(collapsed(doc)).toBe(false); // not hidden without a toggle
+  });
+
+  it('a no-listing exit mid-navigation with the toggle gone is not treated as installed (agy, #19, blocking)', () => {
+    vi.useFakeTimers();
+    const { doc, life } = start();
+    clickLink(doc, '/git/git/tree/master/contrib');
+    // React unmounts the outgoing listing and its header before the URL changes.
+    for (const t of toggles(doc)) t.remove();
+    listing(doc).remove();
+    expect(life.apply()).toBe('no-listing');
+    expect(life.controller.current?.installed).toBe(false);
+    vi.advanceTimersByTime(WATCHDOG_MS);
+    expect(collapsed(doc)).toBe(false);
+  });
+
+  it('a click back to the listing shown ends an in-flight pre-hide (agy, #19)', () => {
+    const { doc } = start();
+    clickLink(doc, '/git/git/tree/master/contrib');
+    expect(isPending(doc)).toBe(true);
+    clickLink(doc, '/git/git'); // the router has not moved yet
+    expect(isPending(doc)).toBe(false);
+    expect(collapsed(doc)).toBe(true);
+  });
+
+  it('a navigation that completes back on the outgoing listing ends the pre-hide (agy, #17)', () => {
+    const { doc } = start();
+    clickLink(doc, '/git/git/tree/master/contrib');
+    // The link redirected back to the listing already shown. A start signal is not enough.
+    window.dispatchEvent(new Event('wxt:locationchange'));
+    expect(isPending(doc)).toBe(true);
+    doc.dispatchEvent(new Event('soft-nav:end'));
+    expect(isPending(doc)).toBe(false);
+    expect(collapsed(doc)).toBe(true);
+  });
+
+  it('a link whose href does not parse is ignored without throwing (agy, #17)', () => {
+    const { doc } = start();
+    const errors: unknown[] = [];
+    const onError = (e: ErrorEvent) => errors.push(e.error);
+    window.addEventListener('error', onError);
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      clickLink(doc, 'http://[::1');
+    } finally {
+      window.removeEventListener('error', onError);
+      spy.mockRestore();
+    }
+    expect(errors).toEqual([]);
+    expect(spy).not.toHaveBeenCalled();
+    expect(isPending(doc)).toBe(false);
+  });
+
+  it('the no-header exit removes a leftover toggle (agy, #17)', () => {
+    const { doc, controller } = applied('root');
+    expect(toggles(doc).length).toBe(1);
+    hideHeaderHooks(doc);
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-header');
+    expect(toggles(doc).length).toBe(0);
+    expect(collapsed(doc)).toBe(false);
+  });
+
+  it('the not-listing exit removes a leftover toggle (agy, #17)', () => {
+    const { doc, controller } = applied('root');
+    expect(controller.apply(new URL('https://github.com/git/git/issues'))).toBe('not-listing');
+    expect(toggles(doc).length).toBe(0);
+  });
+
+  it('a listing briefly unmounted keeps the user’s expansion (Codex, #17)', () => {
+    const { doc, controller } = applied('root');
+    toggle(doc).click();
+    expect(collapsed(doc)).toBe(false);
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-listing');
+    parent?.appendChild(held);
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(collapsed(doc)).toBe(false);
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('a cold load whose listing renders after a no-listing exit is not collapsed late (agy, #17)', () => {
+    const doc = loadHtmlFixture('root');
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    setPending(doc);
+    const controller = new CollapseController(ctx, doc);
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-listing');
+    expect(isPending(doc)).toBe(false); // visible from here on
+    parent?.appendChild(held);
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(collapsed(doc)).toBe(false);
+  });
+
+  it('a listing shown by the cold-load watchdog is not collapsed late (Codex, #17)', () => {
+    vi.useFakeTimers();
+    const doc = loadHtmlFixture('root');
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove(); // a slow load: nothing to apply yet
+    const life = startLifecycle(ctx, doc);
+    vi.advanceTimersByTime(WATCHDOG_MS); // the watchdog ends the pre-hide
+    expect(isPending(doc)).toBe(false);
+    parent?.appendChild(held); // the listing renders, visible
+    expect(life.apply()).toBe('applied');
+    expect(collapsed(doc)).toBe(false);
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('mid-navigation, a missing header line keeps the pre-hide and records nothing (agy, #17)', () => {
+    const { doc, life } = start();
+    clickLink(doc, '/git/git/tree/master/contrib');
+    const folder = loadHtmlFixture('folder');
+    setPending(folder); // the test replaced the document; the real one keeps the attribute
+    const details = query('commitDetails', folder)?.element;
+    details?.removeAttribute('data-testid');
+    const headings = [...folder.querySelectorAll('h2')].filter(
+      (h) => h.textContent?.trim() === 'Latest commit',
+    );
+    for (const h of headings) h.textContent = 'Something else';
+    expect(life.apply()).toBe('no-header');
+    expect(isPending(folder)).toBe(true);
+    // The header line renders: collapsed, as any new listing.
+    details?.setAttribute('data-testid', 'latest-commit-details');
+    for (const h of headings) h.textContent = 'Latest commit';
+    expect(life.apply()).toBe('applied');
+    expect(isPending(folder)).toBe(false);
+    expect(collapsed(folder)).toBe(true);
+  });
+
+  it('the lifecycle shares its navigation watcher with the content script (agy, #17)', () => {
+    const doc = loadHtmlFixture('root');
+    const signals: string[] = [];
+    startLifecycle(ctx, doc, () => undefined, { onSignal: (t) => signals.push(t) });
+    doc.dispatchEvent(new Event('turbo:load'));
+    expect(signals).toEqual(['turbo:load']);
   });
 });
