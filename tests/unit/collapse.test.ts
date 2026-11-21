@@ -633,6 +633,19 @@ describe('no flash (maintainer live check on #16)', () => {
       query('gnrToggle', folder)?.element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
       expect(collapsed(folder)).toBe(false);
     });
+
+    it('Back to the outgoing listing before the destination renders ends the pre-hide (agy, #19)', () => {
+      // A folder click, then Back while the folder has not rendered: location is the root again,
+      // whose toggle is still installed, so nothing should stay hidden until the watchdog.
+      const { doc, life } = start();
+      clickLink(doc, '/git/git/tree/master/contrib');
+      expect(isPending(doc)).toBe(true);
+      window.dispatchEvent(new PopStateEvent('popstate')); // location: still the root fixture
+      expect(isPending(doc)).toBe(false);
+      expect(life.apply()).toBe('applied');
+      expect(isPending(doc)).toBe(false);
+      expect(collapsed(doc)).toBe(true);
+    });
   });
 });
 

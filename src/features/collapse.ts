@@ -327,7 +327,16 @@ export class CollapseController {
     if (destination.origin !== 'https://github.com') return false;
     if (detectPage(destination).kind === 'other') return false;
     const target = listingPath(destination.pathname);
-    if (target === this.state?.pathname) return false;
+    if (target === this.state?.pathname) {
+      // Back to the listing still shown, before the destination rendered: its toggle is installed,
+      // so end a pre-hide still in flight instead of leaving it to the watchdog (agy, #19).
+      if (this.navigating) {
+        this.navigation++; // the in-flight watchdog no longer acts
+        this.navigating = false;
+        clearPending(this.doc);
+      }
+      return false;
+    }
     setPending(this.doc);
     this.navigating = true;
     this.navOrigin = this.state?.pathname ?? null;

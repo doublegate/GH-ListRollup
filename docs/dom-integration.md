@@ -215,7 +215,9 @@ scripts run only on full loads.
    on the **outgoing** listing (the one shown when the navigation started), a re-render before the
    URL changes, does not end it early. A successful apply on any other listing does, including a
    destination GitHub redirected or canonicalized (a `/tree/master/docs` link landing on
-   `/tree/main/docs`), so its toggle works at once (#17). The cold-load watchdog never ends a navigation's
+   `/tree/main/docs`), so its toggle works at once (#17). Going back to the outgoing listing before
+   the destination renders ends it at once, since that listing's toggle is still installed (#19). A
+   link that redirects back to the outgoing listing itself still waits for the watchdog (#17). The cold-load watchdog never ends a navigation's
    pre-hide: a folder click about 4 s after load lost its pre-hide to that timer, which flashed the
    new listing for a frame. If no
    toggle is installed for the listing actually shown, the watchdog also removes the collapsed
