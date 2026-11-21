@@ -945,6 +945,35 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(toggles(doc).length).toBe(0);
   });
 
+  it('mid-navigation, a folder listing gone with its commit bar left is not a live toggle (agy, #20, blocking)', () => {
+    vi.useFakeTimers();
+    const { doc, controller } = applied('folder');
+    expect(controller.navigationStarting(new URL('https://github.com/git/git'))).toBe(true);
+    listing(doc).remove(); // the commit bar, a separate box, keeps our toggle
+    expect(controller.apply(new URL(fixtureUrl('folder')))).toBe('no-listing');
+    expect(toggles(doc).length).toBe(0);
+    expect(controller.current?.installed).toBe(false);
+    controller.returningTo('/git/git/tree/master/contrib'); // must not end the pre-hide
+    expect(isPending(doc)).toBe(true);
+    vi.advanceTimersByTime(WATCHDOG_MS);
+    expect(isPending(doc)).toBe(false);
+    expect(collapsed(doc)).toBe(false); // nothing left hidden behind the marker
+  });
+
+  it('a completed navigation’s watchdog does not act later (agy, #20)', () => {
+    vi.useFakeTimers();
+    const { controller } = applied('root');
+    controller.navigationStarting(new URL('https://github.com/git/git/tree/master/contrib'));
+    const folder = loadHtmlFixture('folder');
+    setPending(folder);
+    expect(controller.apply(new URL(fixtureUrl('folder')))).toBe('applied');
+    // A re-render is under way when the old timer fires: the toggle is briefly absent.
+    for (const t of toggles(folder)) t.remove();
+    vi.advanceTimersByTime(WATCHDOG_MS);
+    expect(collapsed(folder)).toBe(true);
+    expect(controller.current?.shownWithoutToggle).toBe(false);
+  });
+
   it('the lifecycle shares its navigation watcher with the content script (agy, #17)', () => {
     const doc = loadHtmlFixture('root');
     const signals: string[] = [];

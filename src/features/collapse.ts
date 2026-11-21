@@ -166,7 +166,10 @@ export class CollapseController {
     return (
       this.state?.installed === true &&
       this.state.pathname === path &&
-      queryAll('gnrToggle', this.doc).elements.length > 0
+      queryAll('gnrToggle', this.doc).elements.length > 0 &&
+      // A toggle without its listing controls nothing: on folder pages the commit bar is a separate
+      // box that can outlive the listing (agy, #20, blocking).
+      query('listing', this.doc) !== null
     );
   }
 
@@ -316,9 +319,11 @@ export class CollapseController {
         this.removeToggles();
         state.shownWithoutToggle = state.installed ? state.expanded : true;
         state.installed = false;
-      } else if (queryAll('gnrToggle', doc).elements.length === 0) {
-        // Mid-navigation with the toggle gone too: nothing may treat it as still installed (agy,
-        // post-merge review of #19). The pre-hide stays, bounded by the navigation watchdog.
+      } else {
+        // Mid-navigation with no listing, a toggle left in the commit bar controls nothing: nothing
+        // may treat it as installed (agy, post-merge review of #19; #20 for folder pages, whose
+        // commit bar can outlive the listing). The pre-hide stays, bounded by the watchdog.
+        this.removeToggles();
         state.installed = false;
       }
       this.observe(this.observationRoot());
@@ -423,6 +428,9 @@ export class CollapseController {
     const token = ++this.navigation;
     this.ctx.setTimeout(() => {
       if (token !== this.navigation) return; // a later navigation armed its own watchdog
+      // A navigation that already ended (applied, or a non-listing, no-header or error exit) has
+      // nothing left to bound; acting now could catch a re-render mid-way and expose the listing.
+      if (!this.navigating) return;
       this.navigating = false;
       // Always end the pre-hide: an aborted navigation leaves the old URL, and a pending attribute
       // left behind would hide the listing whatever its toggle says.

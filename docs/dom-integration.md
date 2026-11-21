@@ -228,7 +228,9 @@ scripts run only on full loads.
    successful apply ends the pre-hide (#20). The cold-load watchdog
    never ends a navigation's pre-hide: a folder click about 4 s after load lost its pre-hide to that
    timer, which flashed the new listing for a frame. If no working toggle exists for the listing
-   actually shown, the watchdog also removes the collapsed marker. "Installed" alone is not enough:
+   actually shown (installed by an apply on it, in the DOM, and with the listing present), the
+   watchdog also removes the collapsed marker. A watchdog whose navigation already ended does
+   nothing (#20). "Installed" alone is not enough:
    mid-navigation React may already have removed the header line and the toggle with it (agy,
    post-merge review of #19). An aborted navigation leaves the old URL, and its toggle keeps
    working.
@@ -237,7 +239,8 @@ scripts run only on full loads.
    Measured live: React replaced the container about 400 ms after the first apply, during hydration,
    with `class=""`, which dropped a class there and flashed the listing for one frame. A marker on
    `<html>` hides any container until the next apply puts the toggle back. Every path that ends with
-   no toggle removes the marker: the no-header and non-listing exits, budget exhaustion, the
+   no toggle removes the marker: the no-header exit outside a navigation (mid-navigation it keeps the
+   pre-hide instead, see above), the non-listing exit, budget exhaustion, the
    navigation watchdog, teardown, an exception inside `apply()` (the toggle counts as installed only
    once it is in the DOM), and a no-listing exit that is not part of a click or `popstate`
    navigation, such as a keyboard-shortcut navigation or React unmounting the listing. The
@@ -297,8 +300,10 @@ scripts run only on full loads.
 The controller also forgets the listing whenever an `apply()` lands on a non-listing page. Returning
 to the same listing later (Issues, then Back) is a navigation, not a re-render, so it starts
 collapsed again. If the header line disappears after a successful collapse, the next `apply()` takes
-the no-header exit. That exit removes the collapsed marker, so files are never hidden without a toggle.
-It also marks the listing as shown, so a header that returns does not cause a late collapse.
+the no-header exit. Outside a navigation, that exit removes the collapsed marker, so files are never
+hidden without a toggle, and marks the listing as shown, so a header that returns does not cause a
+late collapse. Mid-navigation it keeps the pre-hide, bounded by the navigation watchdog, which shows
+the files and records them as shown if no header line arrives.
 
 ### Hydration
 
