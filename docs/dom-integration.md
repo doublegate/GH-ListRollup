@@ -207,38 +207,61 @@ scripts run only on full loads.
      and the listing already shown are ignored);
    - on `popstate` (back and forward), where `location` already holds the destination.
 
-   It ends like the cold-load pre-hide: the apply that installs the toggle clears it, and so do the
-   no-header and non-listing exits. The no-listing exit **keeps** it mid-navigation: the old listing
-   is gone and the new one not yet rendered, so nothing visible is hidden. It observes the code-view
+   It ends like the cold-load pre-hide: the apply that installs the toggle clears it, and so does
+   the non-listing exit. The no-listing exit **keeps** it mid-navigation: the old listing is gone
+   and the new one not yet rendered, so nothing visible is hidden. So does the no-header exit
+   mid-navigation: the header line may not have rendered yet, and showing the files there recorded
+   them as shown, which kept a root expanded after `/tree/<ref>` to `/<o>/<r>` (#17). It observes the code-view
    app for the arrival, because clearing pending there flashed the new listing for a frame. A
    per-navigation watchdog (4 seconds; only the latest navigation's acts) always ends it. An apply
    on the **outgoing** listing (the one shown when the navigation started), a re-render before the
    URL changes, does not end it early. A successful apply on any other listing does, including a
    destination GitHub redirected or canonicalized (a `/tree/master/docs` link landing on
-   `/tree/main/docs`), so its toggle works at once (#17). Going back to the outgoing listing before
-   the destination renders ends it at once, since that listing's toggle is still installed (#19). A
-   link that redirects back to the outgoing listing itself still waits for the watchdog (#17). The cold-load watchdog never ends a navigation's
-   pre-hide: a folder click about 4 s after load lost its pre-hide to that timer, which flashed the
-   new listing for a frame. If no
-   toggle is installed for the listing actually shown, the watchdog also removes the collapsed
-   marker. An aborted navigation leaves the old URL, and its toggle keeps working.
+   `/tree/main/docs`), so its toggle works at once (#17). Three ways back to the outgoing listing
+   end it at once too, but only while that listing's toggle still works (installed by an apply on it
+   **and** still in the DOM): Back before the destination renders (#19), a click on a link to the
+   listing still shown, and a completion signal (`soft-nav:end` or `turbo:load`; not
+   `navigatesuccess`, which Chromium fires for any `pushState`/`replaceState`, including a router's
+   own on the outgoing URL)
+   that arrives with `location` back on it, which is where a link redirecting to the page already
+   shown ends up (#17). A start signal (`wxt:locationchange`) does not count. When the return
+   comes before a working toggle exists (React replaced the commit bar and the apply that installs
+   a new one is a frame away), the outgoing listing stops counting as outgoing, so that next
+   successful apply ends the pre-hide (#20). The cold-load watchdog
+   never ends a navigation's pre-hide: a folder click about 4 s after load lost its pre-hide to that
+   timer, which flashed the new listing for a frame. If no working toggle exists for the listing
+   actually shown (installed by an apply on it, in the DOM, and with the listing present), the
+   watchdog also removes the collapsed marker. A watchdog whose navigation already ended does
+   nothing (#20). When the navigation stalled (the URL moved on but the destination never rendered),
+   the outgoing listing is what becomes visible: its toggle is set to expanded, so it says what is
+   shown and coming Back does not collapse it (#20). "Installed" alone is not enough:
+   mid-navigation React may already have removed the header line and the toggle with it (agy,
+   post-merge review of #19). An aborted navigation leaves the old URL, and its toggle keeps
+   working.
 
    **The collapsed marker is on `<html>` (`data-gnr-collapsed`), not on the listing container.**
    Measured live: React replaced the container about 400 ms after the first apply, during hydration,
    with `class=""`, which dropped a class there and flashed the listing for one frame. A marker on
    `<html>` hides any container until the next apply puts the toggle back. Every path that ends with
-   no toggle removes the marker: the no-header and non-listing exits, budget exhaustion, the
+   no toggle removes the marker: the no-header exit outside a navigation (mid-navigation it keeps the
+   pre-hide instead, see above), the non-listing exit, budget exhaustion, the
    navigation watchdog, teardown, an exception inside `apply()` (the toggle counts as installed only
    once it is in the DOM), and a no-listing exit that is not part of a click or `popstate`
-   navigation, such as a keyboard-shortcut navigation or React unmounting the listing.
+   navigation, such as a keyboard-shortcut navigation or React unmounting the listing. The
+   no-header, non-listing and (outside a navigation) no-listing exits also remove the extension's own
+   toggles, so no inert button stays
+   behind in a DOM React keeps (#17).
 
    **The first signals arrive before the new listing renders** (observed live,
    `ref-docs/research-update-2026-11-16-phase1-fixtures.md` §6). So after a navigation, `apply()`
-   first checks that the listing in the DOM belongs to the new URL. When the ref resolves, it passes
-   the cross-check and the DOM is current. When it does not, and the first entry row's href equals
-   the previous page's, the DOM is stale: `apply()` does nothing and waits for the next signal. Rows
-   identical across two URLs (`/<o>/<r>` and `/<o>/<r>/tree/main`) resolve a ref and are never
-   mistaken for stale. Implemented in `src/features/collapse.ts`.
+   first checks that the listing in the DOM belongs to the new URL. When the first entry row's href
+   equals the previous page's **and the listing container is the same node**, the DOM is stale:
+   `apply()` does nothing and waits for the next signal. React renders the destination into a new
+   container, even when its rows are identical (`/<o>/<r>` and `/<o>/<r>/tree/main`; measured live,
+   `ref-docs/research-update-2026-11-21-listing-node-identity.md`). A resolved ref is not taken as
+   proof that the DOM is current: a bare `/<o>/<r>` URL accepts any ref in the cross-check, so the
+   outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). Implemented in
+   `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different
    listing means `location.pathname` changed since the last apply, compared as a whole string. Level
@@ -253,7 +276,8 @@ scripts run only on full loads.
    stops after at most 50 runs per listing. The controller drops the records of its own toggle
    insertion (`takeRecords()`), so it does not trigger itself. When the budget runs out, nothing would
    notice the toggle vanishing any more. So the page is **restored** (toggle removed, files shown) and
-   that listing is left as GitHub renders it until the next navigation to a different listing. After
+   that listing is left as GitHub renders it until the next navigation to a different listing; an
+   apply on it also ends any navigation pre-hide (#20). After
    a no-header exit the observer watches the code-view app instead, which contains both the listing
    and the commit bar on either layout, so a late commit bar is picked up.
 
@@ -261,7 +285,16 @@ scripts run only on full loads.
    header line was not yet rendered and `data-gnr-pending` was cleared), a later `apply()` on the
    same listing may insert the toggle but leaves the listing **expanded**. Collapsing a listing the
    user can already see would move content under their pointer. The default state applies again on
-   the next navigation to a different listing.
+   the next navigation to a different listing. Exposure is recorded wherever the files become
+   visible without a toggle: the no-header exit, a cold-load no-listing exit (the listing renders
+   visible later), and either watchdog ending a pre-hide with no working toggle, including before
+   any state exists for the listing (#17). An exposure belongs to one visit: it is dropped when a navigation pre-hide
+   starts and when an apply lands on a non-listing page (#20). A listing that React unmounts briefly, outside a
+   navigation, keeps the user's own choice when it returns instead (#17); the choice is carried once, so further applies while it is absent change nothing (#20).
+
+   **One navigation watcher.** `startLifecycle` registers the only `watchNavigation`; the content
+   script's logging attaches through its hooks (`onNavigation`, `onSignal`) instead of registering a
+   second watcher (#17). The click listener ignores a link whose `href` does not parse.
 
 6. **Teardown.** WXT's `ctx.onInvalidated` disconnects observers and removes listeners when the
    extension updates or reloads. It also **restores the page**: the extension's toggles are removed,
@@ -272,8 +305,10 @@ scripts run only on full loads.
 The controller also forgets the listing whenever an `apply()` lands on a non-listing page. Returning
 to the same listing later (Issues, then Back) is a navigation, not a re-render, so it starts
 collapsed again. If the header line disappears after a successful collapse, the next `apply()` takes
-the no-header exit. That exit removes the collapsed marker, so files are never hidden without a toggle.
-It also marks the listing as shown, so a header that returns does not cause a late collapse.
+the no-header exit. Outside a navigation, that exit removes the collapsed marker, so files are never
+hidden without a toggle, and marks the listing as shown, so a header that returns does not cause a
+late collapse. Mid-navigation it keeps the pre-hide, bounded by the navigation watchdog, which shows
+the files and records them as shown if no header line arrives.
 
 ### Hydration
 

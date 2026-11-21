@@ -15,6 +15,7 @@ adds `@playwright/test` and a proper E2E suite, which should absorb these script
 | `flash-probe.mjs`    | Samples every animation frame and counts frames in which a listing is visible while no toggle says it is expanded, over a cold load and five rounds of (expand, folder click) and (expand, Back). It exits 1 on any flash frame. Written after the maintainer saw one-frame flashes in Firefox (#16). |
 | `probe-class.mjs`    | Diagnostic: logs listing-container class changes, the `<html>` pending and collapsed markers, and listing and toggle insertions on a cold load. It showed React re-inserting the container about 400 ms after the first apply (#16).                                                                  |
 | `probe-timeline.mjs` | Diagnostic: a timestamped timeline of one expand-and-folder-click navigation (URL, markers, insertions, `[gnr]` console lines, flash frames). Its own mutation logging shifts timing, so use `flash-probe.mjs` to decide whether a flash exists.                                                      |
+| `node-identity.mjs`  | GitHub DOM probe, no extension: whether a soft navigation between two listings with identical rows renders a new listing container (the staleness check relies on it, #20). Re-run after GitHub router changes.                                                                                       |
 
 ## Running
 

@@ -11,7 +11,6 @@ import { defineContentScript } from 'wxt/utils/define-content-script';
 import { detectPage, pageKey, readListingPage } from '@/github/page';
 import { formatProbe, probe } from '@/github/probe';
 import { startLifecycle } from '@/features/lifecycle';
-import { watchNavigation } from '@/github/nav';
 import { log } from '@/log';
 
 export default defineContentScript({
@@ -66,19 +65,26 @@ export default defineContentScript({
       log.debug('listing', reading);
     };
 
-    startLifecycle(ctx, document, (outcome) => {
-      if (outcome !== 'applied') log.debug('apply:', outcome);
-    });
-
     // Which navigation signals reach this content script, once per type per load (T-GNR-106: does
-    // the Navigation API's navigatesuccess arrive in Firefox?).
+    // the Navigation API's navigatesuccess arrive in Firefox?). The lifecycle's navigation watcher
+    // is shared, not duplicated (agy, #17).
     const seen = new Set<string>();
+    startLifecycle(
+      ctx,
+      document,
+      (outcome) => {
+        if (outcome !== 'applied') log.debug('apply:', outcome);
+      },
+      {
+        onNavigation: report,
+        onSignal: (type) => {
+          if (seen.has(type)) return;
+          seen.add(type);
+          log.debug('nav signal:', type);
+        },
+      },
+    );
     report();
-    watchNavigation(ctx, report, (type) => {
-      if (seen.has(type)) return;
-      seen.add(type);
-      log.debug('nav signal:', type);
-    });
     ctx.onInvalidated(() => log.debug('content script invalidated'));
   },
 });

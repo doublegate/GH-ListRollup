@@ -7,7 +7,7 @@
  */
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import { findHeaderLine } from '@/github/header';
-import { detectPage, readListingPage } from '@/github/page';
+import { detectPage, listingPath, readListingPage } from '@/github/page';
 import { classifyRows } from '@/github/rows';
 import { query, queryAll } from '@/github/selectors';
 import { createToggle, setToggleExpanded } from '@/ui/toggle';
@@ -26,6 +26,10 @@ export const LISTING_ID = 'gnr-listing';
 export const WATCHDOG_MS = 4000;
 /** Re-render observer runs allowed per listing (docs/dom-integration.md section 4, step 5). */
 export const RERENDER_BUDGET = 50;
+/** Signals that a navigation has finished (not merely started): see `navigationSignal`. */
+// Not `navigatesuccess`: Chromium fires it for any history.pushState/replaceState, including a
+// router's own replaceState on the outgoing URL, which would end the pre-hide early (agy, #20).
+const COMPLETION_SIGNALS: ReadonlySet<string> = new Set(['soft-nav:end', 'turbo:load']);
 
 export type ApplyOutcome =
   | 'applied' // the toggle is in place and the state applied
@@ -47,6 +51,12 @@ interface ListingState {
   installed: boolean;
   /** The first entry row's href when last read: the soft-navigation staleness check. */
   signature: string | null;
+  /**
+   * The listing container when last read. Equal rows count as stale only in the SAME node: React
+   * renders a new container for a new page, and `/o/r` and `/o/r/tree/<default>` have identical
+   * rows (with no resolvable ref, they read as stale until the watchdog otherwise; agy, #17).
+   */
+  node: Element | null;
   /** Re-render observer runs so far. */
   rerenders: number;
   /** The budget ran out: the page was restored and this listing is left alone (Codex, #16). */
@@ -78,18 +88,6 @@ function signatureOf(listing: Element | null, owner: string, repo: string): stri
   return classifyRows(listing, owner, repo)[0]?.href ?? null;
 }
 
-/**
- * A listing's identity for state: the pathname without trailing slashes, with the owner and repo
- * lower-cased as GitHub treats them. So `/o/r/` and `/O/R` are the listing `/o/r` (agy, #16).
- */
-export function listingPath(pathname: string): string {
-  return pathname
-    .replace(/\/+$/, '')
-    .split('/')
-    .map((seg, i) => (i === 1 || i === 2 ? seg.toLowerCase() : seg))
-    .join('/');
-}
-
 /** The nearest element containing both `a` and `b`. */
 function commonAncestor(a: Element, b: Element): Element | null {
   for (let el: Element | null = a; el; el = el.parentElement) {
@@ -116,6 +114,11 @@ export class CollapseController {
   private navOrigin: string | null = null;
   /** The listing container the extension gave `LISTING_ID`, so teardown can take it back. */
   private assignedId: Element | null = null;
+  /**
+   * A listing whose files a watchdog showed before any state existed for it: its first state
+   * starts as shown without a toggle, so there is no late collapse (Codex, #17).
+   */
+  private exposedPath: string | null = null;
 
   constructor(
     private readonly ctx: ContentScriptContext,
@@ -134,7 +137,7 @@ export class CollapseController {
    * because a dead content script would leave the files hidden behind an inert button (Codex, #16).
    */
   restore(): void {
-    for (const el of queryAll('gnrToggle', this.doc).elements) el.remove();
+    this.removeToggles();
     setCollapsed(this.doc, false);
     clearPending(this.doc);
     if (this.assignedId?.id === LISTING_ID) this.assignedId.removeAttribute('id');
@@ -150,6 +153,63 @@ export class CollapseController {
   private observationRoot(): Element {
     const app = query('codeView', this.doc)?.element;
     return app && this.doc.body.contains(app) ? app : this.doc.body;
+  }
+
+  /**
+   * Whether the listing `path` has a working toggle right now: installed by an apply on it AND
+   * still in the DOM. `installed` alone is not enough mid-navigation, where React may already have
+   * removed the header line (agy, post-merge review of #19).
+   */
+  private toggleLive(path: string): boolean {
+    return (
+      this.state?.installed === true &&
+      this.state.pathname === path &&
+      queryAll('gnrToggle', this.doc).elements.length > 0 &&
+      // A toggle without its listing controls nothing: on folder pages the commit bar is a separate
+      // box that can outlive the listing (agy, #20, blocking).
+      query('listing', this.doc) !== null
+    );
+  }
+
+  /**
+   * A navigation (Back, or a click on a link to the listing still shown) returns to `path` before
+   * the destination rendered. If `path` still has a working toggle, end the in-flight pre-hide
+   * instead of leaving it to the watchdog (agy, #19); otherwise the watchdog keeps it bounded.
+   */
+  returningTo(path: string): void {
+    if (!this.navigating) return;
+    if (!this.toggleLive(path)) {
+      // No working toggle yet (React replaced the commit bar; the apply that installs a new one is
+      // a frame away). The navigation is back on `path`, so an apply there is no longer an outgoing
+      // re-render: let the next successful apply end the pre-hide, as on any destination. The
+      // watchdog still bounds it (agy, #20, blocking).
+      if (path === this.navOrigin) this.navOrigin = null;
+      return;
+    }
+    this.navigation++; // the in-flight watchdog no longer acts
+    this.navigating = false;
+    clearPending(this.doc);
+  }
+
+  /** Removes the extension's own toggles (never GitHub's nodes). */
+  private removeToggles(): void {
+    for (const el of queryAll('gnrToggle', this.doc).elements) el.remove();
+  }
+
+  /**
+   * A watchdog has just shown the files of the listing at `location` without a toggle. Record it,
+   * so a toggle installed later does not collapse what the user can already see (Codex, #17).
+   */
+  private markExposed(): void {
+    const here = listingPath(this.doc.location.pathname);
+    if (this.state?.pathname === here) {
+      // Callers have checked that no working toggle exists, whatever `installed` still says: a
+      // stale flag would skip the exposure and collapse the visible files later (agy, #20).
+      this.state.installed = false;
+      this.state.shownWithoutToggle = true;
+    } else {
+      this.exposedPath = here;
+    }
   }
 
   /** Runs `apply` on the next animation frame, coalescing repeated requests. */
@@ -194,8 +254,10 @@ export class CollapseController {
       // Forget the listing: coming back to it later is a navigation, not a re-render (agy, #16).
       clearPending(doc);
       setCollapsed(doc, false); // only listing pages carry the marker
+      this.removeToggles(); // none may stay behind, inert, in a DOM React keeps (agy, #17)
       this.navigating = false;
       this.state = null;
+      this.exposedPath = null; // an exposure belongs to that visit only (agy, #20)
       this.disconnect();
       return 'not-listing';
     }
@@ -205,14 +267,16 @@ export class CollapseController {
     const navigated = this.state?.pathname !== path;
 
     // Soft navigation fires before React renders the new listing (ref-docs/research-update-
-    // 2026-11-16-phase1-fixtures.md section 6). A resolved ref proves the DOM belongs to this URL
-    // (it passed the cross-check); otherwise rows identical to the previous page's are stale.
+    // 2026-11-16-phase1-fixtures.md section 6). Rows identical to the previous page's in the SAME
+    // container node are the outgoing page: React renders a new container for the destination
+    // (measured live, 2026-11-21: /o/r/tree/main -> /o/r gave a new node). A resolved ref is no
+    // proof here: a bare /o/r URL accepts any ref in the cross-check (agy, #20).
     if (
       navigated &&
       this.state !== null &&
-      page.ref === null &&
       signature !== null &&
-      signature === this.state.signature
+      signature === this.state.signature &&
+      listing === this.state.node
     ) {
       this.observe(this.observationRoot()); // the old observer root may be gone (agy, #16)
       return 'stale';
@@ -223,16 +287,24 @@ export class CollapseController {
       this.state = {
         pathname: path,
         expanded: false,
-        shownWithoutToggle: false,
+        shownWithoutToggle: this.exposedPath === path,
         installed: false,
         signature,
+        node: listing,
         rerenders: 0,
         exhausted: false,
       };
+      this.exposedPath = null;
     }
     const state = this.state;
     state.signature = signature;
-    if (state.exhausted) return 'budget';
+    state.node = listing;
+    if (state.exhausted) {
+      // Left as GitHub renders it: no pre-hide may stay up over it either (agy, #20).
+      clearPending(doc);
+      this.navigating = false;
+      return 'budget';
+    }
 
     if (!listing) {
       // Mid-navigation, the old listing is gone and the new one not yet rendered: keep the
@@ -240,10 +312,28 @@ export class CollapseController {
       // new listing renders visible for a frame (measured live on #16). Watch for it to arrive.
       // On a cold load there is no navigation in flight, and pending is cleared as before.
       if (!this.navigating) {
-        // No click/popstate navigation is in flight (a keyboard-shortcut navigation, or React
-        // unmounting the listing): the marker must not outlive the toggle (agy, #16).
+        const wasPending = isPending(doc);
+        // No click/popstate navigation is in flight (a keyboard-shortcut navigation, a cold load
+        // whose listing has not rendered, or React unmounting the listing): the marker must not
+        // outlive the toggle (agy, #16). A listing rendering from here on is visible: it is not
+        // collapsed late, and one the user had already set keeps that choice (Codex, agy, #17).
         clearPending(doc);
         setCollapsed(doc, false);
+        // On folder pages the commit bar is a separate box that may outlive the listing: no inert
+        // toggle may stay behind in it (agy, #20). The next apply puts a working one back.
+        this.removeToggles();
+        this.observer?.takeRecords(); // our own removal is not a re-render (agy, #20)
+        // Idempotent (agy, #20): the user's choice is carried once, when the toggle goes; an exposure
+        // is recorded only when this exit itself ends a pre-hide. A repeat call changes nothing.
+        if (state.installed) state.shownWithoutToggle = state.expanded;
+        else if (wasPending) state.shownWithoutToggle = true;
+        state.installed = false;
+      } else {
+        // Mid-navigation with no listing, a toggle left in the commit bar controls nothing: nothing
+        // may treat it as installed (agy, post-merge review of #19; #20 for folder pages, whose
+        // commit bar can outlive the listing). The pre-hide stays, bounded by the watchdog.
+        this.removeToggles();
+        this.observer?.takeRecords();
         state.installed = false;
       }
       this.observe(this.observationRoot());
@@ -251,6 +341,17 @@ export class CollapseController {
     }
     const header = findHeaderLine(doc);
     if (!header) {
+      this.removeToggles(); // an orphaned, inert button must not stay behind (agy, #17)
+      this.observer?.takeRecords(); // our own removal is not a re-render (agy, #20)
+      if (this.navigating) {
+        // Mid-navigation the header line may simply not have rendered yet (or the outgoing page's
+        // is being replaced). Keep the pre-hide rather than expose the files and record them as
+        // shown, which kept a root expanded after /tree/<ref> -> /o/r (agy, #17). The navigation
+        // watchdog bounds it, and shows the files if no header line ever arrives.
+        state.installed = false;
+        this.observe(this.observationRoot());
+        return 'no-header';
+      }
       // The confidence gate: leave GitHub's listing visible. If an earlier apply collapsed it and
       // the header (with our toggle) has since gone, show the files again (Codex, #16), and keep
       // them shown when the header returns: no late collapse.
@@ -328,21 +429,19 @@ export class CollapseController {
     if (detectPage(destination).kind === 'other') return false;
     const target = listingPath(destination.pathname);
     if (target === this.state?.pathname) {
-      // Back to the listing still shown, before the destination rendered: its toggle is installed,
-      // so end a pre-hide still in flight instead of leaving it to the watchdog (agy, #19).
-      if (this.navigating) {
-        this.navigation++; // the in-flight watchdog no longer acts
-        this.navigating = false;
-        clearPending(this.doc);
-      }
+      this.returningTo(target);
       return false;
     }
     setPending(this.doc);
+    this.exposedPath = null; // a fresh, pre-hidden visit: an earlier exposure no longer applies
     this.navigating = true;
     this.navOrigin = this.state?.pathname ?? null;
     const token = ++this.navigation;
     this.ctx.setTimeout(() => {
       if (token !== this.navigation) return; // a later navigation armed its own watchdog
+      // A navigation that already ended (applied, or a non-listing, no-header or error exit) has
+      // nothing left to bound; acting now could catch a re-render mid-way and expose the listing.
+      if (!this.navigating) return;
       this.navigating = false;
       // Always end the pre-hide: an aborted navigation leaves the old URL, and a pending attribute
       // left behind would hide the listing whatever its toggle says.
@@ -350,8 +449,17 @@ export class CollapseController {
       // Decided by outcome, not by the attribute (another timer may have cleared it): unless a
       // toggle is installed for the listing actually shown, show its files.
       const here = listingPath(this.doc.location.pathname);
-      if (this.state?.installed && this.state.pathname === here) return;
+      if (this.toggleLive(here)) return;
       setCollapsed(this.doc, false);
+      if (this.state && this.state.pathname !== here && this.state.installed) {
+        // A stalled navigation: the OUTGOING listing is what is now visible. Its toggle must say
+        // so, and coming Back to it must not collapse it under the pointer (agy, #20).
+        this.state.expanded = true;
+        for (const b of queryAll('gnrToggle', this.doc).elements) {
+          if (b instanceof HTMLButtonElement) setToggleExpanded(b, true);
+        }
+      }
+      this.markExposed();
       log.debug('navigation watchdog: no toggle within 4 s, showing GitHub’s listing');
     }, WATCHDOG_MS);
     return true;
@@ -366,7 +474,22 @@ export class CollapseController {
     if (this.navigation > 0) return false;
     if (!isPending(this.doc)) return false;
     clearPending(this.doc);
+    const here = listingPath(this.doc.location.pathname);
+    if (!this.toggleLive(here)) this.markExposed();
     return true;
+  }
+
+  /**
+   * A navigation signal (`type` is the event name), before the per-frame apply. A navigation that
+   * completes back on the listing it started from (a link redirecting to the page already shown)
+   * would otherwise keep its pre-hide until the watchdog: an apply there counts as a re-render of
+   * the outgoing page. Only completion events count; the toggle must be installed there (agy, #17).
+   */
+  navigationSignal(type: string): void {
+    if (!this.navigating || !COMPLETION_SIGNALS.has(type)) return;
+    const here = listingPath(this.doc.location.pathname);
+    if (here !== this.navOrigin) return;
+    this.returningTo(here);
   }
 
   /** The user's click on `button`: flips the state of the listing currently shown. */

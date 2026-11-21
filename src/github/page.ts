@@ -150,8 +150,12 @@ function normalizeRepoPath(p: string): string {
     .join('/');
 }
 
-/** As `normalizeRepoPath`, for comparing whole page paths, where a trailing slash is ignored. */
-function normalizePagePath(p: string): string {
+/**
+ * A listing's identity: the pathname without trailing slashes, with the owner and repo lower-cased
+ * as GitHub treats them. So `/o/r/` and `/O/R` are the listing `/o/r` (agy, #16). Used for page
+ * comparison here and as the collapse state's key (one helper, agy, #17).
+ */
+export function listingPath(p: string): string {
   return normalizeRepoPath(p.replace(/\/+$/, ''));
 }
 
@@ -195,5 +199,5 @@ function matchesLocation(
     path === ''
       ? [`/${owner}/${repo}`, `/${owner}/${repo}/tree/${ref}`]
       : [`/${owner}/${repo}/tree/${ref}/${path}`];
-  return expected.some((e) => normalizePagePath(e) === normalizePagePath(actual));
+  return expected.some((e) => listingPath(e) === listingPath(actual));
 }
