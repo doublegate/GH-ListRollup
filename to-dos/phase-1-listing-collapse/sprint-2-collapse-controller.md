@@ -129,8 +129,9 @@ results in the sprint notes.
   - `watchNavigation` also listens for the Navigation API's `navigatesuccess`. The content script
     logs which signals arrive, once per type at debug level, for the Firefox finding.
 - **Tests:**
-  - 26 controller and lifecycle tests plus the stylesheet tests (`tests/unit/collapse.test.ts`,
-    `tests/unit/style.test.ts`).
+  - 26 controller and lifecycle tests plus the stylesheet tests at first (`tests/unit/collapse.test.ts`,
+    `tests/unit/style.test.ts`), growing to 52 in `collapse.test.ts` through the review rounds; 243
+    unit tests in all when PR #16 merged.
   - Seven mutations (class before toggle, no staleness check, late collapse allowed, the no-header
     exit keeping pending, no reset on navigation, no re-render budget, a watchdog that does
     nothing) are each caught by the test for that rule.
@@ -160,3 +161,18 @@ results in the sprint notes.
     probe.
 - **Maintainer re-check in Firefox, after the flash fixes (2026-11-16):** no flash on cold load or
   navigation, and **20 consecutive soft navigations each showed exactly one chevron**.
+- **Review round 4 (agy, Codex), after that sign-off.** The `<html>` marker must be removed by
+  every exit that ends without a toggle, and two did not remove it: an exception inside `apply()`,
+  and a no-listing exit outside a click or back/forward navigation. The exits that wait for a
+  listing or header (`stale`, `no-listing`, `no-header`) now share `observationRoot()`, which watches
+  the body rather than the gate's `<meta>` fallback in the head.
+
+  While verifying the fixes, the flash probe found a race: the cold-load watchdog (4 s) cleared a
+  navigation's pre-hide that had just started. All of these are fixed, with tests that fail on the
+  old code. The flash probe now times its first navigation into that window.
+
+- **Final maintainer re-check in Firefox on the final PR head `dc2a688` (squash-merged to `main`
+  as `e6e38de`):** no flash, 20 consecutive
+  navigations each with one chevron, and a folder click about 4 s after load to hit the race.
+- **Follow-ups:** the deferred non-blocking edge cases are tracked in issue #17 (and #13 and #15 for
+  Sprint 1). None of them leaves files hidden or leaks data.
