@@ -27,6 +27,9 @@ export default tseslint.config(
       'node_modules/',
       // Local raw research captures (gitignored), including GitHub's own JS bundles.
       'ref-docs/raw/',
+      // Local release and test bundles (gitignored).
+      'release-builds/',
+      'test-builds/',
     ],
   },
   js.configs.recommended,
