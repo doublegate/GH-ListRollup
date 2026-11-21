@@ -5,6 +5,10 @@
 import { readFileSync } from 'node:fs';
 import { chromium } from 'playwright';
 const [icon, out] = process.argv.slice(2);
+if (!icon || !out) {
+  console.error(`usage: node ${process.argv[1]} <assets/icon.png> <output .png>`);
+  process.exit(2);
+}
 const b64 = readFileSync(icon).toString('base64');
 const html = `<!doctype html><html><body style="margin:0;width:440px;height:280px;background:#0d1117;
 display:flex;align-items:center;gap:22px;padding:0 30px;box-sizing:border-box;font-family:'Inter','Segoe UI',sans-serif">

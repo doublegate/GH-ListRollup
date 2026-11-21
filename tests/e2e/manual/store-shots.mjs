@@ -4,6 +4,10 @@ import { mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright';
 
+if (!process.argv[2] || !process.argv[3]) {
+  console.error(`usage: node ${process.argv[1]} <path to .output/chrome-mv3> <output dir>`);
+  process.exit(2);
+}
 const EXT = resolve(process.argv[2]);
 const OUT = resolve(process.argv[3]);
 mkdirSync(OUT, { recursive: true });

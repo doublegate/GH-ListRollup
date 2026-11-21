@@ -175,7 +175,8 @@ GH-ListRollup **collects no data**.
 
 - It has no analytics, telemetry or remote code.
 - It contacts nothing but GitHub, and only to load a folder you chose to expand.
-- Permissions: `storage` (your display preferences) and access to `https://github.com/*`.
+- Permissions: access to `https://github.com/*` only. The `storage` permission (for display
+  preferences) is added when settings arrive in Phase 3.
 
 See [PRIVACY.md](PRIVACY.md) and [`docs/security-privacy.md`](docs/security-privacy.md).
 
