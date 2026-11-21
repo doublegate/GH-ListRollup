@@ -1079,6 +1079,9 @@ describe('issue #17 and the post-merge review of #19', () => {
     restoreHeader(); // the navigation is aborted: the outgoing page comes back
     expect(controller.apply(new URL(ROOT))).toBe('applied');
     expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+    controller.navigationSignal('soft-nav:end'); // the router settles back on the root
+    expect(isPending(doc)).toBe(false);
+    expect(collapsed(doc)).toBe(false);
   });
 
   it('mid-navigation no-listing keeps the user’s expansion for an aborted navigation (agy, #21)', () => {
@@ -1092,6 +1095,9 @@ describe('issue #17 and the post-merge review of #19', () => {
     parent?.appendChild(held); // aborted: the outgoing listing comes back
     expect(controller.apply(new URL(ROOT))).toBe('applied');
     expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+    controller.navigationSignal('soft-nav:end'); // the router settles back on the root
+    expect(isPending(doc)).toBe(false);
+    expect(collapsed(doc)).toBe(false);
   });
 
   it('a stalled watchdog records the outgoing listing as shown even if not installed (agy, #21)', () => {
@@ -1109,6 +1115,89 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(controller.navigationStarting(new URL(ROOT))).toBe(false);
     expect(controller.apply(new URL(ROOT))).toBe('applied');
     expect(collapsed(doc)).toBe(false); // not collapsed late under the pointer
+  });
+
+  /** A root that was exposed before its toggle arrived (so it starts expanded), then collapsed. */
+  const exposedThenCollapsed = () => {
+    const doc = loadHtmlFixture('root');
+    const restoreHeader = stripHeader(doc);
+    const controller = new CollapseController(ctx, doc);
+    expect(controller.apply(new URL(ROOT))).toBe('no-header'); // shown without a toggle
+    restoreHeader();
+    expect(controller.apply(new URL(ROOT))).toBe('applied'); // arrives expanded
+    toggle(doc).click(); // the user collapses it
+    expect(collapsed(doc)).toBe(true);
+    expect(controller.current?.shownWithoutToggle).toBe(true);
+    return { doc, controller };
+  };
+
+  it('an exposed, then collapsed listing comes back collapsed after an aborted navigation: no-header (agy, #23)', () => {
+    const { doc, controller } = exposedThenCollapsed();
+    controller.navigationStarting(new URL(FOLDER));
+    const restoreHeader = stripHeader(doc);
+    expect(controller.apply(new URL(ROOT))).toBe('no-header');
+    restoreHeader();
+    expect(controller.apply(new URL(ROOT))).toBe('applied');
+    controller.navigationSignal('soft-nav:end');
+    expect(isPending(doc)).toBe(false);
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('false');
+    expect(collapsed(doc)).toBe(true);
+  });
+
+  it('an exposed, then collapsed listing comes back collapsed after an aborted navigation: no-listing (agy, #23)', () => {
+    const { doc, controller } = exposedThenCollapsed();
+    controller.navigationStarting(new URL(FOLDER));
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(ROOT))).toBe('no-listing');
+    parent?.appendChild(held);
+    expect(controller.apply(new URL(ROOT))).toBe('applied');
+    controller.navigationSignal('soft-nav:end');
+    expect(isPending(doc)).toBe(false);
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('false');
+    expect(collapsed(doc)).toBe(true);
+  });
+
+  it('returning to the outgoing listing drops a stalled exposure at once (agy, #23)', () => {
+    vi.useFakeTimers();
+    const { controller } = applied('root');
+    controller.navigationStarting(new URL(FOLDER));
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    expect(controller.apply(new URL(FOLDER))).toBe('stale');
+    vi.advanceTimersByTime(WATCHDOG_MS); // stalled: the folder is recorded as exposed
+    history.pushState(null, '', '/git/git'); // Back...
+    expect(controller.navigationStarting(new URL(ROOT))).toBe(false);
+    // ...and, before any apply runs, a keyboard-shortcut navigation to the folder.
+    const folder = loadHtmlFixture('folder');
+    expect(controller.apply(new URL(FOLDER))).toBe('applied');
+    expect(collapsed(folder)).toBe(true);
+  });
+
+  it('a same-page anchor click keeps a cold-load watchdog exposure (agy, #24)', () => {
+    vi.useFakeTimers();
+    const doc = loadHtmlFixture('root');
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove(); // a slow load: nothing to apply yet
+    const life = startLifecycle(ctx, doc);
+    vi.advanceTimersByTime(WATCHDOG_MS); // the watchdog shows the files: exposure recorded
+    clickLink(doc, '#readme'); // an in-page anchor on the same page
+    parent?.appendChild(held);
+    expect(life.apply()).toBe('applied');
+    expect(collapsed(doc)).toBe(false); // no late collapse
+  });
+
+  it('the outgoing node identity survives a brief unmount mid-navigation (agy, #23)', () => {
+    const { doc, controller } = applied('root');
+    controller.navigationStarting(new URL(FOLDER));
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(ROOT))).toBe('no-listing');
+    parent?.appendChild(held); // the same outgoing node returns
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    expect(controller.apply(new URL(FOLDER))).toBe('stale'); // still the outgoing DOM
   });
 
   it('the lifecycle shares its navigation watcher with the content script (agy, #17)', () => {

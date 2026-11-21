@@ -261,7 +261,16 @@ scripts run only on full loads.
    container, even when its rows are identical (`/<o>/<r>` and `/<o>/<r>/tree/main`; measured live,
    `ref-docs/research-update-2026-11-21-listing-node-identity.md`). A resolved ref is not taken as
    proof that the DOM is current: a bare `/<o>/<r>` URL accepts any ref in the cross-check, so the
-   outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). Implemented in
+   outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). The rows and the
+   container are recorded only when a listing is present, so a brief unmount that happens before
+   the URL changes keeps the outgoing node's identity (#23). An unmount after the URL has changed
+   still starts the destination's state (as before #23). An outgoing listing re-attached then is
+   applied once as the destination: the pre-hide ends early while the collapsed marker keeps it
+   hidden, and the user's choice for the outgoing listing is lost. Its node is then recorded under
+   the destination, so going Back to the outgoing listing reads its own DOM as stale: hidden up to
+   the 4-second watchdog, then shown without a toggle until the next navigation. Accepted
+   limitation (#24): two attempts to keep the outgoing state across that unmount each opened new
+   edge cases, and the worst case leaves the files visible. Implemented in
    `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different
@@ -290,7 +299,8 @@ scripts run only on full loads.
    visible without a toggle: the no-header exit, a cold-load no-listing exit (the listing renders
    visible later), and either watchdog ending a pre-hide with no working toggle, including before
    any state exists for the listing (#17). An exposure belongs to one visit: it is dropped when a navigation pre-hide
-   starts and by any apply that is not stale, after the state for its listing has consumed it (#20,
+   starts, when a navigation returns to the outgoing listing, unless the exposure is that listing's own
+   (#23, #24), and by any apply that is not stale, after the state for its listing has consumed it (#20,
    #21). A mid-navigation no-listing or no-header exit also carries the user's choice, so an aborted
    navigation brings the outgoing listing back as it was (#21). A listing that React unmounts briefly, outside a
    navigation, keeps the user's own choice when it returns instead (#17); the choice is carried once, so further applies while it is absent change nothing (#20).

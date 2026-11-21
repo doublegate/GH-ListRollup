@@ -177,6 +177,11 @@ export class CollapseController {
    * instead of leaving it to the watchdog (agy, #19); otherwise the watchdog keeps it bounded.
    */
   returningTo(path: string): void {
+    // Returning to `path` ends a visit elsewhere: drop an exposure recorded for another listing
+    // now, not at the next frame's apply, which a navigation with no pre-hide (a keyboard shortcut)
+    // could otherwise beat (agy, #23). One recorded for `path` itself still holds: a same-page
+    // anchor click lands here too, and must not cause a late collapse (agy, #24).
+    if (this.exposedPath !== path) this.exposedPath = null;
     if (!this.navigating) return;
     if (!this.toggleLive(path)) {
       // No working toggle yet (React replaced the commit bar; the apply that installs a new one is
@@ -300,8 +305,6 @@ export class CollapseController {
     // navigation cannot leave it waiting for a later visit (agy, #21).
     this.exposedPath = null;
     const state = this.state;
-    state.signature = signature;
-    state.node = listing;
     if (state.exhausted) {
       // Left as GitHub renders it: no pre-hide may stay up over it either (agy, #20).
       clearPending(doc);
@@ -344,6 +347,11 @@ export class CollapseController {
       this.observe(this.observationRoot());
       return 'no-listing';
     }
+    // Record the rows and the container only when a listing is present: a brief mid-navigation
+    // unmount must not erase the outgoing node's identity, which the staleness check and the
+    // stalled-navigation watchdog compare against (agy, #23).
+    state.signature = signature;
+    state.node = listing;
     const header = findHeaderLine(doc);
     if (!header) {
       this.removeToggles(); // an orphaned, inert button must not stay behind (agy, #17)
