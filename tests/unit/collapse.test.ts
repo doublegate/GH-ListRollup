@@ -618,6 +618,21 @@ describe('no flash (maintainer live check on #16)', () => {
       expect(isPending(folder)).toBe(false);
       expect(collapsed(folder)).toBe(true);
     });
+
+    it('a redirected navigation: an apply on the real destination ends the pre-hide (agy, #17)', () => {
+      // The link says main, GitHub lands on master: the toggle must work at once, not after 4 s.
+      const { doc, life } = start();
+      clickLink(doc, '/git/git/tree/main/contrib');
+      expect(isPending(doc)).toBe(true);
+      const folder = loadHtmlFixture('folder'); // https://github.com/git/git/tree/master/contrib
+      setPending(folder);
+      expect(life.apply()).toBe('applied');
+      expect(isPending(folder)).toBe(false);
+      expect(collapsed(folder)).toBe(true);
+      // And the toggle works right away.
+      query('gnrToggle', folder)?.element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      expect(collapsed(folder)).toBe(false);
+    });
   });
 });
 

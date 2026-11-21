@@ -62,6 +62,9 @@ All notable user-visible changes to this project are documented here. The format
 - Fixture sanitizing: an email address that contains the login is now fully replaced, a
   `</script>` inside a page's embedded JSON stays escaped, and a folder named `__proto__`
   survives.
+- When a folder link redirects (a `/tree/master/...` link landing on `/tree/main/...`), the
+  listing's chevron now works as soon as it appears. Before, the files stayed hidden and the chevron
+  did nothing for up to 4 seconds (#17).
 
 ### Security
 

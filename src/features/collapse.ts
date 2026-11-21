@@ -107,8 +107,13 @@ export class CollapseController {
   private navigation = 0;
   /** An in-page navigation pre-hide is in flight (set by navigationStarting, ended by its outcome). */
   private navigating = false;
-  /** That navigation's destination (`listingPath`): only an apply THERE ends the pre-hide. */
-  private navTarget: string | null = null;
+  /**
+   * The listing shown when that navigation started (`listingPath`), or null if none was. An apply
+   * on that page is a re-render of the outgoing page and keeps the pre-hide; a successful apply on
+   * any other listing ends it. Not the clicked URL: GitHub may redirect or canonicalize it
+   * (`/tree/master/docs` to `/tree/main/docs`), and the toggle must work there at once (agy, #17).
+   */
+  private navOrigin: string | null = null;
   /** The listing container the extension gave `LISTING_ID`, so teardown can take it back. */
   private assignedId: Element | null = null;
 
@@ -277,8 +282,9 @@ export class CollapseController {
     setCollapsed(doc, !state.expanded);
     // An apply on the OUTGOING page (a re-render before the URL changes) must not end a navigation
     // pre-hide meant for the destination: the empty moment and the new listing would then come
-    // unhidden (measured live on #16). The navigation watchdog still bounds it.
-    if (!this.navigating || path === this.navTarget) {
+    // unhidden (measured live on #16). Any other listing is the destination, redirected or not.
+    // The navigation watchdog still bounds it.
+    if (!this.navigating || path !== this.navOrigin) {
       clearPending(doc);
       this.navigating = false;
     }
@@ -324,7 +330,7 @@ export class CollapseController {
     if (target === this.state?.pathname) return false;
     setPending(this.doc);
     this.navigating = true;
-    this.navTarget = target;
+    this.navOrigin = this.state?.pathname ?? null;
     const token = ++this.navigation;
     this.ctx.setTimeout(() => {
       if (token !== this.navigation) return; // a later navigation armed its own watchdog

@@ -56,3 +56,8 @@ ref-docs/raw/**
 
 # Antigravity PR reviewer: large-diff on-disk handoff (transient, removed by the script).
 /.agy-review-work/
+
+# Local release and test bundles (store packages, unpacked builds, guides) assembled by hand or by
+# another agent session. Built from the repository; never committed.
+/release-builds/
+/test-builds/
