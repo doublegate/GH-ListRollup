@@ -220,7 +220,9 @@ scripts run only on full loads.
    `/tree/main/docs`), so its toggle works at once (#17). Three ways back to the outgoing listing
    end it at once too, but only while that listing's toggle still works (installed by an apply on it
    **and** still in the DOM): Back before the destination renders (#19), a click on a link to the
-   listing still shown, and a completion signal (`soft-nav:end`, `turbo:load`, `navigatesuccess`)
+   listing still shown, and a completion signal (`soft-nav:end` or `turbo:load`; not
+   `navigatesuccess`, which Chromium fires for any `pushState`/`replaceState`, including a router's
+   own on the outgoing URL)
    that arrives with `location` back on it, which is where a link redirecting to the page already
    shown ends up (#17). A start signal (`wxt:locationchange`) does not count. When the return
    comes before a working toggle exists (React replaced the commit bar and the apply that installs
@@ -230,7 +232,9 @@ scripts run only on full loads.
    timer, which flashed the new listing for a frame. If no working toggle exists for the listing
    actually shown (installed by an apply on it, in the DOM, and with the listing present), the
    watchdog also removes the collapsed marker. A watchdog whose navigation already ended does
-   nothing (#20). "Installed" alone is not enough:
+   nothing (#20). When the navigation stalled (the URL moved on but the destination never rendered),
+   the outgoing listing is what becomes visible: its toggle is set to expanded, so it says what is
+   shown and coming Back does not collapse it (#20). "Installed" alone is not enough:
    mid-navigation React may already have removed the header line and the toggle with it (agy,
    post-merge review of #19). An aborted navigation leaves the old URL, and its toggle keeps
    working.
@@ -250,13 +254,13 @@ scripts run only on full loads.
 
    **The first signals arrive before the new listing renders** (observed live,
    `ref-docs/research-update-2026-11-16-phase1-fixtures.md` §6). So after a navigation, `apply()`
-   first checks that the listing in the DOM belongs to the new URL. When the ref resolves, it passes
-   the cross-check and the DOM is current. When it does not, and the first entry row's href equals
-   the previous page's **in the same listing container node**, the DOM is stale: `apply()` does
-   nothing and waits for the next signal. React keeps the old container until it renders the new
-   page, and renders a new one for it. Rows identical across two URLs (`/<o>/<r>` and
-   `/<o>/<r>/tree/main`) usually resolve a ref; when they cannot (a root with only files and no
-   label suffixes), the new container is what tells them apart (#17). Implemented in
+   first checks that the listing in the DOM belongs to the new URL. When the first entry row's href
+   equals the previous page's **and the listing container is the same node**, the DOM is stale:
+   `apply()` does nothing and waits for the next signal. React renders the destination into a new
+   container, even when its rows are identical (`/<o>/<r>` and `/<o>/<r>/tree/main`; measured live,
+   `ref-docs/research-update-2026-11-21-listing-node-identity.md`). A resolved ref is not taken as
+   proof that the DOM is current: a bare `/<o>/<r>` URL accepts any ref in the cross-check, so the
+   outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). Implemented in
    `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different
@@ -272,7 +276,8 @@ scripts run only on full loads.
    stops after at most 50 runs per listing. The controller drops the records of its own toggle
    insertion (`takeRecords()`), so it does not trigger itself. When the budget runs out, nothing would
    notice the toggle vanishing any more. So the page is **restored** (toggle removed, files shown) and
-   that listing is left as GitHub renders it until the next navigation to a different listing. After
+   that listing is left as GitHub renders it until the next navigation to a different listing; an
+   apply on it also ends any navigation pre-hide (#20). After
    a no-header exit the observer watches the code-view app instead, which contains both the listing
    and the commit bar on either layout, so a late commit bar is picked up.
 
@@ -285,7 +290,7 @@ scripts run only on full loads.
    visible later), and either watchdog ending a pre-hide with no working toggle, including before
    any state exists for the listing (#17). An exposure belongs to one visit: it is dropped when a navigation pre-hide
    starts and when an apply lands on a non-listing page (#20). A listing that React unmounts briefly, outside a
-   navigation, keeps the user's own choice when it returns instead (#17).
+   navigation, keeps the user's own choice when it returns instead (#17); the choice is carried once, so further applies while it is absent change nothing (#20).
 
    **One navigation watcher.** `startLifecycle` registers the only `watchNavigation`; the content
    script's logging attaches through its hooks (`onNavigation`, `onSignal`) instead of registering a

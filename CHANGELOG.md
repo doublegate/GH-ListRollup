@@ -77,6 +77,11 @@ All notable user-visible changes to this project are documented here. The format
   collapsed choice (#17).
 - No leftover, inert chevron when the commit bar stops being recognised or you leave the listing
   page, and a malformed link on the page no longer causes an error on click (#17).
+- Navigating between a repository's root and its `/tree/<branch>` page no longer treats the old page,
+  still on screen, as the new one: the destination is collapsed as usual, not left expanded (#20).
+- A navigation that never finishes rendering no longer leaves the old listing visible while its
+  chevron still says "collapsed", and going Back to it no longer collapses it under the pointer
+  (#20).
 
 ### Security
 

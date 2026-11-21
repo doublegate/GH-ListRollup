@@ -36,22 +36,22 @@ toggle.
 
 ## Features
 
-| Feature                         | Spec                         | Status                                                            |
-| ------------------------------- | ---------------------------- | ----------------------------------------------------------------- |
-| Page-type detection (URL shape) | `docs/dom-integration.md` §3 | Done (T-GNR-003)                                                  |
-| Soft-navigation wiring          | `docs/dom-integration.md` §4 | Done in skeleton form; verified in Chrome and Firefox (T-GNR-004) |
-| Level 1: whole-listing collapse | `docs/ui-behavior.md` §2     | Done (Phase 1): Chrome and Firefox, verified live                 |
-| Level 2: inline folder tree     | `docs/ui-behavior.md` §3     | Not started (Phase 2)                                             |
-| Settings and options page       | `docs/settings.md`           | Not started (Phase 3)                                             |
+| Feature                         | Spec                         | Status                                                                                            |
+| ------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| Page-type detection (URL shape) | `docs/dom-integration.md` §3 | Done (T-GNR-003)                                                                                  |
+| Soft-navigation wiring          | `docs/dom-integration.md` §4 | Done (Phase 1): lifecycle and navigation pre-hide (T-GNR-106, T-GNR-108), hardened in #19 and #20 |
+| Level 1: whole-listing collapse | `docs/ui-behavior.md` §2     | Done (Phase 1): Chrome and Firefox, verified live                                                 |
+| Level 2: inline folder tree     | `docs/ui-behavior.md` §3     | Not started (Phase 2)                                                                             |
+| Settings and options page       | `docs/settings.md`           | Not started (Phase 3)                                                                             |
 
 ## Metrics
 
 | Metric              | Value                           | Source                                     |
 | ------------------- | ------------------------------- | ------------------------------------------ |
-| Unit tests          | 243 passing                     | `pnpm test`, 2026-11-16 (PR #16 merged)    |
+| Unit tests          | 270 passing                     | `pnpm test`, 2026-11-21 (PR #20)           |
 | Lint / typecheck    | clean, zero warnings            | `pnpm lint`, `pnpm typecheck`, 2026-11-15  |
 | `web-ext lint`      | 0 errors, 0 warnings, 0 notices | `pnpm lint:firefox`, 2026-11-15            |
-| Content script size | 4.72 kB                         | `pnpm build` output, 2026-11-16            |
+| Content script size | 18.73 kB (CSS 896 B)            | `pnpm build` output, 2026-11-21            |
 | CI                  | Green on first push             | GitHub Actions run 43806484751, 2026-11-15 |
 
 ## Known issues
@@ -67,4 +67,5 @@ toggle.
 
 1. Phase 2 Sprint 1: the data layer, starting with spike T-GNR-201 (same-origin tree JSON for
    private repositories in Firefox).
-2. Open follow-ups from bot reviews: issues #13, #15 and #17 (non-blocking edge cases).
+2. Open follow-ups from bot reviews: issues #13 and #15 (non-blocking). #17, the collapse lifecycle
+   edge cases, is closed by #20.

@@ -974,6 +974,70 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(controller.current?.shownWithoutToggle).toBe(false);
   });
 
+  it('a second apply while a collapsed listing is unmounted keeps it collapsed (agy, #20 round 3)', () => {
+    const { doc, controller } = applied('root');
+    expect(collapsed(doc)).toBe(true);
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-listing');
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('no-listing'); // idempotent
+    parent?.appendChild(held);
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('false'); // the user's choice
+    expect(collapsed(doc)).toBe(true);
+  });
+
+  it('the outgoing DOM is stale after /<o>/<r> -> /tree/<ref>, even with a resolved ref (agy, #20 round 3)', () => {
+    // Live (2026-11-21): soft navigations between /o/r and /o/r/tree/main render a NEW container.
+    const { doc, controller } = applied('root');
+    history.pushState(null, '', '/git/git/tree/master');
+    expect(controller.apply(new URL('https://github.com/git/git/tree/master'))).toBe('stale');
+    const old = listing(doc);
+    old.replaceWith(old.cloneNode(true)); // React renders the destination
+    expect(controller.apply(new URL('https://github.com/git/git/tree/master'))).toBe('applied');
+  });
+
+  it('the outgoing DOM is stale after /tree/<ref> -> /<o>/<r> (agy, #20 round 3)', () => {
+    const { controller } = applied('root', 'https://github.com/git/git/tree/master');
+    history.pushState(null, '', '/git/git');
+    expect(controller.apply(new URL('https://github.com/git/git'))).toBe('stale');
+  });
+
+  it('a stalled navigation’s watchdog marks the visible outgoing listing expanded (agy, #20 round 3)', () => {
+    vi.useFakeTimers();
+    const { doc, controller } = applied('root');
+    controller.navigationStarting(new URL('https://github.com/git/git/tree/master/contrib'));
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    expect(controller.apply(new URL(fixtureUrl('folder')))).toBe('stale');
+    vi.advanceTimersByTime(WATCHDOG_MS); // the destination never rendered: the root is shown
+    expect(collapsed(doc)).toBe(false);
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true'); // says what is visible
+    history.pushState(null, '', '/git/git'); // Back
+    expect(controller.navigationStarting(new URL('https://github.com/git/git'))).toBe(false);
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('applied');
+    expect(collapsed(doc)).toBe(false); // not collapsed under the pointer
+  });
+
+  it('the budget exit ends an in-flight pre-hide (agy, #20 round 3)', () => {
+    const { doc, controller } = applied('root');
+    controller.navigationStarting(new URL('https://github.com/git/git/tree/master/contrib'));
+    expect(isPending(doc)).toBe(true);
+    // This listing's re-render budget ran out: the page was restored and is left alone.
+    controller.restore();
+    (controller.current as { exhausted: boolean }).exhausted = true;
+    setPending(doc); // restore() cleared it; the navigation's pre-hide is what is being tested
+    expect(controller.apply(new URL(fixtureUrl('root')))).toBe('budget');
+    expect(isPending(doc)).toBe(false);
+  });
+
+  it('navigatesuccess does not count as a completion signal (agy, #20 round 3)', () => {
+    const { doc, controller } = applied('root');
+    controller.navigationStarting(new URL('https://github.com/git/git/tree/master/contrib'));
+    controller.navigationSignal('navigatesuccess'); // e.g. the router's own replaceState
+    expect(isPending(doc)).toBe(true);
+  });
+
   it('the lifecycle shares its navigation watcher with the content script (agy, #17)', () => {
     const doc = loadHtmlFixture('root');
     const signals: string[] = [];

@@ -105,8 +105,9 @@ export function startLifecycle(
       // already the destination.
       // A click back to the listing still shown, while a navigation is in flight, ends its
       // pre-hide if that listing's toggle still works (agy, post-merge review of #19).
-      if (listingPath(destination.pathname) === listingPath(doc.location.pathname)) {
-        controller.returningTo(listingPath(destination.pathname));
+      const destinationPath = listingPath(destination.pathname);
+      if (destinationPath === listingPath(doc.location.pathname)) {
+        controller.returningTo(destinationPath);
         return;
       }
       controller.navigationStarting(destination);
