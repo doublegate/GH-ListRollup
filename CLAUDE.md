@@ -150,7 +150,9 @@ From `ref-docs/research-report.md` §8:
   records the 100-row server render limit.
 - Does the same-origin tree JSON work for private repos in Firefox MV3, and in SAML-enforced orgs?
   (T-GNR-201, which gates the need for the REST fallback)
-- Does the Navigation API's `navigate` event reach Firefox content scripts? (T-GNR-106)
+- ~~Does the Navigation API's `navigate` event reach Firefox content scripts?~~ Resolved 2026-11-16
+  (T-GNR-106): no. Firefox delivers `turbo:load`, `wxt:locationchange` and `soft-nav:end`, but not
+  `navigatesuccess` (`docs/dom-integration.md` §4).
 - Does the REST fallback ship in v1, and if it does, how should AMO's data declaration be handled?
   (T-GNR-209, ADR 0003)
 - Should a "compact header" option hide the commit text? (T-GNR-304)
