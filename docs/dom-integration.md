@@ -262,11 +262,11 @@ scripts run only on full loads.
    `ref-docs/research-update-2026-11-21-listing-node-identity.md`). A resolved ref is not taken as
    proof that the DOM is current: a bare `/<o>/<r>` URL accepts any ref in the cross-check, so the
    outgoing `/tree/<ref>` page passed it and ended the navigation early (#20). The rows and the
-   container are recorded only when a listing is present, so a brief unmount that happens before
-   the URL changes keeps the outgoing node's identity (#23). An unmount after the URL has changed
-   still starts the destination's state, and an outgoing listing re-attached then may be applied
-   once as the destination: the pre-hide ends early, while the collapsed marker keeps the new
-   listing hidden and the toggle works (accepted limitation, #24). Implemented in
+   container are recorded only when a listing is present, so a brief unmount keeps the outgoing
+   node's identity (#23). During a navigation, an apply that finds no listing after the URL has
+   changed keeps the outgoing listing's state (and the user's choice) until a destination listing
+   exists, so a re-attached outgoing node still reads as stale and an aborted return finds its own
+   state intact (#24). Implemented in
    `src/features/collapse.ts`.
 
    An `apply()` after a navigation to a **different listing** resets both levels. A different

@@ -1174,6 +1174,37 @@ describe('issue #17 and the post-merge review of #19', () => {
     expect(collapsed(folder)).toBe(true);
   });
 
+  it('an unmount after the URL changed keeps the outgoing identity: re-attached, it is stale (agy, #24)', () => {
+    const { doc, controller } = applied('root');
+    controller.navigationStarting(new URL(FOLDER));
+    history.pushState(null, '', '/git/git/tree/master/contrib'); // the router moved first
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(FOLDER))).toBe('no-listing');
+    parent?.appendChild(held); // the outgoing node comes back
+    expect(controller.apply(new URL(FOLDER))).toBe('stale');
+    expect(isPending(doc)).toBe(true); // still the navigation's pre-hide
+  });
+
+  it('an unmount after the URL changed keeps the user’s choice for an aborted return (agy, #24)', () => {
+    const { doc, controller } = applied('root');
+    toggle(doc).click(); // expanded
+    controller.navigationStarting(new URL(FOLDER));
+    history.pushState(null, '', '/git/git/tree/master/contrib');
+    const held = listing(doc);
+    const parent = held.parentElement;
+    held.remove();
+    expect(controller.apply(new URL(FOLDER))).toBe('no-listing');
+    history.pushState(null, '', '/git/git'); // Back before the folder rendered
+    expect(controller.navigationStarting(new URL(ROOT))).toBe(false);
+    parent?.appendChild(held);
+    expect(controller.apply(new URL(ROOT))).toBe('applied'); // not stale: its own live DOM
+    expect(toggle(doc).getAttribute('aria-expanded')).toBe('true');
+    controller.navigationSignal('soft-nav:end');
+    expect(isPending(doc)).toBe(false);
+  });
+
   it('a same-page anchor click keeps a cold-load watchdog exposure (agy, #24)', () => {
     vi.useFakeTimers();
     const doc = loadHtmlFixture('root');

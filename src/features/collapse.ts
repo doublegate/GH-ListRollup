@@ -287,6 +287,23 @@ export class CollapseController {
       return 'stale';
     }
 
+    if (!listing && this.navigating && navigated) {
+      // Mid-navigation, the URL has moved on but no listing is in the DOM yet. Keep the OUTGOING
+      // listing's state until a destination listing exists: replacing it now lost the user's
+      // choice on an aborted navigation, and recorded a re-attached outgoing node under the
+      // destination, so Back read the outgoing page's own DOM as stale (agy, #24). The pre-hide
+      // stays, bounded by the navigation watchdog.
+      const outgoing = this.state;
+      this.removeToggles();
+      this.observer?.takeRecords();
+      if (outgoing) {
+        if (outgoing.installed) outgoing.shownWithoutToggle = outgoing.expanded;
+        outgoing.installed = false;
+      }
+      this.observe(this.observationRoot());
+      return 'no-listing';
+    }
+
     if (navigated || this.state === null) {
       // A different listing: reset to the default (docs/architecture.md section 3.2).
       this.state = {
