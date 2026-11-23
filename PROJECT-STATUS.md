@@ -29,7 +29,7 @@ toggle.
 | ------------------------- | ---------------------------- |
 | 0 Foundation              | Complete (2026-11-16)        |
 | 1 Listing collapse        | Complete (2026-11-16)        |
-| 2 Inline tree             | Next: Sprint 1, data layer   |
+| 2 Inline tree             | Sprint 1 in progress         |
 | 3 Settings and resilience | Planned (stub-level tickets) |
 | 4 Testing and hardening   | Planned (stub-level tickets) |
 | 5 Release                 | Planned (stub-level tickets) |
@@ -48,7 +48,7 @@ toggle.
 
 | Metric              | Value                           | Source                                     |
 | ------------------- | ------------------------------- | ------------------------------------------ |
-| Unit tests          | 279 passing                     | `pnpm test`, 2026-11-21 (#24)              |
+| Unit tests          | 368 passing                     | `pnpm test`, 2026-11-21 (Phase 2 Sprint 1) |
 | Latest release      | 0.1.1 (store packages built)    | `CHANGELOG.md`, 2026-11-21                 |
 | Lint / typecheck    | clean, zero warnings            | `pnpm lint`, `pnpm typecheck`, 2026-11-15  |
 | `web-ext lint`      | 0 errors, 0 warnings, 0 notices | `pnpm lint:firefox`, 2026-11-15            |
@@ -66,7 +66,9 @@ toggle.
 
 ## Next steps
 
-1. Phase 2 Sprint 1: the data layer, starting with spike T-GNR-201 (same-origin tree JSON for
-   private repositories in Firefox).
+1. Phase 2 Sprint 1: the data layer (`src/data/`: URL builder, parser, fetcher) is built and
+   tested (T-GNR-202 to 204). Spike T-GNR-201 needs the maintainer's signed-in runs in Chrome and
+   Firefox (instructions in the sprint file); its outcome decides whether the token fallback is
+   needed (Phase 3).
 2. Open follow-ups from bot reviews: issues #13 and #15 (non-blocking). The collapse lifecycle
    edge cases are closed: #17 by #20, #21 by #22, and #23 by #24.

@@ -11,6 +11,7 @@ import { defineContentScript } from 'wxt/utils/define-content-script';
 import { detectPage, pageKey, readListingPage } from '@/github/page';
 import { formatProbe, probe } from '@/github/probe';
 import { startLifecycle } from '@/features/lifecycle';
+import { runTreeJsonSpike } from '@/dev/spike';
 import { log } from '@/log';
 
 export default defineContentScript({
@@ -63,7 +64,27 @@ export default defineContentScript({
       if (reading === lastReading) return;
       lastReading = reading;
       log.debug('listing', reading);
+      // T-GNR-201 spike, development builds only (constant-folded away in production): once per
+      // listing, fetch its tree JSON from this content script and log how it went.
+      if (import.meta.env.DEV && listing.ref !== null) {
+        const spikeKey = `${listing.owner}/${listing.repo}@${listing.ref}:${listing.path ?? ''}`;
+        if (!spiked.has(spikeKey)) {
+          spiked.add(spikeKey);
+          void runTreeJsonSpike(
+            {
+              owner: listing.owner,
+              repo: listing.repo,
+              ref: listing.ref,
+              path: listing.path ?? '',
+            },
+            (line) => {
+              log.info(line);
+            },
+          );
+        }
+      }
     };
+    const spiked = new Set<string>();
 
     // Which navigation signals reach this content script, once per type per load (T-GNR-106: does
     // the Navigation API's navigatesuccess arrive in Firefox?). The lifecycle's navigation watcher

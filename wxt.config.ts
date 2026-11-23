@@ -32,12 +32,33 @@ export default defineConfig({
     startUrls: ['https://github.com/wxt-dev/wxt'],
   },
   zip: {
+    // WXT does not read .gitignore for sources.zip (only dotfiles are excluded by default), so every
+    // other gitignored pattern is listed here; tests/unit/zip-config.test.ts keeps the two in sync.
+    // Release packages are also built from a clean worktree of the tag (docs/release.md section 6).
     excludeSources: [
+      'web-ext-artifacts/**',
+      '**/stats.html',
+      '**/stats-*.json',
+      '**/*.zip',
+      '**/*.xpi',
+      '**/*.crx',
+      '**/*.pem',
+      'coverage/**',
+      'test-results/**',
+      'playwright-report/**',
+      'blob-report/**',
+      'playwright/.cache/**',
+      '**/*.log',
+      '**/npm-debug.log*',
+      '**/pnpm-debug.log*',
+      '**/CLAUDE.local.md',
+      '**/Thumbs.db',
+      '**/*.swp',
+      '**/*~',
+      '**/agy-*.log',
+      'ref-docs/raw/**',
       'release-builds/**',
       'test-builds/**',
-      'coverage/**',
-      'ref-docs/raw/**',
-      'assets/agy-assets.log',
     ],
   },
 });
